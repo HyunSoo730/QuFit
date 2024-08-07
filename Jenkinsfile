@@ -123,12 +123,14 @@ pipeline {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@i11a209.p.ssafy.io '
                         cd /home/ubuntu/qufit
+                        echo "Deploying backend image with tag: ${DOCKER_TAG}"
+                        echo "Deploying frontend image with tag: ${DOCKER_TAG}"
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> back-end/.env
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> front-end/.env
                         docker pull ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}
                         docker pull ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG}
                         docker-compose down
-                        docker-compose up -d
+                        docker-compose up -d --build
                         '
                     """
                 }
