@@ -1,9 +1,6 @@
 
 services:
   qufit-backend:
-    build:
-      context: ./back-end
-      dockerfile: Dockerfile
     image: ${DOCKER_IMAGE:-whgustn730/qufit-backend}:${DOCKER_TAG:-latest}
     container_name: qufit-backend
     ports:
@@ -16,9 +13,6 @@ services:
       - redis
 
   qufit-frontend:
-    build:
-      context: ./front-end
-      dockerfile: Dockerfile
     image: ${DOCKER_IMAGE:-whgustn730/qufit-frontend}:${DOCKER_TAG:-latest}
     container_name: qufit-frontend
     ports:
