@@ -61,6 +61,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             log.info("[accessToken is valid]");
             // 로그아웃 검사
 //            if(!checkAccessTokenLogout(accessToken))
+
             setAuthentication(accessToken);
 
         } else {
