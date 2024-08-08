@@ -11,7 +11,7 @@ interface RoomInfoProps {
 }
 
 interface FriendInfoProps {
-    id: number;
+    // id: number;
     otherMemberId: number;
     nickname: string;
     profileImage: string;
@@ -24,10 +24,7 @@ export const UserInfoDummy: UserInfoProps = {
 export const RoomsInfoDummy: RoomInfoProps[] = Array.from({ length: 10 }, () => ({
     id: faker.string.uuid(),
     title: fakerKO.lorem.sentence(),
-    tags: ['태그1', '태그2', '태그3', '태그dddd4', '태그5', '태그6ddddddddd'].slice(
-        0,
-        Math.floor(Math.random() * 6) + 1,
-    ),
+    tags: ['개발', '운동', '강아지', '러닝메이트', '태그5', '태그6ddddddddd'].slice(0, Math.floor(Math.random() * 6)),
 }));
 
 // export const FriendsInfoDummy: FriendInfoProps[] = Array.from({ length: 10 }, () => ({
@@ -52,15 +49,23 @@ export const RoomsInfoDummy: RoomInfoProps[] = Array.from({ length: 10 }, () => 
 
 export const FriendsInfoDummy: FriendInfoProps[] = [
     {
-        id: 9,
         otherMemberId: 223,
         nickname: 'admin',
         profileImage: 'https://i.pinimg.com/236x/df/3c/4d/df3c4dcf15935d0111426bb28b12d9b1.jpg',
     },
     {
-        id: 2,
         otherMemberId: 21,
         nickname: '김싸피',
+        profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
+    },
+    {
+        otherMemberId: 226,
+        nickname: '이싸피',
+        profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
+    },
+    {
+        otherMemberId: 227,
+        nickname: '최싸피',
         profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
     },
 ];

@@ -1,8 +1,9 @@
 import { CupidIcon, XIcon, EmptyChatIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
+import { useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import * as StompJs from '@stomp/stompjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 interface ChatRoomProps {
     id: number;
@@ -17,7 +18,7 @@ interface ChatListProps {
     timestamp: string;
 }
 
-const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
+const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
     const senderId = 22;
 
     // Store
@@ -26,6 +27,8 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
 
     const chatState = useChatStateStore((state) => state.chatState);
     const setChatState = useChatStateStore((state) => state.setChatState);
+
+    const setChatInfoList = useSetChatInfoList();
 
     // 채팅 전송 및 수신을 위한 값들
     const client = useRef<StompJs.Client | null>(null);
@@ -44,18 +47,158 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [dataLength, setDataLength] = useState(0);
+    const [scrollTopUpdate, setScrollTopUpdate] = useState(0);
+
+    const dateStampList: string[] = [];
+    const senderDifferTimeList: number[] = [];
+    const otherDifferTimeList: number[] = [];
 
     const msgBox = chatList.map((item, idx) => {
+        let isDate = true;
+
+        const date = new Date(item.timestamp);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
+        const day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`;
+
+        const dateData = `${year}. ${month}. ${day}`;
+
+        if (!dateStampList.includes(dateData)) {
+            dateStampList.push(dateData);
+        } else {
+            isDate = false;
+        }
+
         if (item.senderId === senderId) {
+            let isLastTime = false;
+
+            const date = new Date(item.timestamp);
+            let hours = date.getHours() >= 10 ? `${date.getHours()} : ` : `0${date.getHours()} : `;
+            let minutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+            let nowHours = date.getHours() >= 10 ? `${date.getHours()} : ` : `0${date.getHours()} : `;
+            let nowMinutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+
+            if (chatList[idx + 1] && chatList[idx + 1].senderId === senderId) {
+                const nextDate = new Date(chatList[idx + 1].timestamp);
+                const nextHours =
+                    nextDate.getHours() >= 10 ? `${nextDate.getHours()} : ` : `0${nextDate.getHours()} : `;
+                const nextMinutes = nextDate.getMinutes() >= 10 ? nextDate.getMinutes() : `0${nextDate.getMinutes()}`;
+
+                if (hours === nextHours && minutes === nextMinutes) {
+                    hours = '';
+                    minutes = '';
+                } else {
+                    isLastTime = true;
+                }
+            }
+
+            if (chatList[idx - 1]) {
+                const prevDate = new Date(chatList[idx - 1].timestamp);
+                const prevHours =
+                    prevDate.getHours() >= 10 ? `${prevDate.getHours()} : ` : `0${prevDate.getHours()} : `;
+                const prevMinutes = prevDate.getMinutes() >= 10 ? prevDate.getMinutes() : `0${prevDate.getMinutes()}`;
+
+                if (nowHours !== prevHours || nowMinutes !== prevMinutes) {
+                    senderDifferTimeList.push(idx);
+                }
+            }
+
             return (
-                <div key={idx} className="font-bold bg-lightPurple-1">
-                    <span>{item.content}</span>
+                <div key={idx}>
+                    {isDate && (
+                        <div className="flex justify-center my-9">
+                            <span className="px-5 py-1 text-xl font-semibold bg-white rounded-full font-barlow text-smokeWhite text-opacity-80 bg-opacity-10">
+                                {dateData}
+                            </span>
+                        </div>
+                    )}
+                    <div className={`flex justify-end ${isLastTime && 'mb-4'}`}>
+                        <span className="italic font-semibold text-white opacity-50 font-barlow mr-2.5 mt-auto pb-2">
+                            {hours}
+                            {minutes}
+                        </span>
+                        <div
+                            className={`text-left w-fit max-w-72 bg-lightPurple-4 mb-2.5 py-2.5 px-4 rounded-2xl   ${
+                                senderDifferTimeList.includes(idx) && 'rounded-tr-none'
+                            }`}
+                        >
+                            <span className="text-sm text-black break-all whitespace-pre-wrap">{item.content}</span>
+                        </div>
+                    </div>
                 </div>
             );
         } else {
+            let isLastTime = false;
+
+            const date = new Date(item.timestamp);
+            let hours = date.getHours() >= 10 ? `${date.getHours()} : ` : `0${date.getHours()} : `;
+            let minutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+            let nowHours = date.getHours() >= 10 ? `${date.getHours()} : ` : `0${date.getHours()} : `;
+            let nowMinutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+
+            if (chatList[idx + 1] && chatList[idx + 1].senderId === item.senderId) {
+                const nextDate = new Date(chatList[idx + 1].timestamp);
+                const nextHours =
+                    nextDate.getHours() >= 10 ? `${nextDate.getHours()} : ` : `0${nextDate.getHours()} : `;
+                const nextMinutes = nextDate.getMinutes() >= 10 ? nextDate.getMinutes() : `0${nextDate.getMinutes()}`;
+
+                if (hours === nextHours && minutes === nextMinutes) {
+                    hours = '';
+                    minutes = '';
+                } else {
+                    isLastTime = true;
+                }
+            }
+
+            if (chatList[idx - 1]) {
+                const prevDate = new Date(chatList[idx - 1].timestamp);
+                const prevHours =
+                    prevDate.getHours() >= 10 ? `${prevDate.getHours()} : ` : `0${prevDate.getHours()} : `;
+                const prevMinutes = prevDate.getMinutes() >= 10 ? prevDate.getMinutes() : `0${prevDate.getMinutes()}`;
+
+                if (nowHours !== prevHours || nowMinutes !== prevMinutes) {
+                    otherDifferTimeList.push(idx);
+                }
+            }
+
             return (
                 <div key={idx}>
-                    <span>{item.content}</span>
+                    {isDate && (
+                        <div className="flex justify-center my-9">
+                            <span className="px-5 py-1 text-xl font-semibold bg-white rounded-full font-barlow text-smokeWhite text-opacity-80 bg-opacity-10">
+                                {dateData}
+                            </span>
+                        </div>
+                    )}
+                    <div className={`flex justify-start ${isLastTime && 'mb-4'}`}>
+                        <img
+                            src="https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg"
+                            alt="user profile image"
+                            className={`rounded-full ${
+                                otherDifferTimeList.includes(idx) ? 'w-10 h-10 mr-3' : 'w-0 h-0 ml-[3.25rem]'
+                            }`}
+                        />
+                        <div className="flex flex-col">
+                            <span
+                                className={`mb-1 text-sm font-medium text-left text-white opacity-80 ${
+                                    !otherDifferTimeList.includes(idx) && 'hidden'
+                                }`}
+                            >
+                                {nickname}
+                            </span>
+                            <div
+                                className={`text-left w-fit max-w-72 bg-white bg-opacity-20 mb-2.5 py-2.5 px-4 rounded-2xl  ${
+                                    otherDifferTimeList.includes(idx) && 'rounded-tl-none'
+                                }`}
+                            >
+                                <span className="text-sm text-white break-all whitespace-pre-wrap">{item.content}</span>
+                            </div>
+                        </div>
+                        <span className="italic font-semibold text-white opacity-50 font-barlow ml-2.5 mt-auto pb-2">
+                            {hours}
+                            {minutes}
+                        </span>
+                    </div>
                 </div>
             );
         }
@@ -80,10 +223,13 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
 
     // 위아래 스크롤 이벤트
     useEffect(() => {
+        if (!isLoading) return;
+
         if (client.current?.active) {
             if (firstMessageId === nowFirstMessageId) {
                 setHasMore(false);
-                console.log('더 불러올 메시지가 없습니다.');
+                console.log('더 불러올 메시지가 없습니다.', firstMessageId);
+                return;
             }
 
             const subscription = client.current?.subscribe(`/user/${senderId}/sub/chat.messages.${id}`, (message) => {
@@ -91,8 +237,8 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
                 console.log('스크롤 구독 메시지:', messages.messages);
                 setNowFirstMessageId(messages.messages[0].id);
                 setChatList((chats) => [...messages.messages, ...chats]);
-                setIsLoading(false);
                 setDataLength(dataLength + 1);
+                setIsLoading(false);
             });
 
             return () => {
@@ -101,23 +247,26 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
         }
     }, [isLoading]);
 
-    const fetchData = () => {
-        if (isLoading) return;
-        setIsLoading(true);
+    useLayoutEffect(() => {
+        requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+                scrollContainerRef.current.scrollTop = scrollTopUpdate;
+            }
+        });
+    }, [dataLength]);
 
-        const scrollTopBeforeUpdate = scrollContainerRef.current?.scrollTop;
+    const fetchData = () => {
+        console.log('fetchData 호출');
+
+        if (scrollContainerRef.current) {
+            setScrollTopUpdate(scrollContainerRef.current.scrollTop);
+        }
 
         client.current?.publish({
             destination: `/pub/chat.loadPreviousMessages/${id}`,
-            body: JSON.stringify({ messageId: nowFirstMessageId, pageSize: 40 }),
+            body: JSON.stringify({ messageId: nowFirstMessageId, pageSize: 20 }),
         });
-
-        // 디자인 후, 스크롤값 수정 필요 지금은 에러 안나게 대충 조정돼있음!
-        setTimeout(() => {
-            if (scrollContainerRef.current) {
-                scrollContainerRef.current.scrollTop = scrollTopBeforeUpdate! + 1140;
-            }
-        }, 0);
+        setIsLoading(true);
     };
 
     const scrollToBottom = () => {
@@ -210,15 +359,25 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
     };
 
     const handleCloseButton = () => {
-        const lastMessage = chatList[chatList.length - 1];
+        if (chatList.length > 0) {
+            const lastMessage = chatList[chatList.length - 1];
 
-        client.current?.publish({
-            destination: `/pub/chat.leaveRoom/${id}`,
-            body: JSON.stringify({
-                id: lastMessage.id,
-                timestamp: lastMessage.timestamp,
-            }),
-        });
+            client.current?.publish({
+                destination: `/pub/chat.leaveRoom/${id}`,
+                body: JSON.stringify({
+                    id: lastMessage.id,
+                    timestamp: lastMessage.timestamp,
+                }),
+            });
+        } else {
+            client.current?.publish({
+                destination: `/pub/chat.leaveRoom/${id}`,
+                body: JSON.stringify({
+                    id: null,
+                    timestamp: null,
+                }),
+            });
+        }
 
         setIsClosed(true);
 
@@ -234,17 +393,33 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
         }, 200);
     };
 
+    const handleDelButton = () => {
+        try {
+            client.current?.publish({
+                destination: `/pub/chat.removeRoom/${id}`,
+            });
+
+            console.log('채팅방 삭제 요청', id);
+
+            client.current?.subscribe(`/user/${senderId}/sub/chat.rooms`, (list) => {
+                console.log('채팅방 리스트 다시 불러오기', list.body);
+                const response = JSON.parse(list.body);
+                setChatInfoList(response);
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <>
             <div
-                className={`absolute flex flex-col items-center pb-10 left-1/4 top-1/3  ${
+                className={`absolute flex flex-col items-center w-full h-[calc(100%-11.375rem)] justify-center ${
                     chatState[0].id === 0 ? 'opacity-100' : 'opacity-0 scale-95'
                 } md:invisible sm:invisible xs:invisible`}
             >
-                <EmptyChatIcon className="w-56 pr-10" />
-                <p className="absolute text-2xl text-center text-white bottom-8 w-80 opacity-80 animate-pulse">
-                    채팅할 상대를 선택해주세요.
-                </p>
+                <EmptyChatIcon className="w-56 mb-4" />
+                <p className="text-2xl text-center text-white bottom-8 w-80 opacity-80">채팅할 상대를 선택해주세요.</p>
             </div>
             <div
                 className={`flex flex-col w-full h-full transition-all duration-200 ease-out  ${
@@ -253,30 +428,31 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
             >
                 <div className="flex flex-col w-full h-full z-20 md:bg-chatPageBg md:effect-whitePink md:rounded-b-[3rem] sm:bg-chatPageBg sm:effect-whitePink sm:rounded-b-[3rem] xs:bg-chatPageBg xs:effect-whitePink xs:rounded-b-[3rem]">
                     {/* header */}
-                    <div className="w-full relative flex items-center h-20 border-t-4 effect-whitePink border-x-4 py-6 border-lightPurple-3 rounded-t-[1.875rem] lg:h-16 md:rounded-none md:border-none md:effect-none md:py-12 sm:rounded-none sm:border-none sm:effect-none sm:py-12 xs:rounded-none xs:border-none xs:effect-none xs:py-12 ">
+                    <div className="w-full relative flex items-center h-20 effect-whitePink bg-pink bg-opacity-5 py-6 rounded-t-[1.875rem] lg:h-16 md:rounded-none  md:effect-none md:py-12 sm:rounded-none  sm:effect-none sm:py-12 xs:rounded-none  xs:effect-none xs:py-12 ">
                         <div className="absolute z-10 flex justify-between w-full px-12 lg:px-10 xs:px-6">
                             <div className="flex items-center">
                                 <img
-                                    src={profileImage}
+                                    src="https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg"
                                     alt="user profile image"
-                                    className="rounded-full w-14 h-14 lg:w-10 lg:h-10"
+                                    className="w-10 h-10 rounded-full lg:w-10 lg:h-10"
                                 />
-                                <p className="ml-3.5 text-xl font-medium text-white truncate max-w-72 lg:text-lg">
-                                    {nickname}
-                                </p>
+                                <p className="ml-3.5 font-medium text-white truncate max-w-72 lg:text-lg">{nickname}</p>
                             </div>
+                            <button onClick={handleDelButton} className="font-bold bg-pink">
+                                임시 삭제버튼
+                            </button>
                             <button onClick={handleCloseButton}>
                                 <XIcon className="w-10" />
                             </button>
                         </div>
                     </div>
                     {/* contents */}
-                    <div className="w-full h-full border-t-2 border-b-4 effect-pureWhite border-x-4 border-lightPurple-3 rounded-b-[1.875rem] md:border-none md:effect-none sm:border-none sm:effect-none xs:border-none xs:effect-none">
-                        <div className="absolute z-10 flex flex-col w-full h-full px-12 pb-12 lg:px-10 lg:pb-10 md:h-[calc(100%-5.5rem)] sm:h-[calc(100%-5.5rem)] xs:h-[calc(100%-5.5rem)] xs:px-6">
+                    <div className="w-full max-h-[calc(100%-6.5rem)] h-[calc(100%-6.5rem)] effect-whitePink bg-pink bg-opacity-5 rounded-b-[1.875rem] md:border-none md:effect-none sm:border-none sm:effect-none xs:border-none xs:effect-none">
+                        <div className="z-10 flex flex-col w-full h-full px-12 pb-12 lg:px-10 lg:pb-10 md:h-[calc(100%-5.5rem)] sm:h-[calc(100%-5.5rem)] xs:h-[calc(100%-5.5rem)] xs:px-6">
                             <div
                                 id="scrollableDiv"
                                 ref={scrollContainerRef}
-                                className="flex flex-col-reverse items-center my-5 overflow-y-auto max-h-[calc(100%-6.5rem)] lg:max-h-[calc(100%-5rem)] md:max-h-[calc(100%-8rem)] md:my-0 sm:max-h-[calc(100%-8rem)] sm:my-0 xs:max-h-[calc(100%-8rem)] xs:my-0"
+                                className="flex flex-col-reverse my-7 overflow-y-auto scrollbar-hide h-full lg:max-h-[calc(100%-5rem)] md:max-h-[calc(100%-8rem)] md:my-0 sm:max-h-[calc(100%-8rem)] sm:my-0 xs:max-h-[calc(100%-8rem)] xs:my-0"
                             >
                                 <InfiniteScroll
                                     dataLength={dataLength}
@@ -299,9 +475,9 @@ const ChatRoom = ({ id, nickname, profileImage }: ChatRoomProps) => {
                                         e.key === 'Enter' && sendChat();
                                     }}
                                     placeholder="채팅을 입력하세요."
-                                    className="relative w-full pr-20 text-white bg-transparent border-4 rounded-full outline-none h-14 caret-white border-lightPurple-3 effect-purePink pl-7 placeholder:text-white placeholder:opacity-80 lg:h-12 md:h-20 md:text-xl md:pr-24 sm:h-20 sm:text-xl sm:pr-24 xs:h-20 xs:text-xl xs:pr-24"
+                                    className="relative w-full pr-20 text-white bg-transparent border rounded-full outline-none h-14 caret-white border-lightPurple-1 effect-whitePink pl-7 placeholder:text-white placeholder:opacity-60 lg:h-12 md:h-20 md:text-xl md:pr-24 sm:h-20 sm:text-xl sm:pr-24 xs:h-20 xs:text-xl xs:pr-24"
                                 />
-                                <button onClick={sendChat} className="absolute mr-12 right-6 xs:mr-6">
+                                <button onClick={sendChat} className="absolute mr-10 right-6 xs:mr-6">
                                     <CupidIcon className="w-10 md:w-14 sm:w-14 xs:w-14" />
                                 </button>
                             </div>

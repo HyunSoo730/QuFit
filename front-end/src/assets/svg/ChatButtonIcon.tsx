@@ -1,100 +1,48 @@
 import type { SVGProps } from 'react';
 const SvgChatButtonIcon = (props: SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 91 90" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 45 45" {...props}>
         <g filter="url(#ChatButtonIcon_svg__a)">
-            <rect width={90.343} height={90} fill="url(#ChatButtonIcon_svg__b)" fillOpacity={0.4} rx={20} />
+            <rect width={44.166} height={43.998} x={0.332} y={0.248} fill="#fff" fillOpacity={0.1} rx={12.222} />
         </g>
-        <rect
-            width={86.343}
-            height={86}
-            x={2}
-            y={2}
-            stroke="url(#ChatButtonIcon_svg__c)"
-            strokeOpacity={0.5}
-            strokeWidth={7}
-            rx={18}
-        />
-
+        <rect width={42.166} height={41.998} x={1.332} y={1.248} stroke="#EDB6F4" strokeWidth={2} rx={11.222} />
         <path
             fill="#fff"
-            d="M45.171 66.667c12.012 0 21.75-9.701 21.75-21.667s-9.738-21.667-21.75-21.667-21.75 9.7-21.75 21.667c0 3.466.818 6.742 2.27 9.647.386.772.515 1.654.291 2.488l-1.295 4.823c-.563 2.093 1.36 4.009 3.462 3.449l4.841-1.29c.837-.224 1.722-.096 2.497.289a21.7 21.7 0 0 0 9.684 2.26"
-            opacity={0.5}
+            d="M22.415 32.839c5.872 0 10.632-4.742 10.632-10.592s-4.76-10.592-10.632-10.592c-5.873 0-10.633 4.742-10.633 10.592 0 1.694.4 3.296 1.11 4.716.188.377.251.809.142 1.216l-.634 2.358c-.274 1.023.665 1.96 1.693 1.686l2.367-.631a1.74 1.74 0 0 1 1.22.142 10.6 10.6 0 0 0 4.735 1.105"
         />
         <path
-            fill="#F86CD9"
-            d="M35.384 43.07c0 2.965 2.868 6.076 5.5 8.306 1.791 1.518 2.687 2.277 4.287 2.277s2.496-.759 4.288-2.277c2.63-2.23 5.5-5.341 5.5-8.306 0-5.8-5.384-7.966-9.788-3.485-4.404-4.481-9.787-2.315-9.787 3.485"
+            fill="#F997EC"
+            d="M17.63 21.303c0 1.45 1.403 2.97 2.689 4.06.876.743 1.314 1.114 2.096 1.114s1.22-.371 2.096-1.114c1.286-1.09 2.689-2.61 2.689-4.06 0-2.836-2.632-3.894-4.785-1.704-2.153-2.19-4.785-1.132-4.785 1.704"
         />
         <defs>
-            <radialGradient
-                id="ChatButtonIcon_svg__c"
-                cx={0}
-                cy={0}
-                r={1}
-                gradientTransform="rotate(134.294 35.978 20.73)scale(97.4942 97.5041)"
-                gradientUnits="userSpaceOnUse"
-            >
-                <stop stopColor="#FF41FF" />
-                <stop offset={0.335} stopColor="#FFAFFF" stopOpacity={0.6} />
-                <stop offset={0.467} stopColor="#FFD7FF" stopOpacity={0.4} />
-                <stop offset={0.581} stopColor="#fff" stopOpacity={0.2} />
-                <stop offset={0.59} stopColor="#FFC2FF" stopOpacity={0.506} />
-                <stop offset={1} stopColor="#FF40FF" />
-            </radialGradient>
-            <linearGradient
-                id="ChatButtonIcon_svg__b"
-                x1={90.343}
-                x2={0.344}
-                y1={0}
-                y2={90.342}
-                gradientUnits="userSpaceOnUse"
-            >
-                <stop stopColor="#F997EC" />
-                <stop offset={0.5} stopColor="#fff" stopOpacity={0.5} />
-                <stop offset={1} stopColor="#F997EC" />
-            </linearGradient>
             <filter
                 id="ChatButtonIcon_svg__a"
-                width={101.383}
-                height={102.187}
-                x={-5.52}
-                y={-6.667}
+                width={44.166}
+                height={43.998}
+                x={0.332}
+                y={0.248}
                 colorInterpolationFilters="sRGB"
                 filterUnits="userSpaceOnUse"
             >
                 <feFlood floodOpacity={0} result="BackgroundImageFix" />
-                <feGaussianBlur in="BackgroundImageFix" stdDeviation={2.76} />
-                <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_184_460" />
-                <feBlend in="SourceGraphic" in2="effect1_backgroundBlur_184_460" result="shape" />
+                <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
                 <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dx={-0.92} dy={-0.92} />
-                <feGaussianBlur stdDeviation={1.84} />
+                <feOffset />
+                <feGaussianBlur stdDeviation={5} />
                 <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
                 <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.3 0" />
-                <feBlend in2="shape" result="effect2_innerShadow_184_460" />
+                <feBlend in2="shape" result="effect1_innerShadow_477_4284" />
                 <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dy={2.667} />
-                <feGaussianBlur stdDeviation={33.333} />
+                <feOffset />
+                <feGaussianBlur stdDeviation={15} />
                 <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
-                <feColorMatrix values="0 0 0 0 0.988333 0 0 0 0 0.336033 0 0 0 0 0.909082 0 0 0 1 0" />
-                <feBlend in2="effect2_innerShadow_184_460" result="effect3_innerShadow_184_460" />
+                <feColorMatrix values="0 0 0 0 0.976471 0 0 0 0 0.592157 0 0 0 0 0.92549 0 0 0 1 0" />
+                <feBlend in2="effect1_innerShadow_477_4284" result="effect2_innerShadow_477_4284" />
                 <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dy={1.84} />
-                <feGaussianBlur stdDeviation={4.6} />
+                <feOffset />
+                <feGaussianBlur stdDeviation={5} />
                 <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
-                <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0" />
-                <feBlend in2="effect3_innerShadow_184_460" result="effect4_innerShadow_184_460" />
-                <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dx={-3.333} dy={3.333} />
-                <feGaussianBlur stdDeviation={6.667} />
-                <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
-                <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-                <feBlend in2="effect4_innerShadow_184_460" result="effect5_innerShadow_184_460" />
-                <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dx={3.333} dy={-6.667} />
-                <feGaussianBlur stdDeviation={6.667} />
-                <feComposite in2="hardAlpha" k2={-1} k3={1} operator="arithmetic" />
-                <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-                <feBlend in2="effect5_innerShadow_184_460" result="effect6_innerShadow_184_460" />
+                <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.3 0" />
+                <feBlend in2="effect2_innerShadow_477_4284" result="effect3_innerShadow_477_4284" />
             </filter>
         </defs>
     </svg>
