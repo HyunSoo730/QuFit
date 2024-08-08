@@ -13,7 +13,7 @@ pipeline {
                 echo "Checking out the repository..."
                 deleteDir()
                 checkout([$class: 'GitSCM',
-                    branches: [[name: '*/dev-cicd']],
+                    branches: [[name: '*/dev-cicd'], [name: '*/front-dev'], [name: '*/back-dev']],
                     userRemoteConfigs: [[url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12A209.git',
                                          credentialsId: 'jenkins-gitlab']]])
                 sh 'ls -la'
