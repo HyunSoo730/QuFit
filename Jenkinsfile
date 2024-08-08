@@ -13,7 +13,7 @@ pipeline {
                 echo "Checking out the repository..."
                 deleteDir()
                 checkout([$class: 'GitSCM',
-                    branches: [[name: '*/dev-cicd'], [name: '*/front-dev'], [name: '*/back-dev']],
+                    branches: [[name: '*/dev-cicd']],
                     userRemoteConfigs: [[url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12A209.git',
                                          credentialsId: 'jenkins-gitlab']]])
                 sh 'ls -la'
@@ -101,20 +101,20 @@ pipeline {
             }
         }
 
-        stage('Transfer Files') {
-            steps {
-                echo "Transferring files to EC2..."
-                sshagent(['jenkins-ssh-key']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@i11a209.p.ssafy.io 'mkdir -p /home/ubuntu/qufit/back-end /home/ubuntu/qufit/front-end'
-                        scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/
-                        scp -o StrictHostKeyChecking=no back-end/.env ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/back-end/.env
-                        scp -o StrictHostKeyChecking=no front-end/.env ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/front-end/.env
-                    '''
-                }
-                echo "File transfer completed."
-            }
-        }
+//         stage('Transfer Files') {
+//             steps {
+//                 echo "Transferring files to EC2..."
+//                 sshagent(['jenkins-ssh-key']) {
+//                     sh '''
+//                         ssh -o StrictHostKeyChecking=no ubuntu@i11a209.p.ssafy.io 'mkdir -p /home/ubuntu/qufit/back-end /home/ubuntu/qufit/front-end'
+//                         scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/
+//                         scp -o StrictHostKeyChecking=no back-end/.env ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/back-end/.env
+//                         scp -o StrictHostKeyChecking=no front-end/.env ubuntu@i11a209.p.ssafy.io:/home/ubuntu/qufit/front-end/.env
+//                     '''
+//                 }
+//                 echo "File transfer completed."
+//             }
+//         }
 
         stage('Deploy to EC2') {
             steps {
@@ -122,14 +122,13 @@ pipeline {
                 sshagent(['jenkins-ssh-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@i11a209.p.ssafy.io '
-                        cd /home/ubuntu/qufit
+                        cd /var/jenkins_home/workspace/Qufit Project
                         echo "Deploying backend image with tag: ${DOCKER_TAG}"
                         echo "Deploying frontend image with tag: ${DOCKER_TAG}"
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> back-end/.env
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> front-end/.env
-                        docker pull ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}
-                        docker pull ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG}
                         docker-compose down
+                        docker-compose pull
                         docker-compose up -d --build
                         '
                     """
@@ -142,7 +141,7 @@ pipeline {
     post {
         always {
             echo "Cleaning workspace..."
-            cleanWs()
+//             cleanWs()
             echo "Workspace cleaned."
         }
     }
