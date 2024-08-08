@@ -18,10 +18,14 @@ FROM nginx:1.21.4-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Nginx 설정 파일 복사
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # 포트 80 노출
-EXPOSE 80
+EXPOSE 80 443
 
 # Nginx 시작
+# docker-entrypoint.sh 스크립트 실행된 후 Nginx가 시작
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
