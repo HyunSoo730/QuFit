@@ -35,6 +35,8 @@ pipeline {
                         cp "$ENV_FILE_BACKEND" "$WORKSPACE/back-end/.env"
                         echo "Copying frontend .env file..."
                         cp "$ENV_FILE_FRONTEND" "$WORKSPACE/front-end/.env"
+                        chmod 777 "$WORKSPACE/front-end/.env"
+                        chmod 777 "$WORKSPACE/back-end/.env"
                         echo "Adding DOCKER_TAG to backend .env..."
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> "$WORKSPACE/back-end/.env"
                         echo "Adding DOCKER_TAG to frontend .env..."
@@ -122,7 +124,9 @@ pipeline {
                 sshagent(['jenkins-ssh-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@i11a209.p.ssafy.io '
-                        cd /var/jenkins_home/workspace/Qufit Project
+                        cd "/var/jenkins_home/workspace/Qufit Project"
+                        pwd
+                        ls
                         echo "Deploying backend image with tag: ${DOCKER_TAG}"
                         echo "Deploying frontend image with tag: ${DOCKER_TAG}"
                         echo "DOCKER_TAG=${DOCKER_TAG}" >> back-end/.env
