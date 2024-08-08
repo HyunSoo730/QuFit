@@ -4,23 +4,13 @@ import ChatRoom from '@components/chat/ChatRoom';
 import { FriendsInfoDummy } from '@dummy/Dummy';
 import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
+import { useChatInfoList, useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import { instance } from '@apis/axios';
-import { useEffect, useState } from 'react';
-
-interface ChatListProps {
-    chatRoomId: number;
-    otherMemberNickname: string;
-    profileImage: string;
-    otherMemberId: number;
-    lastMessage: string;
-    unreadCount: number;
-    lastMessageId: string;
-    lastMessageTime: string;
-    lastReadMessageId: string;
-}
+import { useEffect } from 'react';
 
 const ChattingPage = () => {
-    const [chatList, setChatList] = useState<ChatListProps[]>([]);
+    const chatInfoList = useChatInfoList();
+    const setChatInfoList = useSetChatInfoList();
 
     const buttonFocus = useTabStateStore((state) => state.buttonFocus);
     const setButtonFocus = useTabStateStore((state) => state.setButtonFocus);
@@ -31,7 +21,7 @@ const ChattingPage = () => {
         instance
             .get(`/qufit/chat/rooms/22`)
             .then((res) => {
-                setChatList(res.data);
+                setChatInfoList(res.data);
                 console.log('채팅 리스트 응답 성공:', res);
             })
             .catch((err: string) => {
@@ -46,16 +36,16 @@ const ChattingPage = () => {
                 <div className="z-10 flex justify-around mb-10 lg:mb-8">
                     <button
                         onClick={() => setButtonFocus('friend')}
-                        className={`w-24 h-12 rounded-xl text-white text-2xl ${
-                            buttonFocus === 'friend' ? 'font-medium bg-white bg-opacity-30' : ''
+                        className={`h-11 px-7 rounded-full text-smokeWhite text-opacity-80 text-2xl font-medium ${
+                            buttonFocus === 'friend' ? 'bg-white bg-opacity-20 text-opacity-100 text-smokeWhite' : ''
                         } lg:text-xl lg:w-20 lg:h-10`}
                     >
                         친구
                     </button>
                     <button
                         onClick={() => setButtonFocus('chat')}
-                        className={`w-36 h-12 rounded-xl text-white text-2xl ${
-                            buttonFocus === 'chat' ? 'font-medium bg-white bg-opacity-30' : ''
+                        className={`h-11 px-7 rounded-full text-smokeWhite text-opacity-80 text-2xl font-medium ${
+                            buttonFocus === 'chat' ? 'bg-white bg-opacity-20 text-opacity-100 text-smokeWhite' : ''
                         } lg:text-xl lg:w-28 lg:h-10`}
                     >
                         채팅 목록
@@ -66,7 +56,6 @@ const ChattingPage = () => {
                         {FriendsInfoDummy.map((friend) => (
                             <FriendInfo
                                 key={friend.otherMemberId}
-                                id={friend.id}
                                 otherMemberId={friend.otherMemberId}
                                 nickname={friend.nickname}
                                 profileImage={friend.profileImage}
@@ -75,7 +64,7 @@ const ChattingPage = () => {
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {chatList.map((chat) => (
+                        {chatInfoList.map((chat) => (
                             <ChatInfo
                                 key={chat.chatRoomId}
                                 id={chat.chatRoomId}
@@ -84,9 +73,6 @@ const ChattingPage = () => {
                                 profileImage={chat.profileImage}
                                 lastMessage={chat.lastMessage}
                                 unreadCount={chat.unreadCount}
-                                lastMessageId={chat.lastMessageId}
-                                lastMessageTime={chat.lastMessageTime}
-                                lastReadMessageId={chat.lastReadMessageId}
                             />
                         ))}
                     </div>

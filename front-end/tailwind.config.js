@@ -13,9 +13,10 @@ export default {
         },
         colors: {
             white: '#fff',
-            black: '#000',
+            smokeWhite: '#EAE7EE',
+            black: '#1D0430',
             darkBlack: '#340544',
-            pink: '#FD4C8C',
+            pink: '#F997EC',
             purple: '#CA63E3',
             lightPurple: {
                 1: '#DBBEEA',
@@ -30,7 +31,6 @@ export default {
         extend: {
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",
-                chatPageBg: "url('@assets/png/chatPageBg.png')",
                 bluePurple:
                     'linear-gradient(to bottom left,rgba(145, 202, 247, 1) 0%, rgba(218, 153, 226, 1) 88%,rgba(252, 132, 222, 1) 100%)',
                 whitePink:
@@ -42,8 +42,8 @@ export default {
             },
 
             aspectRatio: {
-                layout: '1.8 / 1',
-                header: '14 / 1',
+                layout: '1.6 / 1',
+                header: '13 / 1',
                 video: '355/260',
             },
 
