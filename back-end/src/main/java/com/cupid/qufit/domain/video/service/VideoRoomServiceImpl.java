@@ -1,5 +1,6 @@
 package com.cupid.qufit.domain.video.service;
 
+import com.cupid.qufit.domain.balancegame.service.BalanceGameService;
 import com.cupid.qufit.domain.member.repository.profiles.MemberRepository;
 import com.cupid.qufit.domain.member.repository.profiles.TypeProfilesRepository;
 import com.cupid.qufit.domain.member.repository.tag.TagRepository;
@@ -54,6 +55,7 @@ public class VideoRoomServiceImpl implements VideoRoomService {
     private final TagRepository tagRepository;
     private final ESParticipantServiceImpl esParticipantService;
     private final TypeProfilesRepository typeProfilesRepository;
+    private final BalanceGameService balanceGameService;
 
     @Value("${livekit.api.key}")
     private String LIVEKIT_API_KEY;
@@ -68,15 +70,19 @@ public class VideoRoomServiceImpl implements VideoRoomService {
     public VideoRoomDTO.BasicResponse createVideoRoom(VideoRoomDTO.Request videoRoomRequest, Long memberId) {
         // ! 1. 입력받은 방 제목, 방 인원 수, 태그를 통해 방 생성 및 DB 저장
         VideoRoom videoRoom = VideoRoomDTO.Request.to(videoRoomRequest);
-        // ! 1.1 방장 설정
         Member member = memberRepository.findById(memberId)
                                         .orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
         videoRoom.setHost(member);
-        videoRoom.getVideoRoomHobby().addAll(toHobbyList(videoRoomRequest, videoRoom));
-        videoRoom.getVideoRoomPersonality().addAll(toPersonalityList(videoRoomRequest, videoRoom));
+        videoRoom.getVideoRoomHobby().addAll(toHobbyList(videoRoomRequest.getVideoRoomHobbies(), videoRoom));
+        videoRoom.getVideoRoomPersonality()
+                 .addAll(toPersonalityList(videoRoomRequest.getVideoRoomPersonalities(), videoRoom));
+        // ! 2. 일대일 방 일 경우
+        if (videoRoomRequest.getStatusType() == 3) {
+            videoRoom.setStatus(VideoRoomStatus.PERSONAL);
+        }
         videoRoomRepository.save(videoRoom);
 
-        // ! 2. 본인 참가를 위한 joinVideoRoom 을 통해 토큰 생성
+        // ! 3. 본인 참가를 위한 joinVideoRoom 을 통해 토큰 생성
         String token = joinVideoRoom(videoRoom.getVideoRoomId(), memberId).getToken();
         return VideoRoomDTO.BasicResponse.from(videoRoom, token);
     }
@@ -151,11 +157,12 @@ public class VideoRoomServiceImpl implements VideoRoomService {
 
         // ! 2-2. 방 취미 태그 업데이트
         videoRoom.getVideoRoomHobby().clear();
-        videoRoom.getVideoRoomHobby().addAll(toHobbyList(videoRoomRequest, videoRoom));
+        videoRoom.getVideoRoomHobby().addAll(toHobbyList(videoRoomRequest.getVideoRoomHobbies(), videoRoom));
 
         // ! 2-3. 방 성격 태그 업데이트
         videoRoom.getVideoRoomPersonality().clear();
-        videoRoom.getVideoRoomPersonality().addAll(toPersonalityList(videoRoomRequest, videoRoom));
+        videoRoom.getVideoRoomPersonality()
+                 .addAll(toPersonalityList(videoRoomRequest.getVideoRoomPersonalities(), videoRoom));
 
         // ! 3. 방 정보 저장
         videoRoomRepository.save(videoRoom);
@@ -175,7 +182,10 @@ public class VideoRoomServiceImpl implements VideoRoomService {
         // !. 2. ES에서 해당 방 참가자 삭제
         esParticipantService.deleteAllByRoomId(videoRoomId.toString());
 
-        // ! 3. 방 제거
+        // ! 3. DB에 저장되어있는 밸런스 게임 선택 전부 삭제
+        balanceGameService.deleteAllChoice(videoRoomId);
+
+        // ! 4. 방 제거
         videoRoomRepository.delete(videoRoom);
     }
 
@@ -188,26 +198,25 @@ public class VideoRoomServiceImpl implements VideoRoomService {
         VideoRoom videoRoom = videoRoomRepository.findById(videoRoomId)
                                                  .orElseThrow(() -> new VideoException(ErrorCode.VIDEO_ROOM_NOT_FOUND));
 
-        // ! 2. 방 인원 1명일 경우 방 삭제
-        if (videoRoom.getCurMCount() + videoRoom.getCurWCount() == 1) {
-            videoRoomRepository.delete(videoRoom);
-            return 1;
-        }
-
-        // ! 3. 참가자 찾기
+        // ! 2. 참가자 찾기
         VideoRoomParticipant participant = videoRoom.getParticipants().stream()
                                                     .filter(p -> p.getMember().getId().equals(memberId))
                                                     .findFirst()
                                                     .orElseThrow(
                                                             () -> new VideoException(ErrorCode.PARTICIPANT_NOT_FOUND));
 
-        // ! 4. 방에서 참가자 제거
-        // 4-1. DB에서 해당 참가자 삭제
+        // ! 3. ES 에서 해당 참가자 삭제
+        esParticipantService.deleteById(participant.getId());
+
+        // ! 4. 방 인원 1명일 경우 방 삭제
+        if (videoRoom.getCurMCount() + videoRoom.getCurWCount() == 1) {
+            videoRoomRepository.delete(videoRoom);
+            return 1;
+        }
+
+        // ! 4. 방 인원이 1명이 아닐 경우 참가자 삭제
         videoRoomParticipantRepository.delete(participant);
         videoRoom.getParticipants().remove(participant);
-
-        // 4-2. ES에서 해당 참가자 삭제
-        esParticipantService.deleteById(participant.getId());
 
         // ! 5. 방 현재 인원 수 업데이트
         if (participant.getMember().getGender() == 'm') {
@@ -248,9 +257,14 @@ public class VideoRoomServiceImpl implements VideoRoomService {
      * 방 리스트 조회(최신순)
      */
     @Override
-    public Map<String, Object> getVideoRoomList(Pageable pageable) {
-        // ! 1. 대기방 리스트 최신순 조회
-        Page<VideoRoom> videoRoomPage = videoRoomRepository.findByStatus(VideoRoomStatus.READY, pageable);
+    public Map<String, Object> getVideoRoomList(Pageable pageable, int statusType) {
+        // ! 1. 대기방 리스트 최신순 조회 (case 1: 대기방, 2: 활성화방, 3: 일대일방)
+        Page<VideoRoom> videoRoomPage = switch (statusType) {
+            case 1 -> videoRoomRepository.findByStatus(VideoRoomStatus.READY, pageable);
+            case 2 -> videoRoomRepository.findByStatus(VideoRoomStatus.ACTIVE, pageable);
+            case 3 -> videoRoomRepository.findByStatus(VideoRoomStatus.PERSONAL, pageable);
+            default -> throw new VideoException(ErrorCode.INVALID_STATUS_TYPE);
+        };
 
         List<VideoRoomDTO.BaseResponse> videoRoomResponses = videoRoomPage.stream()
                                                                           .map(BaseResponse::from)
@@ -325,6 +339,9 @@ public class VideoRoomServiceImpl implements VideoRoomService {
         return response;
     }
 
+    /**
+     * 추천 방 리스트 조회 (본인 이상형 정보와 방 참가자 정보를 통해)
+     */
     @Override
     public Map<String, Object> getRecommendedVideoRoomList(int page, Long memberId) throws IOException {
         // ! 1. 멤버 찾기
@@ -335,23 +352,59 @@ public class VideoRoomServiceImpl implements VideoRoomService {
 
         // ! 2. page, size, memberId 를 elastic search 에 보내기
         List<Long> recommendRoomIds = esParticipantService.recommendRoom(page, Request.toRecommendRequest(member,
-                typeProfiles));
+
+                                                                                                          typeProfiles));
+        // ! videoRoom상태 체크
+        List<VideoRoom> videoRooms = checkVideoRoomStatus(recommendRoomIds, page);
 
         // ! 3. 미팅룸 id를 기반으로 미팅룸 리스트 형태 만들기
         List<VideoRoomDTO.BaseResponse> videoRoomResponses = new ArrayList<>();
-        for (Long videoRoomId : recommendRoomIds) {
-            VideoRoom videoRoom = videoRoomRepository.findById(videoRoomId).orElseThrow(
-                    () -> new VideoException(ErrorCode.VIDEO_ROOM_NOT_FOUND));
+
+        for (VideoRoom videoRoom : videoRooms) {
             videoRoomResponses.add(VideoRoomDTO.DetailResponse.from(videoRoom));
         }
 
         // ! 4. 응답용 리스트 데이터 가공
         Map<String, Object> response = new HashMap<>();
         response.put("videoRoomList", videoRoomResponses);
+        response.put("page", Map.of(
+                "totalElements", recommendRoomIds.size(),
+                "totalPages", recommendRoomIds.size() / 5,
+                "currentPage", page,
+                "pageSize", 5
+        ));
 
         return response;
     }
 
+    // ! 비디오룸의 상태가 READY인 방만 filtering하여 추천 리스트를 만들어주는 메소드
+    private List<VideoRoom> checkVideoRoomStatus(List<Long> recommendRoomIds, int page) {
+        int recommendListSize = recommendRoomIds.size();
+        List<VideoRoom> videoRooms = new ArrayList<>();
+        int startIndex = page * 5;
+
+        // 요청한 페이지 보다 List의 양이 적을 경우
+        if (startIndex >= recommendListSize) {
+            throw new VideoException(ErrorCode.INVALID_PAGE_REQUEST);
+        } else {
+            for (int i = page * 5; i < recommendListSize; i++) {
+                VideoRoom videoRoom = videoRoomRepository.findById(recommendRoomIds.get(i)).orElseThrow(
+                        () -> new VideoException(ErrorCode.VIDEO_ROOM_NOT_FOUND));
+
+                if (videoRoom.getStatus() == VideoRoomStatus.READY) {
+                    videoRooms.add(videoRoom);
+                    if (videoRooms.size() == 5) {
+                        break;
+                    }
+                }
+            }
+        }
+        return videoRooms;
+    }
+
+    /**
+     * 해당 멤버가 만든 가장 최근 방 id 찾기
+     */
     @Override
     public Long getRecentVideoRoom(Long hostId) {
         // ! 1. 호스트 찾기
@@ -366,12 +419,36 @@ public class VideoRoomServiceImpl implements VideoRoomService {
     }
 
     /**
+     * 방 시작하기
+     */
+    @Override
+    public void startVideoRoom(Long videoRoomId, Long memberId) {
+        // ! 1. 방 찾기
+        VideoRoom videoRoom = videoRoomRepository.findById(videoRoomId)
+                                                 .orElseThrow(() -> new VideoException(ErrorCode.VIDEO_ROOM_NOT_FOUND));
+
+        // ! 2. 방장이 아닐 경우
+        if (!videoRoom.getHost().getId().equals(memberId)) {
+            throw new VideoException((ErrorCode.NOT_ROOM_HOST));
+        }
+
+        // ! 3. 방 시작 할 조건이 아닐 경우 (남자 인원 != 여자 인원)
+        if (videoRoom.getCurWCount() != videoRoom.getCurMCount()) {
+            throw new VideoException((ErrorCode.PARTICIPANT_COUNT_MISMATCH));
+        }
+
+        // ! 4. 방 상태 ACTIVE 로 전환
+        videoRoom.setStatus(VideoRoomStatus.ACTIVE);
+        videoRoomRepository.save(videoRoom);
+    }
+
+    /**
      * 미팅룸 취미 태그 찾아오기
      */
-    public List<VideoRoomHobby> toHobbyList(VideoRoomDTO.Request videoRoomRequest, VideoRoom videoRoom) {
+    public List<VideoRoomHobby> toHobbyList(List<Long> videoRoomHobbyIds, VideoRoom videoRoom) {
         List<VideoRoomHobby> videoRoomHobbies = new ArrayList<>();
-        if (videoRoomRequest.getVideoRoomHobbies() != null) {
-            for (Long tagId : videoRoomRequest.getVideoRoomHobbies()) {
+        if (videoRoomHobbyIds != null) {
+            for (Long tagId : videoRoomHobbyIds) {
                 videoRoomHobbies.add(VideoRoomHobby.builder()
                                                    .tag(tagRepository.findById(tagId)
                                                                      .orElseThrow(() -> new TagException(
@@ -386,10 +463,10 @@ public class VideoRoomServiceImpl implements VideoRoomService {
     /**
      * 미팅룸 성격 태그 찾아오기
      */
-    public List<VideoRoomPersonality> toPersonalityList(VideoRoomDTO.Request videoRoomRequest, VideoRoom videoRoom) {
+    public List<VideoRoomPersonality> toPersonalityList(List<Long> videoRoomPersonalityIds, VideoRoom videoRoom) {
         List<VideoRoomPersonality> videoRoomPersonalities = new ArrayList<>();
-        if (videoRoomRequest.getVideoRoomPersonalities() != null) {
-            for (Long tagId : videoRoomRequest.getVideoRoomPersonalities()) {
+        if (videoRoomPersonalityIds != null) {
+            for (Long tagId : videoRoomPersonalityIds) {
                 videoRoomPersonalities.add(VideoRoomPersonality.builder()
                                                                .tag(tagRepository.findById(tagId)
                                                                                  .orElseThrow(() -> new TagException(
