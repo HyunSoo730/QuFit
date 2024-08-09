@@ -282,7 +282,7 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
     const connect = () => {
         try {
             client.current = new StompJs.Client({
-                brokerURL: 'wss://i11a209.p.ssafy.io:8080/stomp/chat',
+                brokerURL: import.meta.env.VITE_WEBSOCKET_BASE_URL,
                 connectHeaders: {
                     Authorization: `Bearer ${import.meta.env.VITE_TEST_TOKEN}`,
                 },
