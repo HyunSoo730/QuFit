@@ -1,13 +1,60 @@
-import { useState } from 'react';
-import { UserInfoDummy, RoomsInfoDummy } from '@dummy/Dummy';
+import { useEffect, useRef, useState } from 'react';
+import { useVideoRoomQuery } from '@queries/useVideoQuery';
 import { BoxIcon, RecommendRoomIcon, FilterIcon } from '@assets/svg/main';
 import RoomCard from '@components/main/RoomCard';
 import { CreateRoomModal, RoomEntryModal } from '@modals/main/RoomModal';
 import useModal from '@hooks/useModal';
 
+interface RoomInfoProps {
+    videoRoomId: number;
+    videoRoomName: string;
+    videoRoomHobby: string[];
+}
+
 const MainPage = () => {
     const { open, Modal, close } = useModal();
     const [openModal, setOpenModal] = useState('');
+
+    const [page, setPage] = useState(0);
+
+    const [roomsList, setRoomsList] = useState<RoomInfoProps[]>([]);
+
+    const endRef = useRef<HTMLDivElement>(null);
+
+    const RoomsInfoList = useVideoRoomQuery(page, 12, 1).data?.data.videoRoomList;
+
+    useEffect(() => {
+        if (RoomsInfoList) {
+            setRoomsList((prev) => [...prev, ...RoomsInfoList]);
+        }
+    }, [RoomsInfoList]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                console.log('패칭');
+                fetchData();
+            }
+        });
+
+        if (endRef.current) {
+            observer.observe(endRef.current);
+        }
+
+        return () => {
+            if (endRef.current) {
+                console.log('패');
+                observer.unobserve(endRef.current);
+            }
+        };
+    }, []);
+
+    const fetchData = () => {
+        console.log('진입');
+        setPage((prevPage) => {
+            return prevPage + 1;
+        });
+    };
 
     const handleOpenModalButton = (props: string) => {
         setOpenModal(props);
@@ -21,10 +68,7 @@ const MainPage = () => {
                     Look who's here !
                 </h1>
                 <h1 className="text-6xl font-bold leading-none text-smokeWhite font-barlow opacity-90 lg:text-5xl sm:text-4xl xs:text-4xl">
-                    Welcome,{' '}
-                    <span className="text-5xl text-pink lg:text-4xl sm:text-4xl xs:text-4xl">
-                        {UserInfoDummy.nickname}
-                    </span>
+                    Welcome, <span className="text-5xl text-pink lg:text-4xl sm:text-4xl xs:text-4xl">김싸피</span>
                 </h1>
             </div>
             <div className="flex items-center justify-between w-full mt-14 mb-7 lg:mt-8 lg:mb-4 xs:mb-4 xs:mt-8">
@@ -53,12 +97,20 @@ const MainPage = () => {
                 </button>
             </div>
             <div
+                id="scrollableDiv"
                 onClick={() => handleOpenModalButton('entry')}
                 className="grid w-full h-full grid-cols-3 gap-8 overflow-y-auto scrollbar-hide md:grid-cols-2 lg:gap-6 xl:grid-cols-4 xl:gap-6 sm:grid-cols-2 xs:grid-cols-1"
             >
-                {RoomsInfoDummy.map((data) => (
-                    <RoomCard key={data.id} id={data.id} title={data.title} tags={data.tags} />
-                ))}
+                {roomsList &&
+                    roomsList.map((data: RoomInfoProps) => (
+                        <RoomCard
+                            key={data.videoRoomId}
+                            id={data.videoRoomId}
+                            title={data.videoRoomName}
+                            tags={data.videoRoomHobby}
+                        />
+                    ))}
+                <div ref={endRef} />
             </div>
             <Modal>
                 {openModal === 'create' ? <CreateRoomModal onClose={close} /> : <RoomEntryModal onClose={close} />}

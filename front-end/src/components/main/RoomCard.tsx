@@ -2,7 +2,7 @@ import Tag from './Tag';
 import { FemaleIcon, MaleIcon } from '@assets/svg/main';
 
 interface RoomCardProps {
-    id: string;
+    id: number;
     title: string;
     tags: string[];
 }

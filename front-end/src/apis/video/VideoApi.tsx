@@ -2,8 +2,8 @@ import { END_POINT } from '@apis/ApiConstants';
 import { instance } from '@apis/axios';
 import { VideoRoomRequest } from '@apis/types/request';
 
-export const getVideo = async (page: number, size: number) => {
-    return await instance.get(END_POINT.VIDEO, { params: { page: page, size: size } });
+export const getVideo = async (page: number, size: number, statusType: number) => {
+    return await instance.get(END_POINT.VIDEO, { params: { page: page, size: size, statusType: statusType } });
 };
 
 export const postVideo = async (videoRoom: VideoRoomRequest) => {

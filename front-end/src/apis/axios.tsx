@@ -15,6 +15,8 @@ if (location.port === '3000') {
     accessToken = qufitAcessTokenC;
 } else if (location.port === '3003') {
     accessToken = qufitAcessTokenD;
+} else {
+    accessToken = qufitAcessTokenA;
 }
 
 export const instance = axios.create({
