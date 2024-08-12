@@ -27,6 +27,7 @@ export default {
                 6: '#FCB5F6',
                 7: '#F3E9FF',
             },
+            darkPurple: '#7B7183',
             gray: '#1F1F1F',
             transparent: 'transparent',
         },

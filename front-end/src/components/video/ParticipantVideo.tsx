@@ -13,7 +13,7 @@ const ParticipantVideo = ({ roomMax, gender }: ParticipantVideoProps) => {
     const { hostId } = useRoom();
 
     return (
-        <div className="flex w-full gap-4">
+        <div className="flex justify-center w-full gap-1 lg:gap-3 2xl:gap-4">
             {participants.map((participant) => {
                 if (participant.gender === gender) {
                     numPeople++;

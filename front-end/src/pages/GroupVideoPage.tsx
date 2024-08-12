@@ -9,7 +9,6 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-
 import * as StompJs from '@stomp/stompjs';
 import { useNavigate } from 'react-router-dom';
 import { instance, qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
@@ -19,12 +18,12 @@ import { PATH } from '@routers/PathConstants';
 import { GROUP_VIDEO_END_SEC } from '@components/game/Constants';
 import MoveRoomModal from '@modals/video/MoveRoomModal';
 import useModal from '@hooks/useModal';
-import GameIntro from '@components/game/step/GameIntro';
 import Loading from '@components/game/step/Loading';
 import BalanceGame from '@components/game/step/BalanceGame';
 import GamePlay from '@components/game/step/GamePlay';
 import GameResult from '@components/game/step/GameResult';
 import GameEnd from '@components/game/step/GameEnd';
+import GameIntro from '@components/game/step/GameIntro';
 
 export let accessToken = '';
 if (location.port === '3000') {
@@ -244,7 +243,7 @@ function GroupVideoPage() {
                     }}
                 />
             </Modal>
-            <div className="flex flex-col justify-center w-full h-screen ">
+            <div className="flex flex-col justify-between w-full h-screen ">
                 <ParticipantVideo roomMax={roomMax} gender="m" />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
