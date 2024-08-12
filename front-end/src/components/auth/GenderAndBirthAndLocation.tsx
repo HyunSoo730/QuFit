@@ -43,7 +43,7 @@ const GenderAndBirthAndLocation = ({ onNext, registData }: SignUpProps) => {
                 onChange={(e) => handleSelectChange(e, 'locationId')}
                 placeholder="지역"
                 className="w-full"
-            />{' '}
+            />
             <div className="flex justify-end w-full">
                 <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
                     <p className="w-full" onClick={handleSubmit}>

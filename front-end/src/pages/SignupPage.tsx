@@ -32,7 +32,7 @@ const SignupPage = () => {
         typePersonalityTags: [],
     });
     const accessToken = useAccessTokenStore();
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(4);
     const signup = registMember();
     return (
         <main className="flex flex-col items-center justify-center h-full bg-lightPurple-7">
@@ -95,7 +95,7 @@ const SignupPage = () => {
                         />
                     )}
 
-                    {step === 7 && <div>끝났어 </div>}
+                    {step === 5 && <div>끝났어 </div>}
                 </div>
             </div>
         </main>
