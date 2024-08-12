@@ -1,5 +1,5 @@
 import { MemberInfoDTO } from '@apis/types/request';
-import { MAX_NICKNAME_LENGTH, MIN_BIO_LENGTH, MIN_NICKNAME_LENGTH } from '@components/auth/SignupConstants';
+import { MAX_NICKNAME_LENGTH, MIN_BIO_LENGTH, MIN_NICKNAME_LENGTH } from '@components/mypage/SignupConstants';
 interface ValidationResults {
     [key: string]: string;
 }

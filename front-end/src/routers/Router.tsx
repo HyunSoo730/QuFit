@@ -5,9 +5,10 @@ import GroupVideoPage from '@pages/GroupVideoPage';
 import IntroductionPage from '@pages/IntroductionPage';
 import KakaoRedirectPage from '@pages/KaKaoRedirectPage';
 import MainPage from '@pages/MainPage';
-import MyPage from '@pages/MyPage';
+import MyPage from '@pages/Mypage';
 import NotFoundPage from '@pages/NotFoundPage';
 import PersonalVideoPage from '@pages/PersonalVideoPage';
+import SignupPage from '@pages/SignupPage';
 import { PATH } from '@routers/PathConstants';
 import { RouterProvider, createBrowserRouter, RouteObject } from 'react-router-dom';
 
@@ -19,10 +20,6 @@ const Router = () => {
             element: <Layout />,
             errorElement: <NotFoundPage />,
             children: [
-                // {
-                //     path: PATH.SIGN_UP,
-                //     element: <SignupPage />,
-                // },
                 {
                     path: PATH.MAIN,
                     element: <MainPage />,
@@ -55,6 +52,10 @@ const Router = () => {
                 {
                     path: PATH.PERSONAL_VIDEO(':roomId'),
                     element: <PersonalVideoPage />,
+                },
+                {
+                    path: PATH.SIGN_UP,
+                    element: <SignupPage />,
                 },
             ],
         },

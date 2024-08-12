@@ -1,14 +1,14 @@
-import { GENDER, HOBBY, LOCATION, MBTI, PERSONALITY } from '@components/auth/SignupConstants';
+import { GENDER, HOBBY, LOCATION, MBTI, PERSONALITY } from '@components/mypage/SignupConstants';
 import useForm from '@hooks/useForm';
 import Input from '@components/common/input/Input';
 import TextArea from '@components/common/input/TextArea';
 import Select from '@components/common/select/Select';
 import { MemberData, MemberInfoDTO, TypeData } from '@apis/types/request';
-import MultipleTag from '@components/auth/MultipleTag';
-import SingleTag from '@components/auth/SingleTag';
-import MultipleTagGroup from '@components/auth/MultipleTagGroup';
-import SingleTagGroup from '@components/auth/SingleTagGroup';
-import Message from '@components/auth/Message';
+import MultipleTag from '@components/mypage/MultipleTag';
+import SingleTag from '@components/mypage/SingleTag';
+import MultipleTagGroup from '@components/mypage/MultipleTagGroup';
+import SingleTagGroup from '@components/mypage/SingleTagGroup';
+import Message from '@components/mypage/Message';
 import signupValidate from '@utils/signupValidate';
 import generateSelectOptions from '@utils/generateSelectOptions';
 

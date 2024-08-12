@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { MultiValue, SingleValue } from 'react-select';
 
 export type Valids = { [key: string]: boolean };
 export type Messages = { [key: string]: string };
@@ -26,7 +27,30 @@ const useForm = <T,>({ initialValues, onSubmit, validate }: FormProps<T>) => {
             event.target.type === 'checkbox' ? (event.target as HTMLInputElement).checked : event.target.value;
 
         setValues({ ...values, [name]: newValue });
-        
+
+        if (validate) {
+            const result = validate({ ...values, [name]: newValue });
+            setMessages(result.messages);
+            setValids(result.valids);
+        }
+    };
+
+    const handleSelectChange = (event: SingleValue<any>, name: string) => {
+        const newValue = event.value;
+
+        setValues({ ...values, [name]: newValue });
+
+        if (validate) {
+            const result = validate({ ...values, [name]: newValue });
+            setMessages(result.messages);
+            setValids(result.valids);
+        }
+    };
+    const handleMultiValueChange = (event: MultiValue<any>, name: string) => {
+        const newValue = event.map((value: { value: any }) => value.value);
+
+        setValues({ ...values, [name]: newValue });
+
         if (validate) {
             const result = validate({ ...values, [name]: newValue });
             setMessages(result.messages);
@@ -69,7 +93,9 @@ const useForm = <T,>({ initialValues, onSubmit, validate }: FormProps<T>) => {
         messages,
         valids,
         handleChange,
+        handleSelectChange,
         handleCheckboxGroupChange,
+        handleMultiValueChange,
         handleSubmit,
     };
 };

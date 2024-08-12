@@ -2,8 +2,8 @@
 // - 이상형 입력:  성격 태그, mbti, 지역
 
 import { MemberInfoDTO } from '@apis/types/request';
-import MemberInfo from '@components/auth/MemberInfo';
-import TypeInfo from '@components/auth/TypeInfo';
+import MemberInfo from '@components/mypage/MemberInfo';
+import TypeInfo from '@components/mypage/TypeInfo';
 import { registMember } from '@queries/useMemberQuery';
 import { useAccessTokenStore } from '@stores/auth/signUpStore';
 import { useState } from 'react';
@@ -47,7 +47,6 @@ const MyPage = () => {
                             {
                                 onSuccess: (response) => {
                                     console.log(response);
-                                    console.log(1);
                                 },
                                 onError: (error) => {
                                     console.log(error);
