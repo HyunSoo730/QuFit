@@ -6,7 +6,7 @@ interface MessageProps {
 }
 
 const Message = ({ valid, children }: MessageProps) => {
-    return <p className={`text-lg ${valid ? 'text-black' : 'text-pink'}`}>{children}</p>;
+    return <p className={`mt-1 text-xs ${valid ? 'text-white text-opacity-65' : 'text-white text-opacity-25'}`}>{children}</p>;
 };
 
 export default Message;

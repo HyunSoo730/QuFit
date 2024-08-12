@@ -19,14 +19,14 @@ const useForm = <T,>({ initialValues, onSubmit, validate }: FormProps<T>) => {
         setValues(initialValues);
     }, []);
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const fieldset = event.target.closest('fieldset');
         const name = fieldset ? fieldset.getAttribute('name')! : event.target.name;
         const newValue =
             event.target.type === 'checkbox' ? (event.target as HTMLInputElement).checked : event.target.value;
 
         setValues({ ...values, [name]: newValue });
-
+        
         if (validate) {
             const result = validate({ ...values, [name]: newValue });
             setMessages(result.messages);
