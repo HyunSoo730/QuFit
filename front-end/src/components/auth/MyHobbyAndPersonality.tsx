@@ -1,11 +1,9 @@
-import { MemberInfoDTO } from '@apis/types/request';
 import TextInput from '@components/auth/TextInput';
 import useForm from '@hooks/useForm';
 import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
-import { ChangeEvent } from 'react';
 
-const Nickname = ({ onNext, registData }: SignUpProps) => {
+const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
     const { values, handleChange, handleSubmit, handleSelectChange } = useForm({
         initialValues: registData,
         onSubmit: onNext,
@@ -23,9 +21,9 @@ const Nickname = ({ onNext, registData }: SignUpProps) => {
                         다음
                     </p>
                 </button>
-            </div>
+            </div>{' '}
         </>
     );
 };
 
-export default Nickname;
+export default MyHobbyAndPersonality;

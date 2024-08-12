@@ -1,14 +1,20 @@
 import { MemberInfoDTO } from '@apis/types/request';
 import { LogoSignup } from '@assets/svg';
 import GenderAndBirthAndLocation from '@components/auth/GenderAndBirthAndLocation';
+import MBTIAndBio from '@components/auth/MBTIAndBio';
+import MyHobbyAndPersonality from '@components/auth/MyHobbyAndPersonality';
 import Nickname from '@components/auth/Nickname';
-import NicknameStep from '@components/auth/Nickname';
 import StepProcess from '@components/auth/StepProcess';
+import TypeInfo from '@components/auth/TypeInfo';
 
 import { registMember } from '@queries/useMemberQuery';
 import { useAccessTokenStore } from '@stores/auth/signUpStore';
 import { useState } from 'react';
 
+export interface SignUpProps {
+    onNext: (data: any) => void;
+    registData: MemberInfoDTO;
+}
 const SignupPage = () => {
     const [registerData, setRegisterData] = useState<MemberInfoDTO>({
         nickname: '',
@@ -42,7 +48,15 @@ const SignupPage = () => {
                     <div className="flex justify-end w-full">
                         <StepProcess count={step} />
                     </div>
-                    {step === 0 && <Nickname />}
+                    {step === 0 && (
+                        <Nickname
+                            registData={registerData}
+                            onNext={(data) => {
+                                setRegisterData(data as MemberInfoDTO);
+                                setStep(1);
+                            }}
+                        />
+                    )}
 
                     {step === 1 && (
                         <GenderAndBirthAndLocation
@@ -53,14 +67,35 @@ const SignupPage = () => {
                             }}
                         />
                     )}
+                    {step === 2 && (
+                        <MyHobbyAndPersonality
+                            registData={registerData}
+                            onNext={(data) => {
+                                setRegisterData(data as MemberInfoDTO);
+                                setStep(3);
+                            }}
+                        />
+                    )}
+                    {step === 3 && (
+                        <MBTIAndBio
+                            registData={registerData}
+                            onNext={(data) => {
+                                setRegisterData(data as MemberInfoDTO);
+                                setStep(4);
+                            }}
+                        />
+                    )}
+                    {step === 4 && (
+                        <TypeInfo
+                            registData={registerData}
+                            onNext={(data) => {
+                                setRegisterData(data as MemberInfoDTO);
+                                setStep(5);
+                            }}
+                        />
+                    )}
 
-                    <div className="flex justify-end w-full">
-                        <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
-                            <p className="w-full" onClick={() => setStep((prev) => prev + 1)}>
-                                다음
-                            </p>
-                        </button>
-                    </div>
+                    {step === 7 && <div>끝났어 </div>}
                 </div>
             </div>
         </main>

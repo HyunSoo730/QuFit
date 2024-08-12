@@ -1,6 +1,3 @@
-interface GenderAndBirthAndLocationProps {
-    count: number;
-}
 import { MemberInfoDTO } from '@apis/types/request';
 import Radio from '@components/common/radio/Radio';
 import RadioGroup from '@components/common/radio/RadioGroup';
@@ -8,16 +5,12 @@ import RadioGroup from '@components/common/radio/RadioGroup';
 import { GENDER, LOCATION } from '@components/mypage/SignupConstants';
 
 import useForm from '@hooks/useForm';
+import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
 import { useEffect } from 'react';
 import Select from 'react-select';
 
-interface GenderAndBirthAndLocationProps {
-    onNext: (data: any) => void;
-    registData: MemberInfoDTO;
-}
-
-const GenderAndBirthAndLocation = ({ onNext, registData }: GenderAndBirthAndLocationProps) => {
+const GenderAndBirthAndLocation = ({ onNext, registData }: SignUpProps) => {
     const locations = LOCATION.map((location) => ({ label: location.name, value: location.code }));
     const years = Array.from({ length: 100 }, (_, idx) => ({ label: `${2022 - idx}년`, value: 2022 - idx }));
     const { values, messages, valids, handleChange, handleSubmit, handleSelectChange } = useForm({
@@ -39,7 +32,6 @@ const GenderAndBirthAndLocation = ({ onNext, registData }: GenderAndBirthAndLoca
                     </Radio>
                 ))}
             </RadioGroup>
-
             <Select
                 options={years}
                 onChange={(e) => handleSelectChange(e, 'birthYear')}
@@ -51,7 +43,14 @@ const GenderAndBirthAndLocation = ({ onNext, registData }: GenderAndBirthAndLoca
                 onChange={(e) => handleSelectChange(e, 'locationId')}
                 placeholder="지역"
                 className="w-full"
-            />
+            />{' '}
+            <div className="flex justify-end w-full">
+                <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
+                    <p className="w-full" onClick={handleSubmit}>
+                        다음
+                    </p>
+                </button>
+            </div>
         </div>
     );
 };
