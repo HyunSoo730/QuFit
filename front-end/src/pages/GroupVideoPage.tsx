@@ -9,15 +9,15 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-import Loading from '@components/game/\bstep/Loading';
-import BalanceGame from '@components/game/\bstep/BalanceGame';
-import GameResult from '@components/game/\bstep/GameResult';
-import GamePlay from '@components/game/\bstep/GamePlay';
-import GameEnd from '@components/game/\bstep/GameEnd';
+import Loading from '@components/game/step/Loading';
+import BalanceGame from '@components/game/step/BalanceGame';
+import GameResult from '@components/game/step/GameResult';
+import GamePlay from '@components/game/step/GamePlay';
+import GameEnd from '@components/game/step/GameEnd';
 import * as StompJs from '@stomp/stompjs';
 import { useNavigate } from 'react-router-dom';
 import { instance, qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
-import GameIntro from '@components/game/\bstep/GameIntro';
+import GameIntro from '@components/game/step/GameIntro';
 import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
 import { PATH } from '@routers/PathConstants';
@@ -243,7 +243,7 @@ function GroupVideoPage() {
                     }}
                 />
             </Modal>
-            <div className="flex flex-col justify-center w-full h-screen ">
+            <div className="flex flex-col justify-between w-full h-screen ">
                 <ParticipantVideo roomMax={roomMax} gender="m" />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
