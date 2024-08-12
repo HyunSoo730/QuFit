@@ -47,7 +47,6 @@ const MyPage = () => {
                             {
                                 onSuccess: (response) => {
                                     console.log(response);
-                                    console.log(1);
                                 },
                                 onError: (error) => {
                                     console.log(error);
