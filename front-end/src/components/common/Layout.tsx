@@ -15,7 +15,7 @@ const Layout = () => {
             className={`relative flex flex-col items-center justify-center max-w-screen h-screen bg-cover px-16 py-4 ${background} lg:px-20 md:py-10 sm:py-12 sm:px-6 xs:py-12 xs:px-6`}
         >
             <Header />
-            <div className="w-full z-10 aspect-layout effect-layout rounded-b-[2.5rem] relative md:h-full lg:rounded-b-[2rem] sm:h-full xs:h-full">
+            <div className="w-full z-10 aspect-layout effect-layout rounded-b-[2.5rem] relative md:h-full lg:rounded-b-[2rem] sm:h-full xs:h-full overflow-y-auto scrollbar-hide">
                 <Outlet />
             </div>
             {isLocation === '/main' ? (
