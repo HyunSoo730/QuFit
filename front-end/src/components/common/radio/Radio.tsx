@@ -19,10 +19,11 @@ const Radio = ({ children, value, className }: RadioProps) => {
     return (
         <label className={className}>
             <input
-                className="hidden"
+                className="hidden peer"
                 type="radio"
                 value={value}
                 checked={value === selectedValue}
+    
                 onChange={onChange}
             />
             {children}

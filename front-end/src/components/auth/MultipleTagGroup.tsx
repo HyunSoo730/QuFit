@@ -1,5 +1,5 @@
 import CheckboxGroup from '@components/common/checkbox/CheckboxGroup';
-import { ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 
 interface MultipleTagGroupProps {
     children: ReactNode;
@@ -10,12 +10,20 @@ interface MultipleTagGroupProps {
 }
 
 const MultipleTagGroup = ({ label, children, values, onChange, ...rest }: MultipleTagGroupProps) => {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const handleToggle = () => {
+        setIsOpen(!isOpen);
+    };
     return (
         <div className="flex flex-col gap-3">
-            <p className="text-3xl">{label}</p>
-            <CheckboxGroup values={values} onChange={onChange} className="flex flex-wrap " {...rest}>
+            <p className="font-semibold text-white text-l"
+            onClick={handleToggle}
+            >{label}</p>
+            {isOpen && (
+                <CheckboxGroup values={values} onChange={onChange} className="flex flex-wrap " {...rest}>
                 {children}
             </CheckboxGroup>
+            )}
         </div>
     );
 };

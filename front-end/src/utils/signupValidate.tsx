@@ -29,7 +29,7 @@ const signupValidate = ({
     messages.nickname = nicknameResult.message;
     valids.nickname = nicknameResult.valid;
 
-    const locationResult = validateLocation(locationId);
+    const locationResult = validateLocation(locationId!);
     messages.location = locationResult.message;
     valids.location = locationResult.valid;
 
@@ -124,9 +124,9 @@ export const validateBio = (bio: string) => {
 };
 
 export const validateTags = (tags: string[] | string) => {
-    return createValidationResult(tags.length > 0, '태그를 통해 이상형을 찾아줘요.', '태그를 선택해주세요.');
+    return createValidationResult(tags.length > 0, '태그를 통해 이상형을 찾아드릴게요.', '태그를 선택해주세요.');
 };
 
 export const validateAgeRange = (age: number) => {
-    return createValidationResult(age >= 0, '입력한 정보로 맞는 사람을 찾아줘요.', '올바른 나이차를 입력해주세요.');
+    return createValidationResult(age >= 0, '입력한 나이차로 이상형을 찾아드릴게요.', '원하는 나이차를 입력해주세요.');
 };
