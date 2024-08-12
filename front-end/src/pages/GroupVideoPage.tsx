@@ -9,21 +9,22 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-import Loading from '@components/game/\bstep/Loading';
-import BalanceGame from '@components/game/\bstep/BalanceGame';
-import GameResult from '@components/game/\bstep/GameResult';
-import GamePlay from '@components/game/\bstep/GamePlay';
-import GameEnd from '@components/game/\bstep/GameEnd';
+
 import * as StompJs from '@stomp/stompjs';
 import { useNavigate } from 'react-router-dom';
 import { instance, qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
-import GameIntro from '@components/game/\bstep/GameIntro';
 import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
 import { PATH } from '@routers/PathConstants';
 import { GROUP_VIDEO_END_SEC } from '@components/game/Constants';
 import MoveRoomModal from '@modals/video/MoveRoomModal';
 import useModal from '@hooks/useModal';
+import GameIntro from '@components/game/step/GameIntro';
+import Loading from '@components/game/step/Loading';
+import BalanceGame from '@components/game/step/BalanceGame';
+import GamePlay from '@components/game/step/GamePlay';
+import GameResult from '@components/game/step/GameResult';
+import GameEnd from '@components/game/step/GameEnd';
 
 export let accessToken = '';
 if (location.port === '3000') {
@@ -61,7 +62,7 @@ function GroupVideoPage() {
     const [roomStep, setRoomStep] = useState<RoomStep>('wait');
     const { createRoom, joinRoom, leaveRoom } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 186;
+    const roomId = 2;
     const setRoomId = useSetRoomIdStore();
     const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const setResults = useSetResultsStore();

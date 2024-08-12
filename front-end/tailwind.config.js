@@ -25,6 +25,7 @@ export default {
                 4: '#F7D6FB',
                 5: '#E5D1F9',
                 6: '#FCB5F6',
+                7: '#F3E9FF',
             },
             gray: '#1F1F1F',
             transparent: 'transparent',
