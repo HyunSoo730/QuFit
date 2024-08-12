@@ -1,6 +1,8 @@
 import { MemberInfoDTO } from '@apis/types/request';
 import { LogoSignup } from '@assets/svg';
 import GenderAndBirthAndLocation from '@components/auth/GenderAndBirthAndLocation';
+import Nickname from '@components/auth/Nickname';
+import NicknameStep from '@components/auth/Nickname';
 import StepProcess from '@components/auth/StepProcess';
 
 import { registMember } from '@queries/useMemberQuery';
@@ -24,7 +26,7 @@ const SignupPage = () => {
         typePersonalityTags: [],
     });
     const accessToken = useAccessTokenStore();
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     const signup = registMember();
     return (
         <main className="flex flex-col items-center justify-center h-full bg-lightPurple-7">
@@ -40,16 +42,18 @@ const SignupPage = () => {
                     <div className="flex justify-end w-full">
                         <StepProcess count={step} />
                     </div>
-                    {step === 0 && <></>}
+                    {step === 0 && <Nickname />}
+
                     {step === 1 && (
                         <GenderAndBirthAndLocation
                             registData={registerData}
                             onNext={(data) => {
                                 setRegisterData(data as MemberInfoDTO);
-                                setStep('TypeInfo');
+                                setStep(2);
                             }}
                         />
                     )}
+
                     <div className="flex justify-end w-full">
                         <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
                             <p className="w-full" onClick={() => setStep((prev) => prev + 1)}>
