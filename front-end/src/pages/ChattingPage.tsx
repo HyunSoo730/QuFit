@@ -19,7 +19,7 @@ const ChattingPage = () => {
 
     useEffect(() => {
         instance
-            .get(`/qufit/chat/rooms/4`)
+            .get(`/qufit/chat/rooms/2`)
             .then((res) => {
                 setChatInfoList(res.data);
                 console.log('채팅 리스트 응답 성공:', res);

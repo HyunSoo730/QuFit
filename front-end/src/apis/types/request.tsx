@@ -23,6 +23,8 @@ export type MemberInfoDTO = MemberData & TypeData;
 export interface VideoRoomRequest {
     videoRoomName: string;
     maxParticipants: number;
+    mainTag: string;
     videoRoomHobbies: number[];
     videoRoomPersonalities: number[];
+    statusType?: number;
 }
