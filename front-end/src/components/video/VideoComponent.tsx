@@ -11,21 +11,18 @@ interface VideoComponentProps {
     local?: boolean;
     value?: Participant;
     isManager: boolean;
+    status: 'wait' | 'meeting';
 }
 
-function VideoComponent({ track, isManager, participateName, local = false }: VideoComponentProps) {
-    const videoElement = useRef<HTMLVideoElement | null>(null);
-    const [isMicEnable, setIsMicEnable] = useState(true);
-    const [isCameraEnable, setIsCameraEnable] = useState(true);
+function VideoComponent({ track, status, isManager, participateName, local = false }: VideoComponentProps) {
     const room = useRoomStateStore();
+    const videoElement = useRef<HTMLVideoElement | null>(null);
+    const [isMicEnable, setIsMicEnable] = useState(false);
+    const [isCameraEnable, setIsCameraEnable] = useState(
+        room?.localParticipant.isCameraEnabled && status === 'meeting',
+    );
     const participants = useRoomParticipantsStore();
-    // console.log(value?.videoTrackPublications.values());
-    // console.log(value?.videoTrackPublications.values().next());
-    // console.log(value?.videoTrackPublications.values().next().value);
-    // console.log(value?.videoTrackPublications.values().next().value.videoTrack);
 
-    // console.log(value);
-    // console.log(track);
     useEffect(() => {
         if (videoElement.current) {
             track?.attach(videoElement.current);
@@ -52,20 +49,22 @@ function VideoComponent({ track, isManager, participateName, local = false }: Vi
             // style={{ width, height }}
             onClick={changeCameraEnabled}
         >
-            <div>{isManager && <CrownIcon width={'3.125rem'} />}</div>
+            <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
             <div className="flex items-center justify-between w-full">
-                <p className="text-lg font-bold text-white ">{participateName + (local ? ' (You)' : '')}</p>
+                <p className="font-medium text-white text-md xs:text-xs sm:text-sm">
+                    {participateName + (local ? ' (You)' : '')}
+                </p>
 
-                <div>{isMicEnable ? <MicOnIcon width={'1.875rem'} /> : <MicOffIcon width={'1.875rem'} />}</div>
+                <div>{isMicEnable ? <MicOnIcon width={'1.7rem'} /> : <MicOffIcon width={'1.7rem'} />}</div>
 
                 <div className="absolute left-0 w-full px-4 pb-3 transition-all duration-1000 group">
                     <button
-                        className="invisible w-full bg-white h-14 rounded-xl group-hover:visible "
+                        className="invisible w-full h-8 bg-darkPurple rounded-xl group-hover:visible"
                         onClick={(event) => changeMicrophoneEnabled(event)}
                     >
                         <div className="flex items-center justify-center gap-1">
                             {isMicEnable ? <MicOffIcon width={'1.25rem'} /> : <MicOnIcon width={'1.25rem'} />}
-                            <p className={`text-base  ${isMicEnable && ' text-purple'}`}>
+                            <p className={`text-sm xs:text-xs  ${isMicEnable && ' text-smokeWhite'}`}>
                                 {isMicEnable ? '마이크 끄기' : '마이크 켜기'}
                             </p>
                         </div>

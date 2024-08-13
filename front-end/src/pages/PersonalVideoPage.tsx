@@ -1,16 +1,17 @@
-import VideoTimer from '@components/video/GroupVideoTimer';
-import { PERSONAL_VIDEO_END_SEC } from '@components/video/VideoConstants';
-import { PATH } from '@routers/PathConstants';
+import ParticipantVideo from '@components/video/ParticipantVideo';
+import { usePrivateParticipantsStore, useRoomParticipantsStore } from '@stores/video/roomStore';
 
 const PersonalVideoPage = () => {
+    const participants = useRoomParticipantsStore();
+    const privateParticipants = usePrivateParticipantsStore();
+
+    console.log(participants);
+    console.log(privateParticipants);
     return (
-        <div>
-            <VideoTimer
-                endSec={PERSONAL_VIDEO_END_SEC}
-                afterFunc={() => {
-                    location.href = PATH.ROOT;
-                }}
-            />
+        <div className="flex flex-col gap-4">
+            <ParticipantVideo roomMax={4} gender="m" participants={privateParticipants} status={'meeting'} />
+
+            <ParticipantVideo roomMax={4} gender="f" participants={privateParticipants} status={'meeting'} />
         </div>
     );
 };

@@ -10,6 +10,7 @@ import MyPage from '@pages/Mypage';
 import NotFoundPage from '@pages/NotFoundPage';
 import PersonalVideoPage from '@pages/PersonalVideoPage';
 import SignupPage from '@pages/SignupPage';
+import VideoWaitPage from '@pages/VideoWaitPage';
 import { PATH } from '@routers/PathConstants';
 import { RouterProvider, createBrowserRouter, RouteObject } from 'react-router-dom';
 
@@ -21,10 +22,6 @@ const Router = () => {
             element: <Layout />,
             errorElement: <NotFoundPage />,
             children: [
-                {
-                    path: PATH.SIGN_UP,
-                    element: <SignupPage />,
-                },
                 {
                     path: PATH.MAIN,
                     element: <MainPage />,
@@ -55,12 +52,20 @@ const Router = () => {
             errorElement: <NotFoundPage />,
             children: [
                 {
+                    path: PATH.WAIT(':roomId'),
+                    element: <VideoWaitPage />,
+                },
+                {
                     path: PATH.GROUP_VIDEO(':roomId'),
                     element: <GroupVideoPage />,
                 },
                 {
                     path: PATH.PERSONAL_VIDEO(':roomId'),
                     element: <PersonalVideoPage />,
+                },
+                {
+                    path: PATH.SIGN_UP,
+                    element: <SignupPage />,
                 },
             ],
         },

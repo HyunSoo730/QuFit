@@ -1,6 +1,7 @@
 import { END_POINT } from '@apis/ApiConstants';
 import { instance } from '@apis/axios';
 import { VideoRoomRequest } from '@apis/types/request';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const getVideo = async (page: number, size: number, statusType: number) => {
     return await instance.get(END_POINT.VIDEO, { params: { page: page, size: size, statusType: statusType } });
@@ -37,3 +38,35 @@ export const getVideoFilter = async (page: number, size: number, tagIds: number[
 export const getVideoRecommendation = async (page: number, size: number) => {
     return await instance.get(END_POINT.VIDEO_RECOMMENDATION, { params: { page: page, size: size } });
 };
+
+export const useBalanceGameQuery = () =>
+    useQuery({
+        queryKey: ['balanceGame'],
+        queryFn: () => instance.get('/qufit/balance-game/random'),
+    });
+
+interface RegistChoiceMutationParams {
+    balanceGameId: number;
+    videoRoomId: number;
+    choiceNum: 1 | 2 | 0;
+}
+
+export const useRegistChoiceMutation = () =>
+    useMutation({
+        mutationFn: (data: RegistChoiceMutationParams) => instance.post('/qufit/balance-game', data),
+        onSuccess: () => {
+            console.log('성공');
+        },
+        onError: (error) => {
+            console.log('onError', error);
+        },
+        onSettled: () => {
+            console.log('onSettled');
+        },
+    });
+
+export const useBalanceGameResultQuery = (video_room_id: number) =>
+    useQuery({
+        queryKey: ['balanceGameResult', video_room_id],
+        queryFn: () => instance.get(`/qufit/balance-game/${video_room_id}`),
+    });

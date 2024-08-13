@@ -1,108 +1,71 @@
-import { MemberInfoDTO } from '@apis/types/request';
-import Message from '@components/auth/Message';
-import MultipleTag from '@components/auth/MultipleTag';
-import MultipleTagGroup from '@components/auth/MultipleTagGroup';
-import { HOBBY, MBTI, PERSONALITY } from '@components/auth/SignupConstants';
-import Input from '@components/common/input/Input';
+import { HOBBY, MBTI, PERSONALITY } from '@components/mypage/SignupConstants';
 import useForm from '@hooks/useForm';
+import { SignUpProps } from '@pages/SignupPage';
+import signupValidate from '@utils/signupValidate';
+import Select from 'react-select';
 
-interface InfoProps {
-    onNext: (data: MemberInfoDTO) => void;
-    registData: MemberInfoDTO;
-}
-
-const TypeInfo = ({ onNext, registData }: InfoProps) => {
-    const { values, messages, valids, handleChange, handleCheckboxGroupChange, handleSubmit } = useForm({
-        initialValues: {
-            ...registData,
-            typeAgeMax: 0,
-            typeAgeMin: 0,
-            typeMBTITags: [''],
-            typeHobbyTags: [''],
-            typePersonalityTags: [''],
-        },
+const TypeInfo = ({ onNext, registData }: SignUpProps) => {
+    const { values, handleChange, handleSubmit, handleSelectChange, handleMultiValueChange } = useForm({
+        initialValues: registData,
         onSubmit: onNext,
+        validate: signupValidate,
     });
+
+    const hoobies = HOBBY.map((hobby) => ({ value: hobby['tag_name'], label: hobby['tag_name'] }));
+    const personalities = PERSONALITY.map((personality) => ({
+        value: personality['tag_name'],
+        label: personality['tag_name'],
+    }));
+    const age = Array.from({ length: 100 }, (_, idx) => ({ label: idx, value: idx }));
+
+    const mbti = MBTI.map((mbti) => ({ value: mbti['tag_name'], label: mbti['tag_name'] }));
     return (
         <>
-            <button onClick={handleSubmit}>회원가입 제출</button>
-            <div className="flex flex-col">
-                <Input
-                    name="typeAgeMax"
-                    label="최대 나이"
-                    value={values.typeAgeMax.toString()}
-                    onChange={handleChange}
-                />
-                {values.typeAgeMax && <Message valid={valids.typeAgeMax}>{messages.typeAgeMax}</Message>}
+            <div className="flex justify-end w-full">
+                <div className="flex flex-col">
+                    <Select
+                        options={age}
+                        onChange={(e) => handleSelectChange(e, 'typeAgeMax')}
+                        className="w-full"
+                        placeholder="몇살 위까지 원하나요?"
+                    />
+                    <Select
+                        options={age}
+                        onChange={(e) => handleSelectChange(e, 'typeAgeMin')}
+                        className="w-full"
+                        placeholder="몇살 아래까지 원하나요?"
+                    />
+
+                    <Select
+                        isMulti={true}
+                        options={mbti}
+                        placeholder="이상형의 MBTI를 알려주세요"
+                        onChange={(e) => handleMultiValueChange(e, 'typeMBTITags')}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                    />
+                    <Select
+                        isMulti={true}
+                        options={hoobies}
+                        onChange={(e) => handleMultiValueChange(e, 'typeHobbyTags')}
+                        placeholder="이상형의 취미를 골라주세요"
+                        classNamePrefix="select"
+                    />
+                    <Select
+                        isMulti={true}
+                        options={personalities}
+                        placeholder="이상형의 성격을 골라주세요"
+                        onChange={(e) => handleMultiValueChange(e, 'typePersonalityTags')}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                    />
+                </div>
+                <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
+                    <p className="w-full" onClick={handleSubmit}>
+                        다음
+                    </p>
+                </button>
             </div>
-            <div className="flex flex-col">
-                <Input
-                    name="typeAgeMin"
-                    label="최소 나이"
-                    value={values.typeAgeMin.toString()}
-                    onChange={handleChange}
-                />
-                {values.typeAgeMin && <Message valid={valids.typeAgeMin}>{messages.typeAgeMin}</Message>}
-            </div>
-            <div className="flex flex-col">
-                <MultipleTagGroup
-                    label="이상형 MBTI"
-                    onChange={(values) => handleCheckboxGroupChange('typeMBTITags', values)}
-                    values={values.typeMBTITags}
-                >
-                    {MBTI.map((mbti) => (
-                        <MultipleTag key={mbti} value={mbti}>
-                            {mbti}
-                        </MultipleTag>
-                    ))}
-                </MultipleTagGroup>
-                {values.typeMBTITags && <Message valid={valids.typeMBTITags}>{messages.typeMBTITags}</Message>}
-            </div>
-            <div className="flex flex-col">
-                <MultipleTagGroup
-                    label="취미"
-                    onChange={(values) => handleCheckboxGroupChange('typeHobbyTags', values)}
-                    values={values.typeHobbyTags}
-                >
-                    {HOBBY.map((hobby) => (
-                        <MultipleTag key={hobby} value={hobby}>
-                            {hobby}
-                        </MultipleTag>
-                    ))}
-                </MultipleTagGroup>
-                {values.typeHobbyTags && <Message valid={valids.typeHobbyTags}>{messages.typeHobbyTags}</Message>}
-            </div>
-            <div className="flex flex-col">
-                <MultipleTagGroup
-                    label="성격"
-                    onChange={(values) => handleCheckboxGroupChange('typePersonalityTags', values)}
-                    values={values.typePersonalityTags}
-                >
-                    {PERSONALITY.map((personality) => (
-                        <MultipleTag key={personality} value={personality}>
-                            {personality}
-                        </MultipleTag>
-                    ))}
-                </MultipleTagGroup>
-                {values.typePersonalityTags && (
-                    <Message valid={valids.typePersonalityTags}>{messages.typePersonalityTags}</Message>
-                )}
-            </div>
-            <button
-                onClick={handleSubmit}
-                disabled={
-                    !(
-                        valids.typeAgeMax &&
-                        valids.typeAgeMin &&
-                        valids.typeMBTITags &&
-                        valids.typeHobbyTags &&
-                        valids.typePersonalityTags
-                    )
-                }
-                className="absolute  disabled:bg-white disabled:effect-none right-0 flex group items-center text-xl border-lightPurple-3 effect-purePink opacity-90 rounded-lg  bg-white justify-center mb-2 mr-3 border-none   hover:border-lightPurple-6  hover:effect-hotPink px-12 py-7 h-7 lg:px-4 lg:h-6 lg:mr-1.5 -translate-y-full"
-            >
-                제출하기
-            </button>
         </>
     );
 };

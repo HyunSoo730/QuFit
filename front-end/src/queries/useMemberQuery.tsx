@@ -1,6 +1,8 @@
+import { END_POINT } from '@apis/ApiConstants';
 import { signup } from '@apis/auth/AuthApi';
+import { instance } from '@apis/axios';
 import { MemberInfoDTO } from '@apis/types/request';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const registMember = () =>
     useMutation({
@@ -16,4 +18,10 @@ export const registMember = () =>
             // 요청이 성공하든, 에러가 발생되든 실행하고 싶은 경우
             console.log('onSettled');
         },
+    });
+
+export const useMemberQuery = () =>
+    useQuery({
+        queryKey: ['member'],
+        queryFn: () => instance.get(END_POINT.MEMBER),
     });
