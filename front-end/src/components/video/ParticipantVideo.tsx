@@ -6,8 +6,9 @@ import { useRoomParticipantsStore } from '@stores/video/roomStore';
 interface ParticipantVideoProps {
     roomMax: number;
     gender: 'f' | 'm';
+    status: 'wait' | 'meeting';
 }
-const ParticipantVideo = ({ roomMax, gender }: ParticipantVideoProps) => {
+const ParticipantVideo = ({ roomMax, gender, status }: ParticipantVideoProps) => {
     let numPeople = 0;
     const participants = useRoomParticipantsStore();
     const { hostId } = useRoom();
@@ -25,6 +26,7 @@ const ParticipantVideo = ({ roomMax, gender }: ParticipantVideoProps) => {
                             }
                             isManager={participant.id === hostId}
                             participateName={participant.nickname!}
+                            status={status}
                         />
                     );
                 }

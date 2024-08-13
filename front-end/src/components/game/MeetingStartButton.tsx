@@ -8,16 +8,15 @@ import { useState } from 'react';
 interface MeetingStartButtonProps {
     onNext: () => void;
     onClick: () => void;
+    isStart: boolean;
 }
 
-const MeetingStartButton = ({ onNext, onClick }: MeetingStartButtonProps) => {
+const MeetingStartButton = ({ onNext, onClick, isStart }: MeetingStartButtonProps) => {
     const { isHost } = useRoom();
-    const [isStart, setIsStart] = useState(false);
     const meetingStart = () => {
         if (isHost) {
             onClick();
         }
-        setIsStart(true);
     };
     return (
         <div className="relative flex flex-col items-center">

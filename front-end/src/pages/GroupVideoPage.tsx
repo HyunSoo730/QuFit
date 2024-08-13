@@ -187,7 +187,7 @@ function GroupVideoPage() {
                 />
             </Modal>
             <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" />
+                <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
                         <button onClick={createRoom}>생성하기</button>
@@ -253,7 +253,7 @@ function GroupVideoPage() {
                     )}
                     {roomStep === 'end' && <GameEnd restSec={restSec} />}
                 </div>
-                <ParticipantVideo roomMax={roomMax} gender="f" />
+                <ParticipantVideo roomMax={roomMax} gender="f" status="meeting" />
             </div>
         </>
     );

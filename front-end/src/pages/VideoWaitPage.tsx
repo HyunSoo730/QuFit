@@ -14,13 +14,14 @@ import { PATH } from '@routers/PathConstants';
 
 const VideoWaitPage = () => {
     const roomMax = 8;
-    const [_, setIsMettingStart] = useState(false);
+    const [isMeetingStart, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
     const { createRoom, joinRoom, leaveRoom } = useRoom();
-    const roomId = 31;
+    const roomId = 32;
     const setRoomId = useSetRoomIdStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();
+    const navigate = useNavigate();
 
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
@@ -31,7 +32,6 @@ const VideoWaitPage = () => {
             });
         });
     };
-    const navigate = useNavigate();
 
     const startMeeting = () => {
         publishSocket(
@@ -41,7 +41,6 @@ const VideoWaitPage = () => {
             client,
             roomId,
         );
-        setIsMettingStart(true);
     };
 
     useEffect(() => {
@@ -58,15 +57,18 @@ const VideoWaitPage = () => {
     return (
         <>
             <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" />
+                <ParticipantVideo roomMax={roomMax} gender="m" status="wait" />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
-                        <button onClick={createRoom}>생성하기</button>
+                        <button onClick={createRoom} className="text-white">
+                            생성하기
+                        </button>
 
                         <button
                             onClick={() => {
                                 joinRoom(roomId);
                             }}
+                            className="text-white"
                         >
                             입장하기
                         </button>
@@ -76,12 +78,11 @@ const VideoWaitPage = () => {
                         onNext={() => {
                             navigate(PATH.GROUP_VIDEO(roomId));
                         }}
+                        isStart={isMeetingStart}
                         onClick={startMeeting}
                     />
-
-                    {/* {roomStep === 'active' && <GameIntro onNext={startGame} />} */}
                 </div>
-                <ParticipantVideo roomMax={roomMax} gender="f" />
+                <ParticipantVideo roomMax={roomMax} gender="f" status="wait" />
             </div>
         </>
     );
