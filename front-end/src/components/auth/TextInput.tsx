@@ -1,4 +1,4 @@
-import { ChangeEvent, InputHTMLAttributes } from 'react';
+import { ChangeEvent, InputHTMLAttributes, useState } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     name: string;
@@ -8,17 +8,31 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const TextInput = ({ label, name, value, onChange, ...rest }: InputProps) => {
+    const [isFocused, setIsFocused] = useState(false);
+
     return (
-        <label className="flex flex-col gap-1">
-            {label && <p className="font-semibold text-white text-l">{label}</p>}
+        <div className="relative w-full">
+            {label && (
+                <label
+                    htmlFor={name}
+                    className={`absolute left-5 px-2 text-lg font-semibold transition-all duration-300 ${
+                        isFocused || value ? 'top-0 bg-white text-pink transform -translate-y-1/2' : 'top-2/4 text-black/30 transform -translate-y-2/4'
+                    }`}
+                >
+                    {label}
+                </label>
+            )}
             <input
-                className="relative w-full h-10 pl-5 text-white bg-transparent border-2 border-white outline-none text-md border-t-transparent border-r-transparent border-l-transparent placeholder:text-white placeholder:opacity-80 focus:ring-pink lg:h-10 md:h-10 md:text-xs md:pr-15 sm:h-10 sm:text-xs sm:pr-10 xs:h-10 xs:text-sm xs:pr-10"
+                id={name}
+                className="w-full h-12 pl-5 bg-transparent border-2 rounded-md outline-none border-black/30 text-black/50 placeholder:text-transparent focus:border-pink lg:h-12 md:h-12 md:text-xs md:pr-15 sm:h-12 sm:text-xs sm:pr-10 xs:h-12 xs:text-sm xs:pr-10"
                 name={name}
                 value={value}
                 onChange={onChange}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 {...rest}
             />
-        </label>
+        </div>
     );
 };
 

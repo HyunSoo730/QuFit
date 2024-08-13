@@ -10,3 +10,4 @@ export { default as ProcessIcon2 } from './ProcessIcon2';
 export { default as ProcessIcon3 } from './ProcessIcon3';
 export { default as ProcessIcon4 } from './ProcessIcon4';
 export { default as ProcessIcon5 } from './ProcessIcon5';
+export { default as ProcessIcon6 } from './ProcessIcon6';
