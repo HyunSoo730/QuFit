@@ -4,8 +4,28 @@ import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
 import Select from 'react-select';
 
+const customSelectStyles = {
+    control: (baseStyles: any, state: { isFocused: any; }) => ({
+        ...baseStyles,
+        borderColor: state.isFocused ? '#F997EC' : 'lightgray',
+        borderWidth: '2px',
+        boxShadow: 'none',
+        '&:hover': {
+            borderColor: state.isFocused ? '#F997EC' : 'lightgray',
+        },
+    }),
+    option: (baseStyles: any, state: { isFocused: any; isSelected: any; }) => ({
+        ...baseStyles,
+        backgroundColor: state.isFocused ? 'lightgray' : state.isSelected ? 'gray' : 'white',
+        color: state.isSelected ? 'white' : 'black',
+        ':active': {
+            backgroundColor: 'inherit',
+            color: state.isSelected ? 'white' : 'black',
+        },
+    }),
+};
 const TypeInfo = ({ onNext, registData }: SignUpProps) => {
-    const { values, handleChange, handleSubmit, handleSelectChange, handleMultiValueChange } = useForm({
+    const {  handleSubmit, handleMultiValueChange } = useForm({
         initialValues: registData,
         onSubmit: onNext,
         validate: signupValidate,
@@ -16,27 +36,14 @@ const TypeInfo = ({ onNext, registData }: SignUpProps) => {
         value: personality['tag_name'],
         label: personality['tag_name'],
     }));
-    const age = Array.from({ length: 100 }, (_, idx) => ({ label: idx, value: idx }));
 
     const mbti = MBTI.map((mbti) => ({ value: mbti['tag_name'], label: mbti['tag_name'] }));
     return (
         <>
             <div className="flex justify-end w-full">
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full gap-4">
                     <Select
-                        options={age}
-                        onChange={(e) => handleSelectChange(e, 'typeAgeMax')}
-                        className="w-full"
-                        placeholder="몇살 위까지 원하나요?"
-                    />
-                    <Select
-                        options={age}
-                        onChange={(e) => handleSelectChange(e, 'typeAgeMin')}
-                        className="w-full"
-                        placeholder="몇살 아래까지 원하나요?"
-                    />
-
-                    <Select
+                        styles={customSelectStyles}
                         isMulti={true}
                         options={mbti}
                         placeholder="이상형의 MBTI를 알려주세요"
@@ -45,6 +52,7 @@ const TypeInfo = ({ onNext, registData }: SignUpProps) => {
                         classNamePrefix="select"
                     />
                     <Select
+                        styles={customSelectStyles}
                         isMulti={true}
                         options={hoobies}
                         onChange={(e) => handleMultiValueChange(e, 'typeHobbyTags')}
@@ -52,6 +60,7 @@ const TypeInfo = ({ onNext, registData }: SignUpProps) => {
                         classNamePrefix="select"
                     />
                     <Select
+                        styles={customSelectStyles}
                         isMulti={true}
                         options={personalities}
                         placeholder="이상형의 성격을 골라주세요"
@@ -60,6 +69,8 @@ const TypeInfo = ({ onNext, registData }: SignUpProps) => {
                         classNamePrefix="select"
                     />
                 </div>
+                </div>
+                <div className="flex justify-end w-full">
                 <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
                     <p className="w-full" onClick={handleSubmit}>
                         다음

@@ -49,18 +49,18 @@ export const RoomsInfoDummy: RoomInfoProps[] = Array.from({ length: 10 }, () => 
 
 export const FriendsInfoDummy: FriendInfoProps[] = [
     {
-        otherMemberId: 6,
-        nickname: '심장폭격기',
+        otherMemberId: 3,
+        nickname: 'member6088',
         profileImage: 'https://i.pinimg.com/236x/df/3c/4d/df3c4dcf15935d0111426bb28b12d9b1.jpg',
     },
     {
-        otherMemberId: 9,
-        nickname: '박싸피',
+        otherMemberId: 4,
+        nickname: 'member7669',
         profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
     },
     {
-        otherMemberId: 10,
-        nickname: '최싸피',
+        otherMemberId: 5,
+        nickname: 'member3737',
         profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
     },
 ];

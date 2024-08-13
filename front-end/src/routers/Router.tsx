@@ -5,10 +5,12 @@ import GroupVideoPage from '@pages/GroupVideoPage';
 import IntroductionPage from '@pages/IntroductionPage';
 import KakaoRedirectPage from '@pages/KaKaoRedirectPage';
 import MainPage from '@pages/MainPage';
+import CreateRoomPage from '@pages/CreateRoomPage';
 import MyPage from '@pages/Mypage';
 import NotFoundPage from '@pages/NotFoundPage';
 import PersonalVideoPage from '@pages/PersonalVideoPage';
 import SignupPage from '@pages/SignupPage';
+import VideoWaitPage from '@pages/VideoWaitPage';
 import { PATH } from '@routers/PathConstants';
 import { RouterProvider, createBrowserRouter, RouteObject } from 'react-router-dom';
 
@@ -25,8 +27,8 @@ const Router = () => {
                     element: <MainPage />,
                 },
                 {
-                    path: PATH.INTRODUCTION,
-                    element: <IntroductionPage />,
+                    path: PATH.CREATE_ROOM,
+                    element: <CreateRoomPage />,
                 },
                 {
                     path: PATH.CHATTING,
@@ -46,6 +48,10 @@ const Router = () => {
             errorElement: <NotFoundPage />,
             children: [
                 {
+                    path: PATH.WAIT(':roomId'),
+                    element: <VideoWaitPage />,
+                },
+                {
                     path: PATH.GROUP_VIDEO(':roomId'),
                     element: <GroupVideoPage />,
                 },
@@ -63,6 +69,11 @@ const Router = () => {
         {
             path: 'auth/kakao',
             element: <KakaoRedirectPage />,
+        },
+        {
+            path: PATH.ROOT,
+            errorElement: <NotFoundPage />,
+            children: [{ path: PATH.INTRODUCTION, element: <IntroductionPage /> }],
         },
     ];
 

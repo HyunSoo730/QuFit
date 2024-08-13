@@ -19,7 +19,7 @@ interface ChatListProps {
 }
 
 const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
-    const senderId = 4;
+    const senderId = 2;
 
     // Store
     const isClosed = useCloseStateStore((state) => state.isClosed);

@@ -13,7 +13,7 @@ interface RadioGroupProps {
 const RadioGroup = ({ label, children, className, value, onChange, name }: RadioGroupProps) => {
     return (
         <fieldset name={name} className={className}>
-            <legend>{label}</legend>
+            <legend className="my-5">{label}</legend>
             <RadioProvider value={{ value, onChange }}>{children}</RadioProvider>
         </fieldset>
     );

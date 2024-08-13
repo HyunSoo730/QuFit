@@ -4,8 +4,28 @@ import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
 import { useEffect } from 'react';
 import Select from 'react-select';
+const customSelectStyles = {
+    control: (baseStyles: any, state: { isFocused: any; }) => ({
+        ...baseStyles,
+        borderColor: state.isFocused ? '#F997EC' : 'lightgray',
+        borderWidth: '2px',
+        boxShadow: 'none',
+        '&:hover': {
+            borderColor: state.isFocused ? '#F997EC' : 'lightgray',
+        },
+    }),
+    option: (baseStyles: any, state: { isFocused: any; isSelected: any; }) => ({
+        ...baseStyles,
+        backgroundColor: state.isFocused ? 'lightgray' : state.isSelected ? 'gray' : 'white',
+        color: state.isSelected ? 'white' : 'black',
+        ':active': {
+            backgroundColor: 'inherit', 
+            color: state.isSelected ? 'white' : 'black',
+        },
+    }),
+};
 const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
-    const { values, handleChange, handleSubmit, handleMultiValueChange } = useForm({
+    const { values, handleSubmit, handleMultiValueChange } = useForm({
         initialValues: registData,
         onSubmit: onNext,
         validate: signupValidate,
@@ -22,8 +42,9 @@ const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
     return (
         <>
             <div className="flex justify-end w-full">
-                <div className="flex flex-col gap-4">
-                    <Select
+                <div className="flex flex-col w-full gap-4">
+                    <Select 
+                        styles={customSelectStyles}
                         isMulti={true}
                         options={hoobies}
                         onChange={(e) => handleMultiValueChange(e, 'memberHobbyTags')}
@@ -31,6 +52,7 @@ const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
                         classNamePrefix="select"
                     />
                     <Select
+                        styles={customSelectStyles}
                         isMulti={true}
                         options={personalities}
                         placeholder="성격을 골라주세요"
@@ -40,11 +62,13 @@ const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
                     />
                 </div>
             </div>
+            <div className="flex justify-end w-full">
             <button className="flex items-center text-white rounded-full min-w-20 max-w-28 h-9 px-9 bg-pink">
                 <p className="w-full" onClick={handleSubmit}>
                     다음
                 </p>
             </button>
+            </div>
         </>
     );
 };
