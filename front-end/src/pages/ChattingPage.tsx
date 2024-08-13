@@ -1,12 +1,13 @@
 import FriendInfo from '@components/chat/FriendInfo';
 import ChatInfo from '@components/chat/ChatInfo';
 import ChatRoom from '@components/chat/ChatRoom';
-import { FriendsInfoDummy } from '@dummy/Dummy';
+// import { FriendsInfoDummy } from '@dummy/Dummy';
 import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import { useChatInfoList, useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import { instance } from '@apis/axios';
 import { useEffect } from 'react';
+import { useFriendListQuery } from '@queries/useChatQuery';
 
 const ChattingPage = () => {
     const chatInfoList = useChatInfoList();
@@ -16,6 +17,10 @@ const ChattingPage = () => {
     const setButtonFocus = useTabStateStore((state) => state.setButtonFocus);
 
     const chatState = useChatStateStore((state) => state.chatState);
+
+    const PAGE = 0;
+    const SIZE = 10; // 임의 설정
+    const { data: friendListData, isLoading, error } = useFriendListQuery(PAGE, SIZE);
 
     useEffect(() => {
         instance
@@ -53,14 +58,20 @@ const ChattingPage = () => {
                 </div>
                 {buttonFocus === 'friend' ? (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {FriendsInfoDummy.map((friend) => (
-                            <FriendInfo
-                                key={friend.otherMemberId}
-                                otherMemberId={friend.otherMemberId}
-                                nickname={friend.nickname}
-                                profileImage={friend.profileImage}
-                            />
-                        ))}
+                        {isLoading ? (
+                            <p>로딩 중...</p>
+                        ) : error ? (
+                            <p>Error: {error.message}</p>
+                        ) : (
+                            friendListData?.friendList.map((friend) => (
+                                <FriendInfo
+                                    key={friend.id}
+                                    otherMemberId={friend.id}
+                                    nickname={friend.nickname}
+                                    profileImage={friend.profileImage}
+                                />
+                            ))
+                        )}
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">

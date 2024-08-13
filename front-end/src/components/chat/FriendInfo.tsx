@@ -2,6 +2,7 @@ import { StartChatIcon, DeleteFriendIcon } from '@assets/svg/chat';
 import { instance } from '@apis/axios';
 // import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
+import { useDeleteFriendMutation } from '@queries/useChatQuery';
 
 interface FriendInfoProps {
     nickname: string;
@@ -12,6 +13,7 @@ interface FriendInfoProps {
 const FriendInfo = ({ otherMemberId, nickname, profileImage }: FriendInfoProps) => {
     // const setChatState = useChatStateStore((state) => state.setChatState);
     const setIsClosed = useCloseStateStore((state) => state.setIsClosed);
+    const deleteFriendMutation = useDeleteFriendMutation();
 
     const handleStartChatButton = () => {
         console.log(`/qufit/chat/rooms/${otherMemberId}`);
@@ -41,6 +43,11 @@ const FriendInfo = ({ otherMemberId, nickname, profileImage }: FriendInfoProps) 
         setIsClosed(false);
     };
 
+    const handleDeleteFriendButton = () => {
+        // 친구 삭제 요청 보내기
+        deleteFriendMutation.mutate(otherMemberId);
+    };
+
     return (
         <div className="flex flex-col">
             <div className="w-full h-px bg-smokeWhite opacity-80" />
@@ -54,7 +61,7 @@ const FriendInfo = ({ otherMemberId, nickname, profileImage }: FriendInfoProps) 
                     <p className="text-2xl text-white mx-3.5 max-w-72 truncate lg:text-xl lg:mx-2.5 lg:max-w-60 xs:text-lg xs:max-w-52 xs:mx-2">
                         {nickname}
                     </p>
-                    <button>
+                    <button onClick={handleDeleteFriendButton}>
                         <DeleteFriendIcon className="w-6 pt-1 lg:w-5 md:w-8 xs:w-6 xs:mr-10" />
                     </button>
                 </div>
