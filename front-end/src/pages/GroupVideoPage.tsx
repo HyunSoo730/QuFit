@@ -9,7 +9,6 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-import * as StompJs from '@stomp/stompjs';
 import { useNavigate } from 'react-router-dom';
 import { instance, qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
 import useTimer from '@hooks/useTimer';
@@ -24,17 +23,9 @@ import GamePlay from '@components/game/step/GamePlay';
 import GameResult from '@components/game/step/GameResult';
 import GameEnd from '@components/game/step/GameEnd';
 import GameIntro from '@components/game/step/GameIntro';
+import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
+import * as StompJs from '@stomp/stompjs';
 
-export let accessToken = '';
-if (location.port === '3000') {
-    accessToken = qufitAcessTokenA;
-} else if (location.port === '3001') {
-    accessToken = qufitAcessTokenB;
-} else if (location.port === '3002') {
-    accessToken = qufitAcessTokenC;
-} else if (location.port === '3003') {
-    accessToken = qufitAcessTokenD;
-}
 type RoomStep =
     | 'wait'
     | 'active'
@@ -58,10 +49,10 @@ function GroupVideoPage() {
     const roomMax = 8;
     const [_, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('wait');
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 2;
+    const roomId = 30;
     const setRoomId = useSetRoomIdStore();
     const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const setResults = useSetResultsStore();
@@ -105,8 +96,6 @@ function GroupVideoPage() {
                 params: { hostId: member.memberId },
             });
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
-            console.log(response);
-            console.log(response.data);
         } else if (member?.gender === 'f') {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[otherIdx].id },
@@ -115,15 +104,41 @@ function GroupVideoPage() {
             navigate(PATH.PERSONAL_VIDEO(response.data['videoRoomId: ']));
         }
     };
+    const onConnect = () => {
+        client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
+            const response = JSON.parse(message.body);
 
-    const navigate = useNavigate();
-    const { isHost } = useRoom();
-    const publishSocket = (data: any) => {
-        client.current?.publish({
-            destination: `/pub/game/${roomId}`,
-            body: JSON.stringify(data),
+            afterSubscribe(response, '미팅룸 시작을 성공했습니다.', () => {
+                setIsMettingStart(true);
+            });
+            afterSubscribe(response, '게임 시작을 성공했습니다.', () => {
+                setRoomStep('loading');
+                setProblems(response.result);
+            });
+            afterSubscribe(response, '선택지 선택을 시작했습니다.', () => {
+                setRoomStep('play');
+                {
+                    !isHost && setGameStage((prev) => prev + 1);
+                }
+            });
+            afterSubscribe(response, '선택을 완료했습니다.', () => {
+                console.log(response);
+            });
+
+            afterSubscribe(response, '게임 결과를 조회했습니다.', () => {
+                const processedResult = response.result.reduce((acc: any, result: beforeResult) => {
+                    if (!acc[result.balanceGameId]) {
+                        acc[result.balanceGameId] = {};
+                    }
+                    acc[result.balanceGameId][result.memberId] = result.choiceNum;
+                    return acc;
+                }, {});
+                setResults(processedResult);
+            });
         });
     };
+    const navigate = useNavigate();
+    const { isHost } = useRoom();
 
     // const startMeeting = () => {
     //     publishSocket({
@@ -133,97 +148,36 @@ function GroupVideoPage() {
     // };
 
     const startGame = () => {
-        publishSocket({
-            isGameStart: true,
-        });
+        publishSocket(
+            {
+                isGameStart: true,
+            },
+            client,
+            roomId,
+        );
         setRoomStep('loading');
     };
 
     const startPlay = () => {
-        publishSocket({
-            isChoiceStart: true,
-        });
+        publishSocket(
+            {
+                isChoiceStart: true,
+            },
+            client,
+            roomId,
+        );
         setGameStage((prev) => prev + 1);
         setRoomStep('play');
     };
 
     const endChoice = (choice: any) => {
-        publishSocket(choice);
+        publishSocket(choice, client, roomId);
     };
 
-    const afterSubscribe = (response: any, message: string, func: any) => {
-        if (response.message === message) {
-            func();
-        }
-    };
-    const connect = () => {
-        try {
-            client.current = new StompJs.Client({
-                brokerURL: `ws://i11a209.p.ssafy.io:8080/stomp/chat`,
-                connectHeaders: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                debug: function (str) {
-                    console.log('소켓 디버그:', str);
-                },
-                reconnectDelay: 5000,
-                heartbeatIncoming: 4000,
-                heartbeatOutgoing: 4000,
-                onConnect: () => {
-                    client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
-                        const response = JSON.parse(message.body);
-
-                        afterSubscribe(response, '미팅룸 시작을 성공했습니다.', () => {
-                            setIsMettingStart(true);
-                        });
-                        afterSubscribe(response, '게임 시작을 성공했습니다.', () => {
-                            setRoomStep('loading');
-                            setProblems(response.result);
-                        });
-                        afterSubscribe(response, '선택지 선택을 시작했습니다.', () => {
-                            setRoomStep('play');
-                            {
-                                !isHost && setGameStage((prev) => prev + 1);
-                            }
-                        });
-                        afterSubscribe(response, '선택을 완료했습니다.', () => {
-                            console.log(response);
-                        });
-
-                        afterSubscribe(response, '게임 결과를 조회했습니다.', () => {
-                            const processedResult = response.result.reduce((acc: any, result: beforeResult) => {
-                                if (!acc[result.balanceGameId]) {
-                                    acc[result.balanceGameId] = {};
-                                }
-                                acc[result.balanceGameId][result.memberId] = result.choiceNum;
-                                return acc;
-                            }, {});
-                            setResults(processedResult);
-                        });
-                    });
-                },
-            });
-
-            if (client.current) {
-                client.current.activate();
-            } else {
-                console.log('클라이언트가 초기화되지 않았습니다.');
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    // 연결 끊기
-    const disConnect = () => {
-        if (client.current === null) {
-            return;
-        }
-        client.current.deactivate();
-    };
     useEffect(() => {
         setRoomId(roomId); //나중에 param에서 따와야함
-        connect();
-        return () => disConnect();
+        connect(client, onConnect);
+        return () => disConnect(client);
     }, []);
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
