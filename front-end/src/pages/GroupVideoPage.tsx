@@ -67,10 +67,6 @@ function GroupVideoPage() {
             });
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
-            console.log(participants);
-            console.log(otherGenderParticipants);
-            console.log(otherGenderParticipants[otherIdx]);
-            console.log(otherGenderParticipants[otherIdx].id);
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[otherIdx].id },
             });
@@ -92,9 +88,6 @@ function GroupVideoPage() {
                 {
                     !isHost && setGameStage((prev) => prev + 1);
                 }
-            });
-            afterSubscribe(response, '선택을 완료했습니다.', () => {
-                console.log(response);
             });
 
             afterSubscribe(response, '게임 결과를 조회했습니다.', () => {
@@ -165,19 +158,6 @@ function GroupVideoPage() {
             <div className="flex flex-col justify-between w-full h-screen ">
                 <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
-                    <div className="flex flex-col gap-4">
-                        <button onClick={createRoom}>생성하기</button>
-
-                        <button
-                            onClick={() => {
-                                joinRoom(roomId);
-                            }}
-                        >
-                            입장하기
-                        </button>
-                        <button onClick={() => leaveRoom(roomId)}>나가기</button>
-                    </div>
-
                     {roomStep === 'active' && <GameIntro onNext={startGame} />}
                     {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
                     {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
