@@ -16,16 +16,24 @@ interface State {
     roomId: number | undefined;
     otherGenderParticipants: RoomParticipant[];
     otherIdx: number;
+
+    maleParticipants: RoomParticipant[];
+    femaleParticipants: RoomParticipant[];
+    privateParticipants: RoomParticipant[];
 }
 
 interface Action {
     setRoom: (room: Room | undefined) => void;
     addParticipant: (participant: RoomParticipant) => void;
-    setParticipants: (participant: RoomParticipant[]) => void;
+    setParticipants: (participant: RoomParticipant[] | undefined) => void;
     setHostId: (id: number) => void;
     setRoomId: (id: number) => void;
     setOtherGenderParticipants: (participants: RoomParticipant[]) => void;
     setOtherIdx: (idx: number) => void;
+
+    setMaleParticipants: (participants: RoomParticipant[] | undefined) => void;
+    setFemaleParticipants: (participants: RoomParticipant[] | undefined) => void;
+    setPrivateParticipants: (participants: RoomParticipant[] | undefined) => void;
 }
 
 const useRoomStore = create<State & Action>((set) => ({
@@ -36,6 +44,10 @@ const useRoomStore = create<State & Action>((set) => ({
     roomId: undefined,
     otherGenderParticipants: [],
     otherIdx: 0,
+
+    maleParticipants: [],
+    femaleParticipants: [],
+    privateParticipants: [],
 
     setRoom: (room) => set({ room: room }),
     addParticipant: (participant) =>
@@ -50,6 +62,9 @@ const useRoomStore = create<State & Action>((set) => ({
     setRoomId: (roomId) => set({ roomId: roomId }),
     setOtherGenderParticipants: (participants) => set({ otherGenderParticipants: participants }),
     setOtherIdx: (idx) => set({ otherIdx: idx }),
+    setMaleParticipants: (participants) => set({ maleParticipants: participants }),
+    setFemaleParticipants: (participants) => set({ femaleParticipants: participants }),
+    setPrivateParticipants: (participants) => set({ privateParticipants: participants }),
 }));
 
 export const useRoomStateStore = () => useRoomStore((state) => state.room);
@@ -58,6 +73,9 @@ export const useHostIdStore = () => useRoomStore((state) => state.hostId);
 export const useRoomIdStore = () => useRoomStore((state) => state.roomId);
 export const useOtherGenderParticipantsStore = () => useRoomStore((state) => state.otherGenderParticipants);
 export const useOtherIdxStore = () => useRoomStore((state) => state.otherIdx);
+export const useMaleParticipantsStore = () => useRoomStore((state) => state.maleParticipants);
+export const useFemaleParticipantsStore = () => useRoomStore((state) => state.femaleParticipants);
+export const usePrivateParticipantsStore = () => useRoomStore((state) => state.privateParticipants);
 
 export const useSetRoomStateStore = () => useRoomStore((state) => state.setRoom);
 export const useRoomAddParticipantStore = () => useRoomStore((state) => state.addParticipant);
@@ -66,3 +84,6 @@ export const useSetHostIdStore = () => useRoomStore((state) => state.setHostId);
 export const useSetRoomIdStore = () => useRoomStore((state) => state.setRoomId);
 export const useSetOtherGenderParticipantsStore = () => useRoomStore((state) => state.setOtherGenderParticipants);
 export const useSetOtherIdxStore = () => useRoomStore((state) => state.setOtherIdx);
+export const useSetMaleParticipantsStore = () => useRoomStore((state) => state.setMaleParticipants);
+export const useSetFemaleParticipantsStore = () => useRoomStore((state) => state.setFemaleParticipants);
+export const useSetPrivateParticipantsStore = () => useRoomStore((state) => state.setPrivateParticipants);
