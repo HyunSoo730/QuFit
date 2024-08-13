@@ -47,7 +47,7 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('end');
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
     const roomId = 80;
@@ -140,7 +140,7 @@ function GroupVideoPage() {
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
         if (member?.gender === 'm') {
-            createRoom();
+            // createRoom();
         }
         open();
     });

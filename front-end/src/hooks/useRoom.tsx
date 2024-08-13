@@ -119,7 +119,7 @@ const useRoom = () => {
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
-                    navigate(PATH.GROUP_VIDEO(data.data.videoRoomId));
+                    navigate(PATH.WAIT(data.data.videoRoomId));
                     setHostId(member?.memberId!);
                     addParticipant({
                         id: member?.memberId,
@@ -127,6 +127,7 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
+
                 },
                 onError: async (data) => {
                     console.log(data);
@@ -164,7 +165,7 @@ const useRoom = () => {
                 setParticipants(curParticipants);
                 addRoomEventHandler(room, videoRoomId);
                 decideManager(room);
-                navigate(PATH.GROUP_VIDEO(videoRoomId));
+                navigate(PATH.WAIT(videoRoomId));
             },
         });
     };

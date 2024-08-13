@@ -51,18 +51,7 @@ const VideoWaitPage = () => {
                 <ParticipantVideo roomMax={roomMax} gender="m" status="wait" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
-                        <button onClick={createRoom} className="text-white">
-                            생성하기
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                joinRoom(roomId);
-                            }}
-                            className="text-white"
-                        >
-                            입장하기
-                        </button>
+                 
                         <button onClick={() => leaveRoom(roomId)}>나가기</button>
                     </div>
                     <MeetingStartButton
