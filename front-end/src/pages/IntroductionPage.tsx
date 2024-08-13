@@ -8,35 +8,33 @@ const IntroductionPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="bg-black w-screen h-screen flex">
-            <div className="w-full h-full absolute flex items-center justify-center">
+        <div className="flex w-screen h-screen bg-black">
+            <div className="absolute flex items-center justify-center w-full h-full">
                 <img src={Saturn} alt="토성 이미지" />
             </div>
-            <div className="bg-darkPurple bg-opacity-20 h-full w-1/2 effect-blur flex flex-col justify-center pl-36">
+            <div className="flex flex-col justify-center w-1/2 h-full bg-darkPurple bg-opacity-20 effect-blur pl-36">
                 <div className="">
                     <p className=" font-barlow text-[10rem] font-bold text-smokeWhite leading-none text-left">
                         <span className="text-pink">Q</span>uick
                     </p>
-                    <p className=" font-barlow text-[10rem] font-bold text-smokeWhite leading-none text-left">
-                        <span className="text-pink">F</span>it
-                    </p>
+                    <p className=" font-barlow text-[10rem] font-bold text-pink leading-none text-left">Fit</p>
                     <p className=" font-barlow text-[10rem] font-bold text-smokeWhite leading-none text-left">Love </p>
                 </div>
-                <button className="w-fit text-smokeWhite text-2xl border-2 border-smokeWhite px-12 py-5 mt-36">
+                <button className="px-12 py-5 text-2xl border-2 w-fit text-smokeWhite border-smokeWhite mt-36">
                     더 알아보기
                 </button>
             </div>
-            <div className="flex z-10 absolute items-center top-14 right-20">
+            <div className="absolute z-10 flex items-center top-14 right-20">
                 <button
                     onClick={() => navigate(PATH.SIGN_UP)}
-                    className="font-barlow text-smokeWhite text-3xl font-medium"
+                    className="text-3xl font-medium font-barlow text-smokeWhite"
                 >
                     Sign Up
                 </button>
-                <div className="w-1 h-8 bg-smokeWhite mx-10" />
+                <div className="w-1 h-8 mx-10 bg-smokeWhite" />
                 <button
                     onClick={() => navigate('/auth/kakao')}
-                    className="font-barlow text-smokeWhite text-3xl font-medium"
+                    className="text-3xl font-medium font-barlow text-smokeWhite"
                 >
                     <span className="text-yellow">Kakao</span> Log In
                 </button>
