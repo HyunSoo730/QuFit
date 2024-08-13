@@ -26,3 +26,20 @@ export interface MemberInfoDTO {
     typeHobby: Tag[];
     typePersonality: Tag[];
 }
+
+// 친구 정보 받기 
+export interface FriendInfo {
+    id: number;
+    nickname: string;
+    profileImage: string;
+  }
+  
+  export interface FriendListResponse {
+    friendList: FriendInfo[];
+    page: {
+      totalElements: number;
+      totalPages: number;
+      currentPage: number;
+      pageSize: number;
+    };
+  }
