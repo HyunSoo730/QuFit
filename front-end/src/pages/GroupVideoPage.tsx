@@ -10,7 +10,7 @@ import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
 import { useNavigate } from 'react-router-dom';
-import { instance, qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
+import { instance } from '@apis/axios';
 import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
 import { PATH } from '@routers/PathConstants';
@@ -47,7 +47,6 @@ type beforeResult = {
 };
 function GroupVideoPage() {
     const roomMax = 8;
-    const [_, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
     const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom } = useRoom();
@@ -108,9 +107,6 @@ function GroupVideoPage() {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
             const response = JSON.parse(message.body);
 
-            afterSubscribe(response, '미팅룸 시작을 성공했습니다.', () => {
-                setIsMettingStart(true);
-            });
             afterSubscribe(response, '게임 시작을 성공했습니다.', () => {
                 setRoomStep('loading');
                 setProblems(response.result);
@@ -139,13 +135,6 @@ function GroupVideoPage() {
     };
     const navigate = useNavigate();
     const { isHost } = useRoom();
-
-    // const startMeeting = () => {
-    //     publishSocket({
-    //         isRoomStart: true,
-    //     });
-    //     setIsMettingStart(true);
-    // };
 
     const startGame = () => {
         publishSocket(
@@ -232,9 +221,13 @@ function GroupVideoPage() {
                         <Loading
                             onNext={() => {
                                 isHost &&
-                                    publishSocket({
-                                        getResult: true,
-                                    });
+                                    publishSocket(
+                                        {
+                                            getResult: true,
+                                        },
+                                        client,
+                                        roomId,
+                                    );
                                 setRoomStep('resultLoading2');
                             }}
                         />

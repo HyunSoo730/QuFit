@@ -3,20 +3,21 @@ import LottieComponent from '@components/common/LottieComponent';
 import useRoom from '@hooks/useRoom';
 import MeetingStartTimer from '@components/game/MeetingStartTimer';
 import { MEETING_START_SEC } from '@components/game/Constants';
+import { useState } from 'react';
 
 interface MeetingStartButtonProps {
     onNext: () => void;
-    isStart: boolean;
     onClick: () => void;
 }
 
-const MeetingStartButton = ({ onNext, isStart, onClick }: MeetingStartButtonProps) => {
+const MeetingStartButton = ({ onNext, onClick }: MeetingStartButtonProps) => {
     const { isHost } = useRoom();
-
+    const [isStart, setIsStart] = useState(false);
     const meetingStart = () => {
         if (isHost) {
             onClick();
         }
+        setIsStart(true);
     };
     return (
         <div className="relative flex flex-col items-center">
@@ -48,7 +49,6 @@ const MeetingStartButton = ({ onNext, isStart, onClick }: MeetingStartButtonProp
                             isStopped={false}
                             loop={true}
                             className="w-[20rem]"
-                            onComplete={onNext}
                         />
                         <MeetingStartTimer endSec={MEETING_START_SEC} afterFunc={onNext} />
                     </>

@@ -7,15 +7,17 @@ import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
 import { GROUP_VIDEO_END_SEC } from '@components/game/Constants';
 
-import { afterSubscribe, connect, disConnect } from '@utils/websocketUtil';
+import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
 import * as StompJs from '@stomp/stompjs';
+import MeetingStartButton from '@components/game/MeetingStartButton';
+import { PATH } from '@routers/PathConstants';
 
 const VideoWaitPage = () => {
     const roomMax = 8;
     const [_, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
     const { createRoom, joinRoom, leaveRoom } = useRoom();
-    const roomId = 30;
+    const roomId = 31;
     const setRoomId = useSetRoomIdStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();
@@ -30,14 +32,17 @@ const VideoWaitPage = () => {
         });
     };
     const navigate = useNavigate();
-    const { isHost } = useRoom();
 
-    // const startMeeting = () => {
-    //     publishSocket({
-    //         isRoomStart: true,
-    //     });
-    //     setIsMettingStart(true);
-    // };
+    const startMeeting = () => {
+        publishSocket(
+            {
+                isRoomStart: true,
+            },
+            client,
+            roomId,
+        );
+        setIsMettingStart(true);
+    };
 
     useEffect(() => {
         setRoomId(roomId); //나중에 param에서 따와야함
@@ -67,6 +72,12 @@ const VideoWaitPage = () => {
                         </button>
                         <button onClick={() => leaveRoom(roomId)}>나가기</button>
                     </div>
+                    <MeetingStartButton
+                        onNext={() => {
+                            navigate(PATH.GROUP_VIDEO(roomId));
+                        }}
+                        onClick={startMeeting}
+                    />
 
                     {/* {roomStep === 'active' && <GameIntro onNext={startGame} />} */}
                 </div>
