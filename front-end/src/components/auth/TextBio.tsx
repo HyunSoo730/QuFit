@@ -8,12 +8,21 @@ interface TextBioProps extends InputHTMLAttributes<HTMLTextAreaElement> {
     rows?: number;
 }
 const TextBio = ({ label, onChange, name, value, rows, ...rest }: TextBioProps) => {
+
     return (
-        <label className="flex flex-col gap-1">
-            {label && <p className="font-semibold text-white text-l">{label}</p>}
-            <textarea
-                className="relative w-full h-10 px-5 py-8 text-white bg-transparent border-2 border-white outline-none resize-none text-md border-t-transparent border-r-transparent border-l-transparent scrollbar-hide placeholder:text-white placeholder:opacity-80 lg:h-12 md:h-20 md:text-sm md:pr-5 sm:h-15 sm:text-xs sm:pr-5 xs:h-15 xs:text-xs xs:pr-5"
-                name={name}
+        <label className="relative w-full">
+            {label && (
+                <label
+                    htmlFor={name}
+                    className={`absolute left-5 px-2 text-lg font-semibold transition-all duration-300 ${
+                        value ? 'top-0 bg-white text-pink transform -translate-y-1/2' : 'top-1/2 text-black/30 transform -translate-y-1/2'
+                    }`}
+                >
+                    {label}
+                </label>
+            )} <textarea
+            className="w-full h-20 px-5 py-5 bg-transparent border-2 rounded-md outline-none border-black/30 text-black/50 placeholder:text-transparent focus:border-pink lg:h-18 md:h-18 md:text-xs md:pr-15 sm:h-15 sm:text-xs sm:pr-10 xs:h-15 xs:text-sm xs:pr-10"
+            name={name}
                 value={value}
                 onChange={onChange}
                 rows={rows}

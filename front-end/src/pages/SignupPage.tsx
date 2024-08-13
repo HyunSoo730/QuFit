@@ -32,7 +32,7 @@ const SignupPage = () => {
         typePersonalityTags: [],
     });
     // const accessToken = useAccessTokenStore();
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(3);
     const welcomeMessage = registerData.nickname
         ? `큐핏에 오신걸 환영해요, ${registerData.nickname}님!`
         : '큐핏에 오신걸 환영해요.';
@@ -49,7 +49,7 @@ const SignupPage = () => {
                 <><div className="flex flex-col gap-8 ">
                             <LogoSignup width={'7rem'} />
                             <div className="flex flex-col gap-4">
-                                <p className="text-5xl font-bold">SIGN UP </p>
+                                <p className="text-5xl font-medium font-barlow">SIGN UP </p>
                                 <p className="text-md">{welcomeMessage}</p>
                             </div>
                         </div><div className="flex-col justify-between flex max-w-[24rem] w-[24rem] py-16 h-full">

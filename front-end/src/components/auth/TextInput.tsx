@@ -1,4 +1,4 @@
-import { ChangeEvent, InputHTMLAttributes, useState } from 'react';
+import { ChangeEvent, InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     name: string;
@@ -8,7 +8,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const TextInput = ({ label, name, value, onChange, ...rest }: InputProps) => {
-    const [isFocused, setIsFocused] = useState(false);
 
     return (
         <div className="relative w-full">
@@ -16,7 +15,7 @@ const TextInput = ({ label, name, value, onChange, ...rest }: InputProps) => {
                 <label
                     htmlFor={name}
                     className={`absolute left-5 px-2 text-lg font-semibold transition-all duration-300 ${
-                        isFocused || value ? 'top-0 bg-white text-pink transform -translate-y-1/2' : 'top-2/4 text-black/30 transform -translate-y-2/4'
+                        value ? 'top-0 bg-white text-pink transform -translate-y-1/2' : 'top-2/4 text-black/30 transform -translate-y-2/4'
                     }`}
                 >
                     {label}
@@ -28,8 +27,6 @@ const TextInput = ({ label, name, value, onChange, ...rest }: InputProps) => {
                 name={name}
                 value={value}
                 onChange={onChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
                 {...rest}
             />
         </div>
