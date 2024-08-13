@@ -5,6 +5,7 @@ export const PATH = {
     SIGN_UP: '/signup',
     INTRODUCTION: '/introduction',
     MAIN: '/main',
+    CREATE_ROOM: '/main/create',
     CHATTING: '/chatting',
     MY_PAGE: '/mypage',
     GROUP_VIDEO: (roomId: number | string) => `/video/group/${roomId}`,

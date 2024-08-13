@@ -7,7 +7,8 @@ import {
     useJoinVideoRoomMutation,
     useLeaveVideoRoomMutation,
 } from '@queries/useVideoQuery';
-import { PATH } from '@routers/PathConstants';
+import { VideoRoomRequest } from '@apis/types/request';
+
 import {
     RoomParticipant,
     useHostIdStore,
@@ -27,6 +28,7 @@ import {
 import { Room, RoomEvent } from 'livekit-client';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PATH } from '@routers/PathConstants';
 
 const useRoom = () => {
     const room = useRoomStateStore();
@@ -92,13 +94,22 @@ const useRoom = () => {
     const decideManager = async (room: Room) => {
         await room.localParticipant.enableCameraAndMicrophone();
     };
-    const createRoom = () => {
+
+    const createRoom = ({
+        videoRoomName,
+        maxParticipants,
+        mainTag,
+        videoRoomHobbies,
+        videoRoomPersonalities,
+    }: VideoRoomRequest) => {
         createVideoRoom.mutate(
             {
-                videoRoomName: 'test11',
-                maxParticipants: 4,
-                videoRoomHobbies: [],
-                videoRoomPersonalities: [],
+                videoRoomName: videoRoomName,
+                maxParticipants: maxParticipants,
+                mainTag: mainTag,
+                videoRoomHobbies: videoRoomHobbies,
+                videoRoomPersonalities: videoRoomPersonalities,
+                statusType: 1,
             },
             {
                 onSuccess: async (data) => {
@@ -108,6 +119,7 @@ const useRoom = () => {
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
+                    navigate(PATH.GROUP_VIDEO(data.data.videoRoomId));
                     setHostId(member?.memberId!);
                     addParticipant({
                         id: member?.memberId,
@@ -152,6 +164,7 @@ const useRoom = () => {
                 setParticipants(curParticipants);
                 addRoomEventHandler(room, videoRoomId);
                 decideManager(room);
+                navigate(PATH.GROUP_VIDEO(videoRoomId));
             },
         });
     };

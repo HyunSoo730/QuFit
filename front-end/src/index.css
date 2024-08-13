@@ -78,7 +78,15 @@ body {
             inset 0rem -1.25rem 1.875rem rgba(255, 255, 255, 0.5), inset 0rem 0.25rem 12.5rem rgba(251, 121, 222, 0.2),
             inset -0.3125rem -0.3125rem 1.25rem rgba(255, 255, 255, 0.3);
 
-        backdrop-filter: blur(1rem);
+        backdrop-filter: blur(2.5rem);
+    }
+
+    .effect-layout-chat {
+        box-shadow: 0.625rem -0.625rem 1.875rem rgba(255, 255, 255, 0.2),
+            inset 0rem -1.25rem 1.875rem rgba(255, 255, 255, 0.5), inset 0rem 0.25rem 12.5rem rgba(251, 121, 222, 0.2),
+            inset -0.3125rem -0.3125rem 1.25rem rgba(255, 255, 255, 0.3);
+
+        backdrop-filter: blur(0.8rem);
     }
 
     .effect-layout-2 {

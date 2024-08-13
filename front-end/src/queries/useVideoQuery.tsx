@@ -15,7 +15,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 // 비디오 방 목록 조회
 export const useVideoRoomQuery = (page: number, size: number, statusType: number) =>
     useQuery({
-        queryKey: ['videoRoom', page, size, statusType],
+        queryKey: ['videoRoom', { page, size, statusType }],
         queryFn: () => getVideo(page, size, statusType),
     });
 
