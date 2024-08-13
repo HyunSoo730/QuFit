@@ -1,10 +1,10 @@
 import * as StompJs from '@stomp/stompjs';
 import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
 
-interface ConnectProps {
-    client: { current: StompJs.Client | null };
-    onConnect: () => void;
-}
+// interface ConnectProps {
+//     client: { current: StompJs.Client | null };
+//     onConnect: () => void;
+// }
 
 export const afterSubscribe = (response: any, message: string, func: any) => {
     if (response.message === message) {

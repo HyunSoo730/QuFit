@@ -1,4 +1,3 @@
-import { instance } from '@apis/axios';
 import { getVideoDetail } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
@@ -19,7 +18,6 @@ import {
     useRoomParticipantsStore,
     useRoomSetParticipantsStore,
     useRoomStateStore,
-    useSetFemaleParticipantsStore,
     useSetHostIdStore,
     useSetOtherGenderParticipantsStore,
     useSetPrivateParticipantsStore,
@@ -127,7 +125,6 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
-
                 },
                 onError: async (data) => {
                     console.log(data);

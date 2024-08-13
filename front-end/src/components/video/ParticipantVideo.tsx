@@ -1,7 +1,7 @@
 import EmptyVideo from '@components/video/EmptyVideo';
 import VideoComponent from '@components/video/VideoComponent';
 import useRoom from '@hooks/useRoom';
-import { RoomParticipant, useRoomParticipantsStore } from '@stores/video/roomStore';
+import { RoomParticipant } from '@stores/video/roomStore';
 
 interface ParticipantVideoProps {
     roomMax: number;

@@ -1,10 +1,4 @@
-import {
-    useOtherGenderParticipantsStore,
-    useOtherIdxStore,
-    usePrivateParticipantsStore,
-    useSetPrivateParticipantsStore,
-    useSetRoomIdStore,
-} from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -48,7 +42,7 @@ function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
     const [roomStep, setRoomStep] = useState<RoomStep>('active');
-    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
     const roomId = 80;
     const setRoomId = useSetRoomIdStore();

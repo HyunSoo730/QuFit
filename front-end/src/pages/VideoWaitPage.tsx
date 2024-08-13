@@ -14,7 +14,7 @@ const VideoWaitPage = () => {
     const [isMeetingStart, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
     const participants = useRoomParticipantsStore();
-    const { createRoom, joinRoom, leaveRoom } = useRoom();
+    const { leaveRoom } = useRoom();
     const roomId = 80;
     const setRoomId = useSetRoomIdStore();
     const client = useRef<StompJs.Client | null>(null);
@@ -51,7 +51,6 @@ const VideoWaitPage = () => {
                 <ParticipantVideo roomMax={roomMax} gender="m" status="wait" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
-                 
                         <button onClick={() => leaveRoom(roomId)}>나가기</button>
                     </div>
                     <MeetingStartButton
