@@ -8,14 +8,15 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const TextInput = ({ label, name, value, onChange, ...rest }: InputProps) => {
-
     return (
         <div className="relative w-full">
             {label && (
                 <label
                     htmlFor={name}
-                    className={`absolute left-5 px-2 text-lg font-semibold transition-all duration-300 ${
-                        value ? 'top-0 bg-white text-pink transform -translate-y-1/2' : 'top-2/4 text-black/30 transform -translate-y-2/4'
+                    className={`absolute left-5 px-2 font-semibold transition-all duration-300 ${
+                        value
+                            ? 'top-0 bg-white text-pink transform -translate-y-1/2'
+                            : 'top-2/4 text-black/30 transform -translate-y-2/4'
                     }`}
                 >
                     {label}
