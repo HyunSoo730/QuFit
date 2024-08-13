@@ -1,14 +1,16 @@
-import { GENDER, HOBBY, LOCATION, MBTI, PERSONALITY } from '@components/auth/SignupConstants';
+import { GENDER, HOBBY, LOCATION, MBTI, PERSONALITY } from '@components/mypage/SignupConstants';
 import useForm from '@hooks/useForm';
 import Input from '@components/common/input/Input';
 import TextArea from '@components/common/input/TextArea';
+import Select from '@components/common/select/Select';
 import { MemberData, MemberInfoDTO, TypeData } from '@apis/types/request';
-import MultipleTag from '@components/auth/MultipleTag';
-import SingleTag from '@components/auth/SingleTag';
-import MultipleTagGroup from '@components/auth/MultipleTagGroup';
-import SingleTagGroup from '@components/auth/SingleTagGroup';
-import Message from '@components/auth/Message';
+import MultipleTag from '@components/mypage/MultipleTag';
+import SingleTag from '@components/mypage/SingleTag';
+import MultipleTagGroup from '@components/mypage/MultipleTagGroup';
+import SingleTagGroup from '@components/mypage/SingleTagGroup';
+import Message from '@components/mypage/Message';
 import signupValidate from '@utils/signupValidate';
+import generateSelectOptions from '@utils/generateSelectOptions';
 
 interface InfoProps {
     onNext: (data: MemberData | TypeData | MemberInfoDTO) => void;
@@ -22,9 +24,10 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
     });
     return (
         <>
-            <p className="text-4xl font-bold">회원가입</p>
-            <div className="flex">
-                <div className="flex flex-col w-1/2 gap-4 px-10">
+            <p className="py-5 text-4xl font-bold text-white mx-7">내 정보</p>
+            <div className="flex flex-col">
+            <div className="flex flex-row gap-20 mx-5">
+                <div className="flex flex-col w-1/2 px-10 gap-7">
                     {/* 닉네임 */}
                     <div className="flex flex-col">
                         <Input name="nickname" label="닉네임" value={values.nickname} onChange={handleChange} />
@@ -32,11 +35,12 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     </div>
                     {/* 태어난연도 */}
                     <div className="flex flex-col">
-                        <Input
+                        <Select
                             name="birthYear"
                             label="태어난 연도"
                             value={values.birthYear?.toString() || ''}
                             onChange={handleChange}
+                            options={generateSelectOptions(1980, 2000)}
                         />
                         {values.birthYear && <Message valid={valids.birthYear}>{messages.birthYear}</Message>}
                     </div>
@@ -58,6 +62,9 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                         </SingleTagGroup>
                         {values.gender && <Message valid={valids.gender}>{messages.gender}</Message>}
                     </div>
+                </div>
+
+                <div className="flex flex-col w-1/2 gap-4">
                     <div className="flex flex-col">
                         {/* 지역 */}
                         <SingleTagGroup
@@ -72,15 +79,12 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                                 </SingleTag>
                             ))}
                         </SingleTagGroup>
-                        {values.locationId && <Message valid={valids.locationId}>{messages.locationId}</Message>}
+                        {values.locationId && <Message valid={valids.location}>{messages.location}</Message>}
                     </div>
-                </div>
-
-                <div className="flex flex-col w-1/2 gap-4">
                     {/* 취미 */}
                     <div className="flex flex-col">
                         <MultipleTagGroup
-                            label="취미"
+                            label="나의 취미"
                             onChange={(values) => handleCheckboxGroupChange('memberHobbyTags', values)}
                             values={values.memberHobbyTags}
                         >
@@ -99,7 +103,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     {/* 성격 */}
                     <div className="flex flex-col">
                         <MultipleTagGroup
-                            label="성격"
+                            label="나의 성격"
                             onChange={(values) => handleCheckboxGroupChange('memberPersonalityTags', values)}
                             values={values.memberPersonalityTags}
                         >
@@ -117,7 +121,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     {/* MBTI(선택) */}
                     <div className="flex flex-col">
                         <SingleTagGroup
-                            label="MBTI(선택)"
+                            label="나의 MBTI(선택)"
                             name="memberMBTITag"
                             onChange={handleChange}
                             value={values.memberMBTITag!}
@@ -134,7 +138,9 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     </div>
                 </div>
             </div>
-            <button
+            <div
+            className="sticky flex flex-row justify-end gap-2 pr-5 bottom-5">
+                <button
                 onClick={handleSubmit}
                 disabled={
                     !(
@@ -147,10 +153,17 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                         valids.memberMBTITag
                     )
                 }
-                className="absolute disabled:bg-white disabled:effect-none right-0 flex group items-center text-xl border-lightPurple-3 effect-purePink opacity-90 rounded-lg  bg-white justify-center mb-2 mr-3 border-none   hover:border-lightPurple-6  hover:effect-hotPink px-12 py-7 h-7 lg:px-4 lg:h-6 lg:mr-1.5 -translate-y-full"
-            >
+                className="flex items-center justify-center h-4 px-5 py-5 border-2 border-transparent hover:border-pink text-pink rounded-xl disabled:hidden group text-l lg:px-3 lg:h-5 lg:mr-1"
+                >
                 다음페이지
-            </button>
+                </button>
+                <button
+                className="flex items-center justify-center h-5 px-5 py-5 text-white bg-white bg-opacity-50 border-none lex rounded-xl effect-none group text-l opacity-90 hover:bg-opacity-30 lg:px-3 lg:h-5 lg:mr-1">
+                취소
+                </button>
+            </div> 
+                            
+            </div>          
         </>
     );
 };

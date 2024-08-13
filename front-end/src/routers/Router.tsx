@@ -21,10 +21,6 @@ const Router = () => {
             errorElement: <NotFoundPage />,
             children: [
                 {
-                    path: PATH.SIGN_UP,
-                    element: <SignupPage />,
-                },
-                {
                     path: PATH.MAIN,
                     element: <MainPage />,
                 },
@@ -56,6 +52,10 @@ const Router = () => {
                 {
                     path: PATH.PERSONAL_VIDEO(':roomId'),
                     element: <PersonalVideoPage />,
+                },
+                {
+                    path: PATH.SIGN_UP,
+                    element: <SignupPage />,
                 },
             ],
         },

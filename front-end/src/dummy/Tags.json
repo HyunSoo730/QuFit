@@ -1,0 +1,802 @@
+[
+  {
+    "tag_id": 7,
+    "tag_name": "personality-tag-1",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 8,
+    "tag_name": "personality-tag-2",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 11,
+    "tag_name": "hobby-tag-1",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 12,
+    "tag_name": "hobby-tag-2",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 253,
+    "tag_name": "INFP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 254,
+    "tag_name": "ENFP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 255,
+    "tag_name": "INTP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 256,
+    "tag_name": "ENTP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 257,
+    "tag_name": "INFJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 258,
+    "tag_name": "ENFJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 259,
+    "tag_name": "INTJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 260,
+    "tag_name": "ENTJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 261,
+    "tag_name": "ISFP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 262,
+    "tag_name": "ESFP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 263,
+    "tag_name": "ISTP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 264,
+    "tag_name": "ESTP",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 265,
+    "tag_name": "ISFJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 266,
+    "tag_name": "ESFJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 267,
+    "tag_name": "ISTJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 268,
+    "tag_name": "ESTJ",
+    "tag_category": "MBTI"
+  },
+  {
+    "tag_id": 269,
+    "tag_name": "낙천적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 270,
+    "tag_name": "긍정적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 271,
+    "tag_name": "체계적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 272,
+    "tag_name": "즉흥적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 273,
+    "tag_name": "전문적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 274,
+    "tag_name": "계획적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 275,
+    "tag_name": "창의적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 276,
+    "tag_name": "감성적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 277,
+    "tag_name": "독립적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 278,
+    "tag_name": "직설적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 279,
+    "tag_name": "능동적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 280,
+    "tag_name": "수동적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 281,
+    "tag_name": "자립적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 282,
+    "tag_name": "안정적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 283,
+    "tag_name": "실질적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 284,
+    "tag_name": "사교적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 285,
+    "tag_name": "다정한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 286,
+    "tag_name": "꼼꼼한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 287,
+    "tag_name": "알뜰한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 288,
+    "tag_name": "신중한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 289,
+    "tag_name": "현명한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 290,
+    "tag_name": "친절한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 291,
+    "tag_name": "쾌활한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 292,
+    "tag_name": "온화한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 293,
+    "tag_name": "따뜻한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 294,
+    "tag_name": "과묵한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 295,
+    "tag_name": "검소한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 296,
+    "tag_name": "상냥한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 297,
+    "tag_name": "산만한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 298,
+    "tag_name": "솔직한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 299,
+    "tag_name": "겸손한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 300,
+    "tag_name": "적응을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 301,
+    "tag_name": "표현을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 302,
+    "tag_name": "배려를 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 303,
+    "tag_name": "경청을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 304,
+    "tag_name": "감수성이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 305,
+    "tag_name": "상상력이 풍부한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 306,
+    "tag_name": "도전 정신이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 307,
+    "tag_name": "분석력이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 308,
+    "tag_name": "끈기있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 309,
+    "tag_name": "재치있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 310,
+    "tag_name": "야망이 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 311,
+    "tag_name": "추진력이 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 312,
+    "tag_name": "일관성 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 313,
+    "tag_name": "인내심 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 314,
+    "tag_name": "공감 능력이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 315,
+    "tag_name": "유머러스한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 316,
+    "tag_name": "우유부단한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 317,
+    "tag_name": "책임감 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 318,
+    "tag_name": "지혜로운",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 319,
+    "tag_name": "집중력이 좋은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 320,
+    "tag_name": "이해가 빠른",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 321,
+    "tag_name": "규칙을 잘 지키는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 322,
+    "tag_name": "겁이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 323,
+    "tag_name": "긴장을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 324,
+    "tag_name": "동물을 좋아하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 325,
+    "tag_name": "세심한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 326,
+    "tag_name": "이타적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 327,
+    "tag_name": "직감이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 328,
+    "tag_name": "이해심이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 329,
+    "tag_name": "신뢰감을 주는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 330,
+    "tag_name": "자유로운",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 331,
+    "tag_name": "활발한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 332,
+    "tag_name": "주도적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 333,
+    "tag_name": "밝은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 334,
+    "tag_name": "호기심 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 335,
+    "tag_name": "적극적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 336,
+    "tag_name": "생각이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 337,
+    "tag_name": "리액션이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 338,
+    "tag_name": "순애보적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 339,
+    "tag_name": "합리적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 340,
+    "tag_name": "진지한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 341,
+    "tag_name": "천천히 다가가는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 342,
+    "tag_name": "독서",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 343,
+    "tag_name": "음악 감상",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 344,
+    "tag_name": "코인노래방",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 345,
+    "tag_name": "사진 촬영",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 346,
+    "tag_name": "여행",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 347,
+    "tag_name": "요리",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 348,
+    "tag_name": "베이킹",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 349,
+    "tag_name": "게임",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 350,
+    "tag_name": "뮤지컬 관람",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 351,
+    "tag_name": "영화보기",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 352,
+    "tag_name": "드라마보기",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 353,
+    "tag_name": "운동",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 354,
+    "tag_name": "러닝",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 355,
+    "tag_name": "배드민턴",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 356,
+    "tag_name": "테니스",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 357,
+    "tag_name": "수영",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 358,
+    "tag_name": "요가",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 359,
+    "tag_name": "필라테스",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 360,
+    "tag_name": "등산",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 361,
+    "tag_name": "산책",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 362,
+    "tag_name": "캠핑",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 363,
+    "tag_name": "낚시",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 364,
+    "tag_name": "홈트",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 365,
+    "tag_name": "뜨개질",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 366,
+    "tag_name": "캘리그래피",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 367,
+    "tag_name": "블로그 운영",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 368,
+    "tag_name": "자기개발",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 369,
+    "tag_name": "프로그래밍",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 370,
+    "tag_name": "재봉",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 371,
+    "tag_name": "골프",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 372,
+    "tag_name": "보석 십자수",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 373,
+    "tag_name": "퍼즐",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 374,
+    "tag_name": "볼링",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 375,
+    "tag_name": "자전거",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 376,
+    "tag_name": "주식",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 377,
+    "tag_name": "폴댄스",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 378,
+    "tag_name": "라탄 공예",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 379,
+    "tag_name": "보드게임",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 380,
+    "tag_name": "요리",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 381,
+    "tag_name": "쇼핑",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 382,
+    "tag_name": "홈카페",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 383,
+    "tag_name": "목공예",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 384,
+    "tag_name": "가죽공예",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 385,
+    "tag_name": "방탈출",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 386,
+    "tag_name": "전시회",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 387,
+    "tag_name": "공연",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 388,
+    "tag_name": "칵테일",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 389,
+    "tag_name": "글쓰기",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 390,
+    "tag_name": "대화",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 391,
+    "tag_name": "연극",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 392,
+    "tag_name": "추리게임",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 393,
+    "tag_name": "인테리어",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 394,
+    "tag_name": "댄스",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 395,
+    "tag_name": "뷰티",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 396,
+    "tag_name": "사주/타로",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 397,
+    "tag_name": "심리테스트",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 398,
+    "tag_name": "오일파스텔",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 399,
+    "tag_name": "아크릴화",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 400,
+    "tag_name": "펜/연필 드로잉",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 401,
+    "tag_name": "수채화",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 402,
+    "tag_name": "디지털 드로잉",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 403,
+    "tag_name": "레진공예",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 404,
+    "tag_name": "영상편집",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 405,
+    "tag_name": "포토샵",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 406,
+    "tag_name": "유튜브",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 407,
+    "tag_name": "디자인",
+    "tag_category": "HOBBY"
+  },
+  {
+    "tag_id": 408,
+    "tag_name": "밴드",
+    "tag_category": "HOBBY"
+  }
+]

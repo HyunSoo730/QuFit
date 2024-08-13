@@ -9,10 +9,10 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = ({ label, name, value, onChange, ...rest }: InputProps) => {
     return (
-        <label className="flex flex-col gap-3">
-            {label && <p className="text-3xl">{label}</p>}
+        <label className="flex flex-col gap-1">
+            {label && <p className="font-semibold text-white text-l">{label}</p>}
             <input
-                className="relative w-full pr-20 bg-transparent border-4 rounded-full outline-none h-14 border-lightPurple-3 effect-purePink pl-7 placeholder:text-white placeholder:opacity-80 lg:h-12 md:h-20 md:text-xl md:pr-24 sm:h-20 sm:text-xl sm:pr-24 xs:h-20 xs:text-xl xs:pr-24"
+                className="relative w-full h-10 pl-5 text-white bg-transparent border-2 border-white outline-none text-md border-t-transparent border-r-transparent border-l-transparent placeholder:text-white placeholder:opacity-80 focus:ring-pink lg:h-10 md:h-10 md:text-xs md:pr-15 sm:h-10 sm:text-xs sm:pr-10 xs:h-10 xs:text-sm xs:pr-10"
                 name={name}
                 value={value}
                 onChange={onChange}

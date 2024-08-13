@@ -1,0 +1,377 @@
+[
+  {
+    "tag_id": 7,
+    "tag_name": "personality-tag-1",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 8,
+    "tag_name": "personality-tag-2",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 269,
+    "tag_name": "낙천적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 270,
+    "tag_name": "긍정적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 271,
+    "tag_name": "체계적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 272,
+    "tag_name": "즉흥적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 273,
+    "tag_name": "전문적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 274,
+    "tag_name": "계획적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 275,
+    "tag_name": "창의적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 276,
+    "tag_name": "감성적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 277,
+    "tag_name": "독립적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 278,
+    "tag_name": "직설적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 279,
+    "tag_name": "능동적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 280,
+    "tag_name": "수동적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 281,
+    "tag_name": "자립적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 282,
+    "tag_name": "안정적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 283,
+    "tag_name": "실질적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 284,
+    "tag_name": "사교적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 285,
+    "tag_name": "다정한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 286,
+    "tag_name": "꼼꼼한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 287,
+    "tag_name": "알뜰한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 288,
+    "tag_name": "신중한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 289,
+    "tag_name": "현명한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 290,
+    "tag_name": "친절한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 291,
+    "tag_name": "쾌활한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 292,
+    "tag_name": "온화한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 293,
+    "tag_name": "따뜻한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 294,
+    "tag_name": "과묵한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 295,
+    "tag_name": "검소한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 296,
+    "tag_name": "상냥한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 297,
+    "tag_name": "산만한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 298,
+    "tag_name": "솔직한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 299,
+    "tag_name": "겸손한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 300,
+    "tag_name": "적응을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 301,
+    "tag_name": "표현을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 302,
+    "tag_name": "배려를 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 303,
+    "tag_name": "경청을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 304,
+    "tag_name": "감수성이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 305,
+    "tag_name": "상상력이 풍부한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 306,
+    "tag_name": "도전 정신이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 307,
+    "tag_name": "분석력이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 308,
+    "tag_name": "끈기있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 309,
+    "tag_name": "재치있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 310,
+    "tag_name": "야망이 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 311,
+    "tag_name": "추진력이 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 312,
+    "tag_name": "일관성 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 313,
+    "tag_name": "인내심 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 314,
+    "tag_name": "공감 능력이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 315,
+    "tag_name": "유머러스한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 316,
+    "tag_name": "우유부단한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 317,
+    "tag_name": "책임감 있는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 318,
+    "tag_name": "지혜로운",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 319,
+    "tag_name": "집중력이 좋은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 320,
+    "tag_name": "이해가 빠른",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 321,
+    "tag_name": "규칙을 잘 지키는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 322,
+    "tag_name": "겁이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 323,
+    "tag_name": "긴장을 잘하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 324,
+    "tag_name": "동물을 좋아하는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 325,
+    "tag_name": "세심한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 326,
+    "tag_name": "이타적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 327,
+    "tag_name": "직감이 뛰어난",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 328,
+    "tag_name": "이해심이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 329,
+    "tag_name": "신뢰감을 주는",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 330,
+    "tag_name": "자유로운",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 331,
+    "tag_name": "활발한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 332,
+    "tag_name": "주도적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 333,
+    "tag_name": "밝은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 334,
+    "tag_name": "호기심 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 335,
+    "tag_name": "적극적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 336,
+    "tag_name": "생각이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 337,
+    "tag_name": "리액션이 많은",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 338,
+    "tag_name": "순애보적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 339,
+    "tag_name": "합리적인",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 340,
+    "tag_name": "진지한",
+    "tag_category": "PERSONALITY"
+  },
+  {
+    "tag_id": 341,
+    "tag_name": "천천히 다가가는",
+    "tag_category": "PERSONALITY"
+  }
+]

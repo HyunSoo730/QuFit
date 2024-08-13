@@ -7,10 +7,14 @@ export const KAKAO_LOGIN_URL = `${AUTH_CODE_PATH}?client_id=${REST_API_KEY}&redi
     FRONT_URL + REDIRECT_URI
 }&response_type=code`;
 
+export const WEB_SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL;
+
 export const END_POINT = {
     LOGIN: 'qufit/auth/login',
     SIGN_UP: 'qufit/auth/signup',
     CHECK_NICKNAME: 'qufit/check-nickname',
+
+    MEMBER: `qufit/member`,
 
     VIDEO: 'qufit/video',
     VIDEO_DETAIL: (videoId: number) => `qufit/video/${videoId}`,
@@ -18,6 +22,8 @@ export const END_POINT = {
     VIDEO_LEAVE: (videoId: number) => `qufit/video/${videoId}/leave`,
     VIDEO_FILTER: `qufit/video/filter`,
     VIDEO_RECOMMENDATION: `qufit/video/recommendation`,
+
+    GAME: `qufit/game`,
 };
 
 export const HTTP_STATUS = {

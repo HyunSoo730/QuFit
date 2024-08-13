@@ -52,20 +52,20 @@ function VideoComponent({ track, isManager, participateName, local = false }: Vi
             // style={{ width, height }}
             onClick={changeCameraEnabled}
         >
-            <div>{isManager && <CrownIcon width={'3.125rem'} />}</div>
+            <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
             <div className="flex items-center justify-between w-full">
-                <p className="text-lg font-bold text-white ">{participateName + (local ? ' (You)' : '')}</p>
+                <p className="font-medium text-white text-md xs:text-xs sm:text-sm">{participateName + (local ? ' (You)' : '')}</p>
 
-                <div>{isMicEnable ? <MicOnIcon width={'1.875rem'} /> : <MicOffIcon width={'1.875rem'} />}</div>
+                <div>{isMicEnable ? <MicOnIcon width={'1.7rem'} /> : <MicOffIcon width={'1.7rem'} />}</div>
 
                 <div className="absolute left-0 w-full px-4 pb-3 transition-all duration-1000 group">
                     <button
-                        className="invisible w-full bg-white h-14 rounded-xl group-hover:visible "
+                        className="invisible w-full h-8 bg-darkPurple rounded-xl group-hover:visible"
                         onClick={(event) => changeMicrophoneEnabled(event)}
                     >
                         <div className="flex items-center justify-center gap-1">
                             {isMicEnable ? <MicOffIcon width={'1.25rem'} /> : <MicOnIcon width={'1.25rem'} />}
-                            <p className={`text-base  ${isMicEnable && ' text-purple'}`}>
+                            <p className={`text-sm xs:text-xs  ${isMicEnable && ' text-smokeWhite'}`}>
                                 {isMicEnable ? '마이크 끄기' : '마이크 켜기'}
                             </p>
                         </div>

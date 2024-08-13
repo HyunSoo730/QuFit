@@ -25,10 +25,22 @@ export default {
                 4: '#F7D6FB',
                 5: '#E5D1F9',
                 6: '#FCB5F6',
+                7: '#F3E9FF',
             },
+            darkPurple: '#7B7183',
+            gray: '#1F1F1F',
             transparent: 'transparent',
         },
         extend: {
+            keyframes: {
+                choice: {
+                    from: { width: '100%' },
+                    to: { width: '0' },
+                },
+            },
+            animation: {
+                choice: 'choice 6s',
+            },
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",
                 bluePurple:
@@ -45,6 +57,7 @@ export default {
                 layout: '1.6 / 1',
                 header: '13 / 1',
                 video: '355/260',
+                gameBg: '916/496',
             },
 
             fontFamily: {

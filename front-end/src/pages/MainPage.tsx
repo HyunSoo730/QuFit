@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { useVideoRoomQuery } from '@queries/useVideoQuery';
 import { BoxIcon, RecommendRoomIcon, FilterIcon } from '@assets/svg/main';
 import RoomCard from '@components/main/RoomCard';
 import { CreateRoomModal, RoomEntryModal } from '@modals/main/RoomModal';
 import useModal from '@hooks/useModal';
+import { useVideoRoomQuery } from '@queries/useVideoQuery';
 
-interface RoomInfoProps {
+interface RoomsInfoProps {
     videoRoomId: number;
     videoRoomName: string;
     videoRoomHobby: string[];
@@ -16,12 +16,20 @@ const MainPage = () => {
     const [openModal, setOpenModal] = useState('');
 
     const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
 
-    const [roomsList, setRoomsList] = useState<RoomInfoProps[]>([]);
+    const [roomsList, setRoomsList] = useState<RoomsInfoProps[]>([]);
 
     const endRef = useRef<HTMLDivElement>(null);
 
-    const RoomsInfoList = useVideoRoomQuery(page, 12, 1).data?.data.videoRoomList;
+    const getRoomsData = useVideoRoomQuery(page, 12, 1);
+    const RoomsInfoList = getRoomsData.data?.data?.videoRoomList;
+
+    useEffect(() => {
+        if (getRoomsData.isError) {
+            setHasMore(false);
+        }
+    }, [getRoomsData.isError]);
 
     useEffect(() => {
         if (RoomsInfoList) {
@@ -31,9 +39,11 @@ const MainPage = () => {
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
+            if (entries[0].isIntersecting && hasMore) {
                 console.log('패칭');
-                fetchData();
+                setPage((prev) => {
+                    return prev + 1;
+                });
             }
         });
 
@@ -43,18 +53,10 @@ const MainPage = () => {
 
         return () => {
             if (endRef.current) {
-                console.log('패');
                 observer.unobserve(endRef.current);
             }
         };
-    }, []);
-
-    const fetchData = () => {
-        console.log('진입');
-        setPage((prevPage) => {
-            return prevPage + 1;
-        });
-    };
+    }, [hasMore]);
 
     const handleOpenModalButton = (props: string) => {
         setOpenModal(props);
@@ -102,7 +104,7 @@ const MainPage = () => {
                 className="grid w-full h-full grid-cols-3 gap-8 overflow-y-auto scrollbar-hide md:grid-cols-2 lg:gap-6 xl:grid-cols-4 xl:gap-6 sm:grid-cols-2 xs:grid-cols-1"
             >
                 {roomsList &&
-                    roomsList.map((data: RoomInfoProps) => (
+                    roomsList.map((data: RoomsInfoProps) => (
                         <RoomCard
                             key={data.videoRoomId}
                             id={data.videoRoomId}

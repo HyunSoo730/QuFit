@@ -1,61 +1,51 @@
+import { getVideoDetail } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
+import useMember from '@hooks/useMember';
 import {
     useCreateVideoRoomMutation,
     useJoinVideoRoomMutation,
     useLeaveVideoRoomMutation,
 } from '@queries/useVideoQuery';
 import {
+    RoomParticipant,
+    useHostIdStore,
     useRoomAddParticipantStore,
-    useRoomManagerNameStore,
-    useRoomMyNameStore,
-    useRoomSetManagerNameStore,
+    useRoomSetParticipantsStore,
     useRoomStateStore,
+    useSetHostIdStore,
     useSetRoomStateStore,
 } from '@stores/video/roomStore';
 import { Room, RoomEvent } from 'livekit-client';
-import { useEffect, useState } from 'react';
 
 const useRoom = () => {
-    const [_, setVideoRoomId] = useState<number | null>(null);
     const room = useRoomStateStore();
     const setRoom = useSetRoomStateStore();
-    const managerName = useRoomManagerNameStore();
-    const myName = useRoomMyNameStore();
+    const { member } = useMember();
 
-    const [isManager, setIsManager] = useState(false);
-
-    useEffect(() => {
-        setIsManager(!!myName && !!managerName && managerName === myName);
-    }, [managerName, myName]);
-
-    const setManagerName = useRoomSetManagerNameStore();
     const addParticipant = useRoomAddParticipantStore();
-
+    const setParticipants = useRoomSetParticipantsStore();
+    const setHostId = useSetHostIdStore();
+    const hostId = useHostIdStore();
     const createVideoRoom = useCreateVideoRoomMutation();
     const joinVideoRoom = useJoinVideoRoomMutation();
     const leaveVideoRoom = useLeaveVideoRoomMutation();
-
-    const addRoomEventHandler = async (room: Room) => {
-        room.on(RoomEvent.ParticipantConnected, (participant) => {
-            addParticipant({ memberId: 1, gender: 'f', nickname: '현명', info: participant });
+    const isHost = member?.memberId === hostId;
+    const addRoomEventHandler = async (room: Room, roomId: number) => {
+        room.on(RoomEvent.ParticipantConnected, async (participant) => {
+            try {
+                const response = await getVideoDetail(roomId);
+                const newParticipant = response.data.members.find(
+                    (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
+                        member.id === Number(participant.identity),
+                );
+                addParticipant({ ...newParticipant, info: participant });
+            } catch (error) {}
         });
     };
 
     const decideManager = async (room: Room) => {
         await room.localParticipant.enableCameraAndMicrophone();
-        // await room.localParticipant.setCameraEnabled(true);
-        const curParticipants = [];
-        curParticipants.push(room.localParticipant);
-        Array.from(room.remoteParticipants.values()).forEach((participant) => curParticipants.push(participant));
-        curParticipants.sort((partA, partB) => {
-            if (new Date(partA.joinedAt!).getTime() > new Date(partB.joinedAt!).getTime()) return 1;
-            else return -1;
-        });
-
-        setManagerName(curParticipants[0].name!);
-        addParticipant({ memberId: 1, gender: 'f', nickname: '현명', info: room.localParticipant });
     };
-
     const createRoom = () => {
         createVideoRoom.mutate(
             {
@@ -66,12 +56,24 @@ const useRoom = () => {
             },
             {
                 onSuccess: async (data) => {
-                    setVideoRoomId(data.data.videoRoomId);
                     const room = new Room(ROOM_SETTING);
                     await room.connect(LIVEKIT_URL, data?.data.token);
                     setRoom(room);
-                    addRoomEventHandler(room);
+                    addRoomEventHandler(room, data.data.videoRoomId);
+
                     decideManager(room);
+                    setHostId(member?.memberId!);
+                    addParticipant({
+                        id: member?.memberId,
+                        gender: member?.gender,
+                        nickname: member?.nickname,
+                        info: room.localParticipant,
+                    });
+
+                    // console.log(location.pathname);
+                    // if (location.pathname.includes('/video/group/')) {
+                    //     navigate(PATH.PERSONAL_VIDEO(data.data.videoRoomId));
+                    // }
                 },
                 onError: async (data) => {
                     console.log(data);
@@ -83,13 +85,32 @@ const useRoom = () => {
     async function joinRoom(videoRoomId: number) {
         const room = new Room(ROOM_SETTING);
         setRoom(room);
-
         joinVideoRoom.mutate(videoRoomId, {
-            onSuccess: async (data) => {
-                await room.connect(LIVEKIT_URL, data?.data.token);
-                addRoomEventHandler(room);
+            onSuccess: async (response) => {
+                await room.connect(LIVEKIT_URL, response?.data.token);
+                const curParticipants: RoomParticipant[] = [];
+                try {
+                    const response = await getVideoDetail(videoRoomId);
+                    Array.from(room.remoteParticipants.values()).forEach((participant) => {
+                        const newParticipant = response.data.members.find(
+                            (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
+                                String(member.id) === participant.identity,
+                        );
+                        curParticipants.push({ ...newParticipant, info: participant });
+                    });
+                    setHostId(response.data.hostId);
+                } catch (error) {
+                    console.log(error);
+                }
+                curParticipants.push({
+                    id: member?.memberId,
+                    gender: member?.gender,
+                    nickname: member?.nickname,
+                    info: room.localParticipant,
+                });
+                setParticipants(curParticipants);
+                addRoomEventHandler(room, videoRoomId);
                 decideManager(room);
-                setVideoRoomId(videoRoomId!);
             },
         });
     }
@@ -102,7 +123,7 @@ const useRoom = () => {
             },
         });
     }
-    return { isManager, createRoom, joinRoom, leaveRoom };
+    return { hostId, isHost, createRoom, joinRoom, leaveRoom };
 };
 
 export default useRoom;

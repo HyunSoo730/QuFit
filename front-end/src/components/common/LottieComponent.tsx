@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Lottie, { AnimationConfigWithData, AnimationItem } from 'lottie-web';
 
-// Define the interface for the props
 interface LottieComponentProps {
     animationData: object; // Replace 'object' with the specific type if available
     loop?: boolean;
@@ -11,10 +10,10 @@ interface LottieComponentProps {
     isStopped?: boolean;
     init?: number;
     end?: number;
+    onComplete?: () => void; // 추가된 콜백 함수
     [key: string]: any; // For any additional props
 }
 
-// Define the Lottie component
 const LottieComponent: React.FC<LottieComponentProps> = ({
     animationData,
     loop = true,
@@ -24,13 +23,12 @@ const LottieComponent: React.FC<LottieComponentProps> = ({
     isStopped,
     init = 0,
     end = 10000,
+    onComplete, // onComplete prop 추가
     ...restProps
 }) => {
-    // Ref for the Lottie animation container
     const animationContainer = useRef<HTMLDivElement | null>(null);
     const [animationInstance, setAnimationInstance] = useState<AnimationItem | null>(null);
 
-    // Load and initialize the Lottie animation
     useEffect(() => {
         if (!animationContainer.current) return;
 
@@ -45,35 +43,34 @@ const LottieComponent: React.FC<LottieComponentProps> = ({
             },
         };
 
-        // Load the Lottie animation
         const animation = Lottie.loadAnimation(animationOptions);
-        // Update the animation instance state
-        setAnimationInstance(animation);
-        // Cleanup animation on component unmount
 
+        if (onComplete) {
+            animation.addEventListener('loopComplete', onComplete);
+            // animation.addEventListener('drawnFrame', onComplete);
+        }
+        setAnimationInstance(animation);
         return () => {
+            animation.removeEventListener('loopComplete', onComplete);
             animation.destroy();
         };
-    }, [animationData, loop, autoplay, init, end]);
+        // 애니메이션이 완료되었을 때 콜백 함수 호출
+    }, [animationData, loop, autoplay, init, end, onComplete]);
 
-    // Manage Lottie interactions
     useEffect(() => {
         if (animationInstance !== null) {
-            // Pause or play based on isPaused prop
             if (isPaused) {
                 animationInstance.pause();
             } else {
                 animationInstance.play();
             }
 
-            // Stop based on isStopped prop
             if (isStopped) {
                 animationInstance.stop();
             } else {
                 animationInstance.playSegments([init, end], true);
             }
 
-            // Set speed if provided
             if (speed !== undefined) {
                 animationInstance.setSpeed(speed);
             }
