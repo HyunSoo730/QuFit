@@ -10,12 +10,16 @@ import {
     RoomParticipant,
     useHostIdStore,
     useRoomAddParticipantStore,
+    useRoomParticipantsStore,
     useRoomSetParticipantsStore,
     useRoomStateStore,
+    useSetFemaleParticipantsStore,
     useSetHostIdStore,
+    useSetMaleParticipantsStore,
     useSetRoomStateStore,
 } from '@stores/video/roomStore';
 import { Room, RoomEvent } from 'livekit-client';
+import { useEffect } from 'react';
 
 const useRoom = () => {
     const room = useRoomStateStore();
@@ -30,6 +34,37 @@ const useRoom = () => {
     const joinVideoRoom = useJoinVideoRoomMutation();
     const leaveVideoRoom = useLeaveVideoRoomMutation();
     const isHost = member?.memberId === hostId;
+
+    const setMaleParticipants = useSetMaleParticipantsStore();
+    const setFemaleParticipants = useSetFemaleParticipantsStore();
+    const setPrivateParticipants = useSetFemaleParticipantsStore();
+    const setOtherGenderParticipants = useSetFemaleParticipantsStore();
+    const participants = useRoomParticipantsStore();
+
+    useEffect(() => {
+        const maleParticipants = participants
+            .filter((participant) => participant.gender === 'm')
+            .sort((a, b) => a.id! - b.id!);
+        const femaleParticipants = participants
+            .filter((participant) => participant.gender === 'f')
+            .sort((a, b) => a.id! - b.id!);
+        if (member?.gender === 'm') {
+            const currentUserIndex = maleParticipants.findIndex((participant) => participant.id === member?.memberId);
+            const reorderedOtherParticipants = femaleParticipants
+                .slice(currentUserIndex)
+                .concat(femaleParticipants.slice(0, currentUserIndex));
+            setOtherGenderParticipants(reorderedOtherParticipants);
+        } else if (member?.gender === 'f') {
+            const currentUserIndex = femaleParticipants.findIndex((participant) => participant.id === member?.memberId);
+            const reorderedOtherParticipants = maleParticipants
+                .slice(currentUserIndex)
+                .concat(maleParticipants.slice(0, currentUserIndex));
+            console.log(reorderedOtherParticipants);
+
+            setOtherGenderParticipants(reorderedOtherParticipants);
+        }
+    }, [participants]);
+
     const addRoomEventHandler = async (room: Room, roomId: number) => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
             try {
@@ -69,11 +104,6 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
-
-                    // console.log(location.pathname);
-                    // if (location.pathname.includes('/video/group/')) {
-                    //     navigate(PATH.PERSONAL_VIDEO(data.data.videoRoomId));
-                    // }
                 },
                 onError: async (data) => {
                     console.log(data);
@@ -82,7 +112,7 @@ const useRoom = () => {
         );
     };
 
-    async function joinRoom(videoRoomId: number) {
+    const joinRoom = async (videoRoomId: number) => {
         const room = new Room(ROOM_SETTING);
         setRoom(room);
         joinVideoRoom.mutate(videoRoomId, {
@@ -113,16 +143,16 @@ const useRoom = () => {
                 decideManager(room);
             },
         });
-    }
+    };
 
-    async function leaveRoom(videoRoomId: number) {
+    const leaveRoom = (videoRoomId: number) => {
         leaveVideoRoom.mutate(videoRoomId, {
             onSuccess: async () => {
                 await room?.disconnect();
                 setRoom(undefined);
             },
         });
-    }
+    };
     return { hostId, isHost, createRoom, joinRoom, leaveRoom };
 };
 

@@ -23,7 +23,6 @@ const GamePlay = ({ id, title, scenario1, scenario2, onNext }: GamePlayProps) =>
             videoRoomId: roomId,
             answer: Number(answer),
         };
-        console.log(data);
         onNext(data);
     };
 

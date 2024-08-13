@@ -3,7 +3,6 @@ import LottieComponent from '@components/common/LottieComponent';
 import useRoom from '@hooks/useRoom';
 import MeetingStartTimer from '@components/game/MeetingStartTimer';
 import { MEETING_START_SEC } from '@components/game/Constants';
-import { useState } from 'react';
 
 interface MeetingStartButtonProps {
     onNext: () => void;

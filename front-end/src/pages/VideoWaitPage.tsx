@@ -17,7 +17,7 @@ const VideoWaitPage = () => {
     const [isMeetingStart, setIsMettingStart] = useState(false);
     // const { videoRoomId } = useParams();
     const { createRoom, joinRoom, leaveRoom } = useRoom();
-    const roomId = 32;
+    const roomId = 46;
     const setRoomId = useSetRoomIdStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();

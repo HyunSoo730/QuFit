@@ -27,7 +27,6 @@ import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/webso
 import * as StompJs from '@stomp/stompjs';
 
 type RoomStep =
-    | 'wait'
     | 'active'
     | 'loading'
     | 'game'
@@ -51,42 +50,14 @@ function GroupVideoPage() {
     const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 30;
+    const roomId = 45;
     const setRoomId = useSetRoomIdStore();
-    const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const setResults = useSetResultsStore();
     const problems = useProblemsStore();
     const setProblems = useSetProblemsStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();
 
-    const participants = useRoomParticipantsStore();
-
-    const maleParticipants = participants
-        .filter((participant) => participant.gender === 'm')
-        .sort((a, b) => a.id! - b.id!);
-    const femaleParticipants = participants
-        .filter((participant) => participant.gender === 'f')
-        .sort((a, b) => a.id! - b.id!);
-
-    useEffect(() => {
-        if (member?.gender === 'm') {
-            const currentUserIndex = maleParticipants.findIndex((participant) => participant.id === member?.memberId);
-            const reorderedOtherParticipants = femaleParticipants
-                .slice(currentUserIndex)
-                .concat(femaleParticipants.slice(0, currentUserIndex));
-            console.log(reorderedOtherParticipants);
-            setOtherGenderParticipants(reorderedOtherParticipants);
-        } else if (member?.gender === 'f') {
-            const currentUserIndex = femaleParticipants.findIndex((participant) => participant.id === member?.memberId);
-            const reorderedOtherParticipants = maleParticipants
-                .slice(currentUserIndex)
-                .concat(maleParticipants.slice(0, currentUserIndex));
-            console.log(reorderedOtherParticipants);
-
-            setOtherGenderParticipants(reorderedOtherParticipants);
-        }
-    }, [participants]);
     const otherIdx = useOtherIdxStore();
     const otherGenderParticipants = useOtherGenderParticipantsStore();
     const handleConfirmModal = async () => {
