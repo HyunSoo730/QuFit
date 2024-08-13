@@ -90,8 +90,8 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                         >
                             {HOBBY.map((hobby) => (
                                 <>
-                                    <MultipleTag key={hobby} value={hobby}>
-                                        {hobby}
+                                    <MultipleTag key={hobby.tag_name} value={hobby.tag_name}>
+                                        {hobby.tag_name}
                                     </MultipleTag>
                                 </>
                             ))}
@@ -108,8 +108,8 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             values={values.memberPersonalityTags}
                         >
                             {PERSONALITY.map((personality) => (
-                                <MultipleTag key={personality} value={personality}>
-                                    {personality}
+                                <MultipleTag key={personality.tag_name} value={personality.tag_name}>
+                                    {personality.tag_name}
                                 </MultipleTag>
                             ))}
                         </MultipleTagGroup>
@@ -127,8 +127,8 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             value={values.memberMBTITag!}
                         >
                             {MBTI.map((mbti) => (
-                                <SingleTag key={mbti} value={mbti}>
-                                    {mbti}
+                                <SingleTag key={mbti.tag_name} value={mbti.tag_name}>
+                                    {mbti.tag_name}
                                 </SingleTag>
                             ))}
                         </SingleTagGroup>

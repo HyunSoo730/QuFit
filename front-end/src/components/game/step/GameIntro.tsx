@@ -23,12 +23,15 @@ const GameIntro = ({ onNext }: BalanceGameIntroProps) => {
 
                 <button
                     onClick={gameStart}
-                    className="flex items-center animate-bounce absolute bottom-[8rem] left-1/2 -translate-x-1/2"
+                    className="  absolute bottom-[8rem] left-1/2 -translate-x-1/2"
                 >
+                    <div className='flex items-center animate-bounce'>
+
                     <PlayIcon width={'2rem'} />
                     <p className="text-2xl font-bold text-white">
                         {isHost ? 'CLICK START' : '방장이 게임을 시작할 때까지 기다려주세요.'}
                     </p>
+                    </div>
                 </button>
             </div>
         </>
