@@ -31,10 +31,6 @@ const Router = () => {
                     element: <CreateRoomPage />,
                 },
                 {
-                    path: PATH.INTRODUCTION,
-                    element: <IntroductionPage />,
-                },
-                {
                     path: PATH.CHATTING,
                     element: <ChattingPage />,
                 },
@@ -73,6 +69,11 @@ const Router = () => {
         {
             path: 'auth/kakao',
             element: <KakaoRedirectPage />,
+        },
+        {
+            path: PATH.ROOT,
+            errorElement: <NotFoundPage />,
+            children: [{ path: PATH.INTRODUCTION, element: <IntroductionPage /> }],
         },
     ];
 

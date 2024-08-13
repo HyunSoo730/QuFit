@@ -29,6 +29,7 @@ export default {
             },
             darkPurple: '#7B7183',
             gray: '#1F1F1F',
+            yellow: '#FFB746',
             transparent: 'transparent',
         },
         extend: {
