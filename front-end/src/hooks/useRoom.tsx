@@ -1,3 +1,4 @@
+import { instance } from '@apis/axios';
 import { getVideoDetail } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
@@ -6,26 +7,32 @@ import {
     useJoinVideoRoomMutation,
     useLeaveVideoRoomMutation,
 } from '@queries/useVideoQuery';
+import { PATH } from '@routers/PathConstants';
 import {
     RoomParticipant,
     useHostIdStore,
+    useOtherGenderParticipantsStore,
+    useOtherIdxStore,
+    usePrivateParticipantsStore,
     useRoomAddParticipantStore,
     useRoomParticipantsStore,
     useRoomSetParticipantsStore,
     useRoomStateStore,
     useSetFemaleParticipantsStore,
     useSetHostIdStore,
-    useSetMaleParticipantsStore,
+    useSetOtherGenderParticipantsStore,
+    useSetPrivateParticipantsStore,
     useSetRoomStateStore,
 } from '@stores/video/roomStore';
 import { Room, RoomEvent } from 'livekit-client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const useRoom = () => {
     const room = useRoomStateStore();
     const setRoom = useSetRoomStateStore();
     const { member } = useMember();
-
+    const navigate = useNavigate();
     const addParticipant = useRoomAddParticipantStore();
     const setParticipants = useRoomSetParticipantsStore();
     const setHostId = useSetHostIdStore();
@@ -35,11 +42,15 @@ const useRoom = () => {
     const leaveVideoRoom = useLeaveVideoRoomMutation();
     const isHost = member?.memberId === hostId;
 
-    const setMaleParticipants = useSetMaleParticipantsStore();
-    const setFemaleParticipants = useSetFemaleParticipantsStore();
-    const setPrivateParticipants = useSetFemaleParticipantsStore();
-    const setOtherGenderParticipants = useSetFemaleParticipantsStore();
+    const otherGenderParticipants = useOtherGenderParticipantsStore();
+    const otherIdx = useOtherIdxStore();
+    const [isMake] = useState(false);
+
+    const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const participants = useRoomParticipantsStore();
+
+    const privateParticipants = usePrivateParticipantsStore();
+    const setPrivateParticipants = useSetPrivateParticipantsStore();
 
     useEffect(() => {
         const maleParticipants = participants
@@ -48,6 +59,7 @@ const useRoom = () => {
         const femaleParticipants = participants
             .filter((participant) => participant.gender === 'f')
             .sort((a, b) => a.id! - b.id!);
+
         if (member?.gender === 'm') {
             const currentUserIndex = maleParticipants.findIndex((participant) => participant.id === member?.memberId);
             const reorderedOtherParticipants = femaleParticipants
@@ -59,11 +71,10 @@ const useRoom = () => {
             const reorderedOtherParticipants = maleParticipants
                 .slice(currentUserIndex)
                 .concat(maleParticipants.slice(0, currentUserIndex));
-            console.log(reorderedOtherParticipants);
-
             setOtherGenderParticipants(reorderedOtherParticipants);
+            console.log(reorderedOtherParticipants);
         }
-    }, [participants]);
+    }, [isMake]);
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
@@ -153,7 +164,35 @@ const useRoom = () => {
             },
         });
     };
-    return { hostId, isHost, createRoom, joinRoom, leaveRoom };
+
+    const setPrivateRoom = () => {
+        //나와 상대방만 세팅한다.
+        const curPrivateParticipants = [];
+        const localParticipant = participants.find((participant) => participant.id === member?.memberId);
+        const remmoveParticipants = participants.find(
+            (participant) => participant.id === otherGenderParticipants[otherIdx].id,
+        );
+        if (localParticipant) {
+            curPrivateParticipants.push(localParticipant);
+        }
+        if (remmoveParticipants) {
+            curPrivateParticipants.push(remmoveParticipants);
+        }
+        setPrivateParticipants(curPrivateParticipants);
+    };
+
+    return {
+        hostId,
+        isHost,
+        createRoom,
+        joinRoom,
+        leaveRoom,
+        otherGenderParticipants,
+        otherIdx,
+        setPrivateRoom,
+        privateParticipants,
+        participants,
+    };
 };
 
 export default useRoom;

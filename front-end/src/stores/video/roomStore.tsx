@@ -25,15 +25,15 @@ interface State {
 interface Action {
     setRoom: (room: Room | undefined) => void;
     addParticipant: (participant: RoomParticipant) => void;
-    setParticipants: (participant: RoomParticipant[]) => void;
+    setParticipants: (participant: RoomParticipant[] | undefined) => void;
     setHostId: (id: number) => void;
     setRoomId: (id: number) => void;
     setOtherGenderParticipants: (participants: RoomParticipant[]) => void;
     setOtherIdx: (idx: number) => void;
 
-    setMaleParticipants: (participants: RoomParticipant[]) => void;
-    setFemaleParticipants: (participants: RoomParticipant[]) => void;
-    setPrivateParticipants: (participants: RoomParticipant[]) => void;
+    setMaleParticipants: (participants: RoomParticipant[] | undefined) => void;
+    setFemaleParticipants: (participants: RoomParticipant[] | undefined) => void;
+    setPrivateParticipants: (participants: RoomParticipant[] | undefined) => void;
 }
 
 const useRoomStore = create<State & Action>((set) => ({

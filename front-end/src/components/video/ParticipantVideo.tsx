@@ -1,16 +1,16 @@
 import EmptyVideo from '@components/video/EmptyVideo';
 import VideoComponent from '@components/video/VideoComponent';
 import useRoom from '@hooks/useRoom';
-import { useRoomParticipantsStore } from '@stores/video/roomStore';
+import { RoomParticipant, useRoomParticipantsStore } from '@stores/video/roomStore';
 
 interface ParticipantVideoProps {
     roomMax: number;
     gender: 'f' | 'm';
     status: 'wait' | 'meeting';
+    participants: RoomParticipant[];
 }
-const ParticipantVideo = ({ roomMax, gender, status }: ParticipantVideoProps) => {
+const ParticipantVideo = ({ roomMax, gender, status, participants }: ParticipantVideoProps) => {
     let numPeople = 0;
-    const participants = useRoomParticipantsStore();
     const { hostId } = useRoom();
 
     return (

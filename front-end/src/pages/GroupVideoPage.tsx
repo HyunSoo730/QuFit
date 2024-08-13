@@ -1,8 +1,8 @@
 import {
     useOtherGenderParticipantsStore,
     useOtherIdxStore,
-    useRoomParticipantsStore,
-    useSetOtherGenderParticipantsStore,
+    usePrivateParticipantsStore,
+    useSetPrivateParticipantsStore,
     useSetRoomIdStore,
 } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
@@ -47,10 +47,10 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('active');
-    const { createRoom, joinRoom, leaveRoom } = useRoom();
+    const [roomStep, setRoomStep] = useState<RoomStep>('end');
+    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 45;
+    const roomId = 80;
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
     const problems = useProblemsStore();
@@ -59,7 +59,7 @@ function GroupVideoPage() {
     const { member } = useMember();
 
     const otherIdx = useOtherIdxStore();
-    const otherGenderParticipants = useOtherGenderParticipantsStore();
+
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
@@ -67,12 +67,17 @@ function GroupVideoPage() {
             });
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
+            console.log(participants);
+            console.log(otherGenderParticipants);
+            console.log(otherGenderParticipants[otherIdx]);
+            console.log(otherGenderParticipants[otherIdx].id);
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[otherIdx].id },
             });
             joinRoom(response.data['videoRoomId: ']);
-            navigate(PATH.PERSONAL_VIDEO(response.data['videoRoomId: ']));
+            navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
+        setPrivateRoom();
     };
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
@@ -158,7 +163,7 @@ function GroupVideoPage() {
                 />
             </Modal>
             <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" />
+                <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
                         <button onClick={createRoom}>생성하기</button>
@@ -224,7 +229,7 @@ function GroupVideoPage() {
                     )}
                     {roomStep === 'end' && <GameEnd restSec={restSec} />}
                 </div>
-                <ParticipantVideo roomMax={roomMax} gender="f" status="meeting" />
+                <ParticipantVideo roomMax={roomMax} gender="f" status="meeting" participants={participants} />
             </div>
         </>
     );
