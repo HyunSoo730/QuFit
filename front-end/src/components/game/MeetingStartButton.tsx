@@ -6,13 +6,12 @@ import { MEETING_START_SEC } from '@components/game/Constants';
 
 interface MeetingStartButtonProps {
     onNext: () => void;
-    isStart: boolean;
     onClick: () => void;
+    isStart: boolean;
 }
 
-const MeetingStartButton = ({ onNext, isStart, onClick }: MeetingStartButtonProps) => {
+const MeetingStartButton = ({ onNext, onClick, isStart }: MeetingStartButtonProps) => {
     const { isHost } = useRoom();
-
     const meetingStart = () => {
         if (isHost) {
             onClick();
@@ -48,7 +47,6 @@ const MeetingStartButton = ({ onNext, isStart, onClick }: MeetingStartButtonProp
                             isStopped={false}
                             loop={true}
                             className="w-[20rem]"
-                            onComplete={onNext}
                         />
                         <MeetingStartTimer endSec={MEETING_START_SEC} afterFunc={onNext} />
                     </>
