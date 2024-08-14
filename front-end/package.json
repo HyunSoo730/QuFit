@@ -11,10 +11,15 @@
     "svgr": "npx @svgr/cli -d src/assets/svg --ignore-existing --typescript --no-dimensions public/svg"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.14",
+    "@react-three/drei": "^9.109.5",
+    "@react-three/fiber": "^8.17.5",
     "@stomp/stompjs": "^7.0.0",
     "@tanstack/react-query": "^5.51.1",
     "@tanstack/react-query-devtools": "^5.51.21",
+    "@tensorflow/tfjs": "^4.20.0",
     "axios": "^1.7.2",
+    "face-api.js": "^0.22.2",
     "livekit-client": "^2.3.2",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
@@ -25,6 +30,7 @@
     "react-router-dom": "^6.24.1",
     "react-select": "^5.8.0",
     "tailwind-scrollbar-hide": "^1.1.7",
+    "three": "^0.167.1",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

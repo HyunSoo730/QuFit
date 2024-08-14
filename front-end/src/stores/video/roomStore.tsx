@@ -1,3 +1,4 @@
+import { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { Room } from 'livekit-client';
 import { Participant } from 'livekit-client';
 import { create } from 'zustand';
@@ -7,6 +8,8 @@ export interface RoomParticipant {
     gender: 'f' | 'm' | undefined;
     nickname: string | undefined;
     info: Participant | undefined;
+    faceLandmarkerReady: boolean;  // 추가
+    faceLandmarker: FaceLandmarker | null;  // 방 참가자별로 FaceLandmarker 인스턴스 가지고 있도록 해야했음.
 }
 
 interface State {
@@ -26,6 +29,7 @@ interface Action {
     setRoomId: (id: number) => void;
     setOtherGenderParticipants: (participants: RoomParticipant[]) => void;
     setOtherIdx: (idx: number) => void;
+    updateParticipant: (id: number, update: Partial<RoomParticipant>) => void;  // 업데이트 메서드 추가
 }
 
 const useRoomStore = create<State & Action>((set) => ({
@@ -50,6 +54,14 @@ const useRoomStore = create<State & Action>((set) => ({
     setRoomId: (roomId) => set({ roomId: roomId }),
     setOtherGenderParticipants: (participants) => set({ otherGenderParticipants: participants }),
     setOtherIdx: (idx) => set({ otherIdx: idx }),
+
+    updateParticipant: (id, update) =>
+        set((state) => ({
+            participants: state.participants.map((p) =>
+                p.id === id ? { ...p, ...update } : p
+            ),
+        })),
+
 }));
 
 export const useRoomStateStore = () => useRoomStore((state) => state.room);
@@ -66,3 +78,4 @@ export const useSetHostIdStore = () => useRoomStore((state) => state.setHostId);
 export const useSetRoomIdStore = () => useRoomStore((state) => state.setRoomId);
 export const useSetOtherGenderParticipantsStore = () => useRoomStore((state) => state.setOtherGenderParticipants);
 export const useSetOtherIdxStore = () => useRoomStore((state) => state.setOtherIdx);
+export const useUpdateParticipantStore = () => useRoomStore((state) => state.updateParticipant);  // 새로운 업데이트 메서드
