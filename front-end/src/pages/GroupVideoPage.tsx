@@ -1,10 +1,4 @@
-import {
-    useOtherGenderParticipantsStore,
-    useOtherIdxStore,
-    usePrivateParticipantsStore,
-    useSetPrivateParticipantsStore,
-    useSetRoomIdStore,
-} from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -47,8 +41,9 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('active');
-    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const [roomStep, setRoomStep] = useState<RoomStep>('result');
+    // const { createRoom, joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
     const roomId = 80;
     const setRoomId = useSetRoomIdStore();
@@ -100,6 +95,11 @@ function GroupVideoPage() {
                 }, {});
                 setResults(processedResult);
             });
+
+            afterSubscribe(response, '게임이 종료됐습니다.', () => {
+                console.log(response);
+                setRoomStep('end');
+            });
         });
     };
     const navigate = useNavigate();
@@ -125,11 +125,23 @@ function GroupVideoPage() {
             roomId,
         );
         setGameStage((prev) => prev + 1);
-        setRoomStep('play');
+        // setRoomStep('play');
     };
 
     const endChoice = (choice: any) => {
         publishSocket(choice, client, roomId);
+    };
+
+    const endGame = () => {
+        //웹소켓 발신
+        publishSocket(
+            {
+                isGameEnd: true,
+            },
+            client,
+            roomId,
+        );
+        setRoomStep('end');
     };
 
     useEffect(() => {
@@ -140,7 +152,7 @@ function GroupVideoPage() {
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
         if (member?.gender === 'm') {
-            // createRoom();
+            // createRoom(videoRoomName, maxParticipants, mainTag, videoRoomHobbies, videoRoomPersonalities);
         }
         open();
     });
@@ -203,7 +215,7 @@ function GroupVideoPage() {
                             scenario1={problems[gameStage].scenario1}
                             scenario2={problems[gameStage].scenario2}
                             gameStage={gameStage}
-                            onStop={() => setRoomStep('end')}
+                            onStop={endGame}
                             onNext={startPlay}
                         />
                     )}

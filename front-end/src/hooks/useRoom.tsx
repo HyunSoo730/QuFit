@@ -1,4 +1,3 @@
-import { instance } from '@apis/axios';
 import { getVideoDetail } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
@@ -19,7 +18,6 @@ import {
     useRoomParticipantsStore,
     useRoomSetParticipantsStore,
     useRoomStateStore,
-    useSetFemaleParticipantsStore,
     useSetHostIdStore,
     useSetOtherGenderParticipantsStore,
     useSetPrivateParticipantsStore,
@@ -116,6 +114,7 @@ const useRoom = () => {
                     const room = new Room(ROOM_SETTING);
                     await room.connect(LIVEKIT_URL, data?.data.token);
                     setRoom(room);
+                    console.log(room);
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
@@ -127,7 +126,6 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
-
                 },
                 onError: async (data) => {
                     console.log(data);
