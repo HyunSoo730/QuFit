@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useRoomParticipantsStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -53,6 +53,7 @@ function GroupVideoPage() {
     const { roomId } = useParams();
     const [isMeeting, setIsMeeting] = useState(true);
 
+    console.log(participants);
     const otherIdx = useOtherIdxStore();
 
     const handleConfirmModal = async () => {
