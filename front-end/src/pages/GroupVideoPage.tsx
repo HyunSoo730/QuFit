@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useRoomParticipantsStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
