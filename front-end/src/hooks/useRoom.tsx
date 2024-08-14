@@ -162,7 +162,7 @@ async function initializeFaceLandmarker(): Promise<FaceLandmarker | null> {
             filesetResolver,
             {
                 baseOptions: {
-                    modelAssetPath: '/path/to/face_landmarker.task', // 모델 경로 설정
+                    modelAssetPath: '여기가 문제.', // 모델 경로 설정
                 },
                 runningMode: 'VIDEO',
                 numFaces: 1,

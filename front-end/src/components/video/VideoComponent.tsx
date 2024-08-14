@@ -3,7 +3,7 @@ import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from '@mediapi
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { LocalVideoTrack, Participant, RemoteVideoTrack } from 'livekit-client';
+import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { CameraOffIcon, CrownIcon, MicOffIcon, MicOnIcon } from '@assets/svg/video';
 import { useRoomStateStore, useRoomSetParticipantsStore,useUpdateParticipantStore } from '@stores/video/roomStore';
 // import { RoomParticipant } from '@stores/video/roomStore';
@@ -74,7 +74,7 @@ function VideoComponent({
             const setupMediaPipe = async () => {
                 try {
                     const filesetResolver = await FilesetResolver.forVisionTasks(
-                        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm',
+                        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
                     );
                     const newFaceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
                     setFaceLandmarker(newFaceLandmarker);
@@ -94,9 +94,6 @@ function VideoComponent({
         }
     }, [faceLandmarkerReady, participateName, updateParticipant]);
     
-    useEffect(() => {
-        console.log(Participants)
-    }, [participants]);
 
     useEffect(() => {
         if (videoRef.current) {

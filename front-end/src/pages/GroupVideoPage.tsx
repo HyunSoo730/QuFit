@@ -61,7 +61,7 @@ function GroupVideoPage() {
     const [roomStep, setRoomStep] = useState<RoomStep>('wait');
     const { createRoom, joinRoom, leaveRoom } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 178;
+    const roomId = 183;
     const setRoomId = useSetRoomIdStore();
     const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const setResults = useSetResultsStore();
