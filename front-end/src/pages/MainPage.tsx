@@ -32,7 +32,6 @@ const MainPage = () => {
     const [roomsList, setRoomsList] = useState<RoomsInfoProps[]>([]);
 
     const endRef = useRef<HTMLDivElement>(null);
-    const scrollRef = useRef<HTMLDivElement>(null);
 
     const getRoomsData = useVideoRoomQuery(page, 24, 1);
     const RoomsInfoList = getRoomsData.data?.data?.videoRoomList;
@@ -114,11 +113,7 @@ const MainPage = () => {
                     </div>
                 </button>
             </div>
-            <div
-                id="scrollableDiv"
-                ref={scrollRef}
-                className="relative grid w-full h-full grid-cols-3 gap-8 overflow-y-auto scrollbar-hide md:grid-cols-2 lg:gap-6 xl:grid-cols-4 xl:gap-6 sm:grid-cols-2 xs:grid-cols-1"
-            >
+            <div className="relative grid w-full h-full grid-cols-3 gap-8 overflow-y-auto scrollbar-hide md:grid-cols-2 lg:gap-6 xl:grid-cols-4 xl:gap-6 sm:grid-cols-2 xs:grid-cols-1">
                 {roomsList &&
                     roomsList.map((data: RoomsInfoProps) => (
                         <RoomCard
