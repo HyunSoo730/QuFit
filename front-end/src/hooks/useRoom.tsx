@@ -114,11 +114,9 @@ const useRoom = () => {
                     const room = new Room(ROOM_SETTING);
                     await room.connect(LIVEKIT_URL, data?.data.token);
                     setRoom(room);
-                    console.log(room);
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
-                    navigate(PATH.WAIT(data.data.videoRoomId));
                     setHostId(member?.memberId!);
                     addParticipant({
                         id: member?.memberId,
@@ -126,6 +124,8 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
+
+                    moveURL(window.location.pathname, data.data.videoRoomId);
                 },
                 onError: async (data) => {
                     console.log(data);
@@ -163,9 +163,16 @@ const useRoom = () => {
                 setParticipants(curParticipants);
                 addRoomEventHandler(room, videoRoomId);
                 decideManager(room);
-                navigate(PATH.WAIT(videoRoomId));
+
+                moveURL(window.location.pathname, videoRoomId);
             },
         });
+    };
+
+    const moveURL = (currentPath: string, videoRoomId: number) => {
+        if (currentPath.includes(PATH.MAIN)) {
+            navigate(PATH.WAIT(videoRoomId));
+        }
     };
 
     const leaveRoom = (videoRoomId: number) => {
