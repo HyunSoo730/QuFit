@@ -8,6 +8,7 @@ import useModal from '@hooks/useModal';
 import { useVideoRoomQuery } from '@queries/useVideoQuery';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
+import useMember from '@hooks/useMember';
 
 interface RoomsInfoProps {
     videoRoomId: number;
@@ -35,6 +36,8 @@ const MainPage = () => {
 
     const getRoomsData = useVideoRoomQuery(page, 24, 1);
     const RoomsInfoList = getRoomsData.data?.data?.videoRoomList;
+
+    const { member } = useMember();
 
     useEffect(() => {
         if (getRoomsData.isError) {
@@ -79,7 +82,8 @@ const MainPage = () => {
                     Look who's here !
                 </h1>
                 <h1 className="text-6xl font-bold leading-none text-smokeWhite font-barlow opacity-90 lg:text-5xl sm:text-4xl xs:text-4xl">
-                    Welcome, <span className="text-5xl text-pink lg:text-4xl sm:text-4xl xs:text-4xl">member5365</span>
+                    Welcome,{' '}
+                    <span className="text-5xl text-pink lg:text-4xl sm:text-4xl xs:text-4xl">{member?.nickname}</span>
                 </h1>
             </div>
             <div className="flex items-center justify-between w-full mt-14 mb-7 lg:mt-8 lg:mb-4 xs:mb-4 xs:mt-8">

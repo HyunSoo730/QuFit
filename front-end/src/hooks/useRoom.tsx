@@ -116,6 +116,7 @@ const useRoom = () => {
                     const room = new Room(ROOM_SETTING);
                     await room.connect(LIVEKIT_URL, data?.data.token);
                     setRoom(room);
+                    console.log(room);
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
@@ -127,7 +128,6 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
-
                 },
                 onError: async (data) => {
                     console.log(data);
