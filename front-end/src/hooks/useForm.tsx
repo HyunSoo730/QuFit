@@ -16,9 +16,9 @@ const useForm = <T,>({ initialValues, onSubmit, validate }: FormProps<T>) => {
     const [valids, setValids] = useState<Valids>({});
     const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        setValues(initialValues);
-    }, []);
+    // useEffect(() => {
+    //     setValues(initialValues);
+    // }, []);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const fieldset = event.target.closest('fieldset');
@@ -89,6 +89,7 @@ const useForm = <T,>({ initialValues, onSubmit, validate }: FormProps<T>) => {
 
     return {
         values,
+        setValues,
         submitting,
         messages,
         valids,
