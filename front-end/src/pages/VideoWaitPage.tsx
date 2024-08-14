@@ -10,9 +10,9 @@ import MeetingStartButton from '@components/game/MeetingStartButton';
 import { PATH } from '@routers/PathConstants';
 
 const VideoWaitPage = () => {
+    // const roomMax = useRoomMaxStore();
     const roomMax = 8;
     const [isMeetingStart, setIsMettingStart] = useState(false);
-    // const { videoRoomId } = useParams();
     const participants = useRoomParticipantsStore();
     const { leaveRoom } = useRoom();
     const { roomId } = useParams();
@@ -48,7 +48,7 @@ const VideoWaitPage = () => {
     return (
         <>
             <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" status="wait" participants={participants} />
+                <ParticipantVideo roomMax={roomMax!} gender="m" status="wait" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
                         <button onClick={() => leaveRoom(Number(roomId))}>나가기</button>
@@ -61,7 +61,7 @@ const VideoWaitPage = () => {
                         onClick={startMeeting}
                     />
                 </div>
-                <ParticipantVideo participants={participants} roomMax={roomMax} gender="f" status="wait" />
+                <ParticipantVideo participants={participants} roomMax={roomMax!} gender="f" status="wait" />
             </div>
         </>
     );

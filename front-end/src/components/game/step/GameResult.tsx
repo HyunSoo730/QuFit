@@ -18,33 +18,30 @@ const GameResult = ({ title, onNext, scenario1, scenario2, onStop, gameStage }: 
     const problems = useProblemsStore();
     const results = useResultsStore();
 
-    const countValue = (targetValue: number) => {
-        const count = Object.entries(results[problems[gameStage].balanceGameId]).reduce((acc, [key, value]) => {
-            //로직재작성해야함
-            console.log(value);
-            console.log(targetValue);
-            console.log(acc);
-            if (value[Number(key)] === targetValue) {
-                acc++;
-            }
-            return acc;
-        }, 0);
-        return count;
-    };
-
     // const countValue = (targetValue: number) => {
     //     const count = Object.entries(results[problems[gameStage].balanceGameId]).reduce((acc, [key, value]) => {
     //         //로직재작성해야함
     //         console.log(value);
     //         console.log(targetValue);
     //         console.log(acc);
-    //         if (value[key] === targetValue) {
+    //         if (value[Number(key)] === targetValue) {
     //             acc++;
     //         }
     //         return acc;
     //     }, 0);
     //     return count;
     // };
+
+    //수정
+    const countValue = (targetValue: number) => {
+        const count = Object.entries(results[problems[gameStage].balanceGameId]).reduce((acc: any, [_, value]: any) => {
+            if (value === targetValue) {
+                acc++;
+            }
+            return acc;
+        }, 0);
+        return count;
+    };
     return (
         <div className="relative flex items-center justify-center p-3 bg-black aspect-gameBg">
             <div className="flex justify-center rounded-lg item-center">

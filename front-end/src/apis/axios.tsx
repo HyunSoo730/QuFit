@@ -26,6 +26,14 @@ export const instance = axios.create({
     },
 });
 
+// 카카오 엑세스 토큰으로 보내야 하는 API
+export const kakaoInstance = axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL,
+    headers: {
+        Authorization: accessToken,
+    },
+});
+
 //로그인 요청없이 해야하는 API
 export const defaultInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,

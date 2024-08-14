@@ -1,10 +1,5 @@
-function EmptyVideo() {
-    return (
-        <div
-            className="w-1/4 bg-white aspect-video rounded-xl opacity-20"
-            // style={{ width, height }}
-        ></div>
-    );
-}
+const EmptyVideo = () => {
+    return <div className={`w-full bg-white aspect-video rounded-xl opacity-20`}></div>;
+};
 
 export default EmptyVideo;

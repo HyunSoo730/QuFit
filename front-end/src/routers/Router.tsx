@@ -13,6 +13,7 @@ import SignupPage from '@pages/SignupPage';
 import VideoWaitPage from '@pages/VideoWaitPage';
 import { PATH } from '@routers/PathConstants';
 import { RouterProvider, createBrowserRouter, RouteObject } from 'react-router-dom';
+import Admin from '@pages/Admin';
 
 const Router = () => {
     const routes: RouteObject[] = [
@@ -62,6 +63,10 @@ const Router = () => {
                 {
                     path: PATH.SIGN_UP,
                     element: <SignupPage />,
+                },
+                {
+                    path: PATH.ADMIN,
+                    element: <Admin />,
                 },
             ],
         },
