@@ -17,7 +17,7 @@ const Layout = () => {
         >
             <Header />
             <div
-                className={`w-full z-10 aspect-layout ${effect} rounded-b-[2.5rem] relative md:h-full lg:rounded-b-[2rem] sm:h-full xs:h-full`}
+                className={`w-full z-10 aspect-layout ${effect} rounded-b-[2.5rem] relative md:h-full lg:rounded-b-[2rem] sm:h-full xs:h-full overflow-y-auto scrollbar-hide`}
             >
                 <Outlet />
             </div>

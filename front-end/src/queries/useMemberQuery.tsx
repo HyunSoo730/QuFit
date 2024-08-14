@@ -1,5 +1,6 @@
 import { END_POINT } from '@apis/ApiConstants';
 import { signup } from '@apis/auth/AuthApi';
+import { putMemberInfo } from '@apis/auth/MemberApi';
 import { instance } from '@apis/axios';
 import { MemberInfoDTO } from '@apis/types/request';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -19,6 +20,21 @@ export const registMember = () =>
             console.log('onSettled');
         },
     });
+
+export const updateMemberInfoMutation = () => {
+    return useMutation({
+        mutationFn: (data: MemberInfoDTO) => putMemberInfo(data),
+        onSuccess: () => {
+            console.log('성공');
+        },
+        onError: (error) => {
+            console.log('onError', error);
+        },
+        onSettled: () => {
+            console.log('onSettled');
+        },
+    });
+};
 
 export const useMemberQuery = () =>
     useQuery({

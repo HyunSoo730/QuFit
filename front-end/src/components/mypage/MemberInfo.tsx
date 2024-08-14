@@ -11,26 +11,30 @@ import SingleTagGroup from '@components/mypage/SingleTagGroup';
 import Message from '@components/mypage/Message';
 import signupValidate from '@utils/signupValidate';
 import generateSelectOptions from '@utils/generateSelectOptions';
+import { useEffect } from 'react';
 
 interface InfoProps {
     onNext: (data: MemberData | TypeData | MemberInfoDTO) => void;
     registData: MemberInfoDTO;
+    isUpdate: boolean;
 }
-const MemberInfo = ({ onNext, registData }: InfoProps) => {
-    const { values, messages, valids, handleChange, handleCheckboxGroupChange, handleSubmit } = useForm({
+const MemberInfo = ({ onNext, registData, isUpdate }: InfoProps) => {
+    const { values, messages, valids, setValues, handleChange, handleCheckboxGroupChange, handleSubmit } = useForm({
         initialValues: registData,
         onSubmit: onNext,
         validate: signupValidate,
     });
+    useEffect(() => {
+        setValues(registData);  // registData 변경 시 values를 업데이트
+    }, [registData, setValues]);
     return (
         <>
-            <p className="py-5 text-4xl font-bold text-white mx-7">내 정보</p>
             <div className="flex flex-col">
             <div className="flex flex-row gap-20 mx-5">
                 <div className="flex flex-col w-1/2 px-10 gap-7">
                     {/* 닉네임 */}
                     <div className="flex flex-col">
-                        <Input name="nickname" label="닉네임" value={values.nickname} onChange={handleChange} />
+                        <Input name="nickname" label="닉네임" value={values.nickname} onChange={handleChange} isUpdate={isUpdate}/>
                         {values.nickname && <Message valid={valids.nickname}>{messages.nickname}</Message>}
                     </div>
                     {/* 태어난연도 */}
@@ -41,13 +45,14 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             value={values.birthYear?.toString() || ''}
                             onChange={handleChange}
                             options={generateSelectOptions(1980, 2000)}
+                            isUpdate={isUpdate}
                         />
                         {values.birthYear && <Message valid={valids.birthYear}>{messages.birthYear}</Message>}
                     </div>
 
                     {/* 자기소개 */}
                     <div className="flex flex-col">
-                        <TextArea name="bio" label="자기소개" value={values.bio} onChange={handleChange} rows={10} />
+                        <TextArea name="bio" label="자기소개" value={values.bio} onChange={handleChange} isUpdate={isUpdate} rows={10} />
                         {values.bio && <Message valid={valids.bio}>{messages.bio}</Message>}
                     </div>
 
@@ -55,7 +60,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     <div className="flex flex-col">
                         <SingleTagGroup label="성별" name="gender" onChange={handleChange} value={values.gender}>
                             {GENDER.map((gender) => (
-                                <SingleTag key={gender.param} value={gender.param}>
+                                <SingleTag key={gender.param} value={gender.param} isUpdate={isUpdate}>
                                     {gender.text}
                                 </SingleTag>
                             ))}
@@ -74,7 +79,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             value={values.locationId?.toString() || ''}
                         >
                             {LOCATION.map((location) => (
-                                <SingleTag key={location.code} value={location.code}>
+                                <SingleTag key={location.code} value={location.code} isUpdate={isUpdate}>
                                     {location.name}
                                 </SingleTag>
                             ))}
@@ -90,7 +95,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                         >
                             {HOBBY.map((hobby) => (
                                 <>
-                                    <MultipleTag key={hobby.tag_name} value={hobby.tag_name}>
+                                    <MultipleTag key={hobby.tag_name} value={hobby.tag_name} isUpdate={isUpdate}>
                                         {hobby.tag_name}
                                     </MultipleTag>
                                 </>
@@ -108,7 +113,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             values={values.memberPersonalityTags}
                         >
                             {PERSONALITY.map((personality) => (
-                                <MultipleTag key={personality.tag_name} value={personality.tag_name}>
+                                <MultipleTag key={personality.tag_name} value={personality.tag_name} isUpdate={isUpdate}>
                                     {personality.tag_name}
                                 </MultipleTag>
                             ))}
@@ -127,7 +132,7 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                             value={values.memberMBTITag!}
                         >
                             {MBTI.map((mbti) => (
-                                <SingleTag key={mbti.tag_name} value={mbti.tag_name}>
+                                <SingleTag key={mbti.tag_name} value={mbti.tag_name} isUpdate={isUpdate}>
                                     {mbti.tag_name}
                                 </SingleTag>
                             ))}
@@ -138,11 +143,10 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                     </div>
                 </div>
             </div>
-            <div
-            className="sticky flex flex-row justify-end gap-2 pr-5 bottom-5">
+             <div className="sticky flex flex-row justify-end gap-2 pr-5 bottom-10">
                 <button
                 onClick={handleSubmit}
-                disabled={
+                disabled={ isUpdate ? 
                     !(
                         valids.nickname &&
                         valids.birthYear &&
@@ -151,19 +155,20 @@ const MemberInfo = ({ onNext, registData }: InfoProps) => {
                         valids.memberHobbyTags &&
                         valids.memberPersonalityTags &&
                         valids.memberMBTITag
-                    )
-                }
+                    ) : false }
                 className="flex items-center justify-center h-4 px-5 py-5 border-2 border-transparent hover:border-pink text-pink rounded-xl disabled:hidden group text-l lg:px-3 lg:h-5 lg:mr-1"
                 >
                 다음페이지
                 </button>
-                <button
+                {isUpdate && 
+                <div><button
                 className="flex items-center justify-center h-5 px-5 py-5 text-white bg-white bg-opacity-50 border-none lex rounded-xl effect-none group text-l opacity-90 hover:bg-opacity-30 lg:px-3 lg:h-5 lg:mr-1">
                 취소
                 </button>
-            </div> 
-                            
-            </div>          
+                </div>
+                }  
+            </div>         
+         </div>          
         </>
     );
 };

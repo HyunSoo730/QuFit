@@ -4,11 +4,12 @@
 import { MemberInfoDTO } from '@apis/types/request';
 import MemberInfo from '@components/mypage/MemberInfo';
 import TypeInfo from '@components/mypage/TypeInfo';
-import { registMember } from '@queries/useMemberQuery';
-import { useAccessTokenStore } from '@stores/auth/signUpStore';
-import { useState } from 'react';
+import { updateMemberInfoMutation, useMemberQuery } from '@queries/useMemberQuery';
+import { useState, useEffect } from 'react';
+import { LOCATION } from '@components/mypage/SignupConstants';
 
 const MyPage = () => {
+    const { data } = useMemberQuery();
     const [registerData, setRegisterData] = useState<MemberInfoDTO>({
         nickname: '',
         locationId: null,
@@ -24,38 +25,98 @@ const MyPage = () => {
         typeHobbyTags: [],
         typePersonalityTags: [],
     });
+
+    const findLocationCodeByName = (name: string) => {
+        const location = LOCATION.find(location => location.name === name);
+        return location?.code;
+    };  // 지역을 이름으로 받아서 지역코드로 바꿔놔요,,
+  
+    const defaultProfileImage = "https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg";
+    const [profileImage, setProfileImage] = useState<string | "">('');
+    const [email, setEmail] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (data) {
+            const responseData = data.data;
+            const locationCode = findLocationCodeByName(responseData.location);
+            const transformedData: MemberInfoDTO = {
+                nickname: responseData.nickname,
+                locationId: locationCode ? parseInt(locationCode) : null,
+                birthYear: responseData.birthYear,
+                gender: responseData.gender,
+                bio: responseData.bio,
+                memberMBTITag: responseData.memberMBTITag,
+                memberHobbyTags: responseData.memberHobbyTags,
+                memberPersonalityTags: responseData.memberPersonalityTags,
+                typeAgeMax: responseData.typeAgeMax,
+                typeAgeMin: responseData.typeAgeMin,
+                typeMBTITags: responseData.typeMBTI,
+                typeHobbyTags: responseData.typeHobbyTags,
+                typePersonalityTags: responseData.typePersonalityTags,
+            };
+            setProfileImage(responseData.profileImage? responseData.profileImage : defaultProfileImage);
+            setEmail(responseData.email);
+            setRegisterData(transformedData);
+        }   
+
+       
+    }, [data]);
+    
     const [step, setStep] = useState<'MemberInfo' | 'TypeInfo'>('MemberInfo');
-    const accessToken = useAccessTokenStore();
-    const signup = registMember();
+    const [isUpdateInfo, setIsUpdateInfo] = useState<boolean>(false);
+    const updateMemberInfo = updateMemberInfoMutation();
+    const handleUpdateMemberInfoButton = (data: any) => {
+        // 회원정보 수정 요청 보내기
+        updateMemberInfo.mutate(data);
+    };
     return (
         <main className="h-full">
-            {step === 'MemberInfo' && (
-                <MemberInfo
-                    registData={registerData}
-                    onNext={(data) => {
-                        setRegisterData(data as MemberInfoDTO);
-                        setStep('TypeInfo');
-                    }}
-                />
+            {step === 'MemberInfo' && (<div>
+
+            <p className="py-5 text-4xl font-bold text-white mx-7">내 정보</p>
+            <div className="flex flex-col items-center gap-5 mt-3 mb-10">
+                {/*프로필 사진 */}
+                <img 
+                    src={profileImage} 
+                     alt="Profile" 
+                     className="object-cover w-40 h-40 rounded-full" />
+                {/*메일 */}
+                <div className="text-xl font-bold text-white">{email}</div>
+                 {/* 수정 버튼 */}
+                <button
+                onClick={() => setIsUpdateInfo(!isUpdateInfo)}
+                className="h-8 px-4 py-1 text-white rounded bg-white/30"
+                 >
+                   {!isUpdateInfo? "수정할래요": "안할래요"} </button>
+            </div>
+            <MemberInfo
+                        registData={registerData}
+                         onNext={(data) => {
+                            setRegisterData(data as MemberInfoDTO);
+                            setStep('TypeInfo');
+                        }}
+                        isUpdate={isUpdateInfo}
+                />          
+                </div>
             )}
             {step === 'TypeInfo' && (
-                <TypeInfo
-                    registData={registerData}
-                    onNext={(data: MemberInfoDTO) =>
-                        signup.mutate(
-                            { data, token: accessToken || '' },
-                            {
-                                onSuccess: (response) => {
-                                    console.log(response);
-                                },
-                                onError: (error) => {
-                                    console.log(error);
-                                },
-                            },
-                        )
-                    }
-                />
+                <div>
+                   <TypeInfo
+                        registData={registerData}
+                        isUpdate={isUpdateInfo}
+                        onNext={(data: MemberInfoDTO) => {
+                            console.log(isUpdateInfo)
+                            if (isUpdateInfo) {
+                                console.log("나 업데이트할게")
+                                console.log(data)
+                                {handleUpdateMemberInfoButton(data)}
+                            }
+                        setStep('MemberInfo');                      
+            }}
+        />
+                </div>
             )}
+            
         </main>
     );
 };

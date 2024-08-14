@@ -12,6 +12,7 @@ interface VideoComponentProps {
     value?: Participant;
     isManager: boolean;
     status: 'wait' | 'meeting';
+    roomMax?: number;
 }
 
 function VideoComponent({ track, status, isManager, participateName, local = false }: VideoComponentProps) {

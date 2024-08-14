@@ -6,9 +6,10 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
     options: Array<{ value: string, label: string }>;
+    isUpdate: boolean;
 }
 
-const Select = ({ label, name, value, onChange, options, ...rest }: SelectProps) => {
+const Select = ({ label, name, value, onChange, options, isUpdate, ...rest }: SelectProps) => {
     return (
         <label className="flex flex-col gap-3">
             {label && <p className="font-semibold text-white text-l">{label}</p>}
@@ -17,6 +18,7 @@ const Select = ({ label, name, value, onChange, options, ...rest }: SelectProps)
                 name={name}
                 value={value}
                 onChange={onChange}    
+                disabled={!isUpdate}
                 {...rest}
             >
             {options.map((option) => (
