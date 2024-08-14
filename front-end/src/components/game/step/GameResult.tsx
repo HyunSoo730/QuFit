@@ -21,12 +21,12 @@ const GameResult = ({ title, onNext, scenario1, scenario2, onStop, gameStage }: 
     const countValue = (targetValue: number) => {
         const count = Object.entries(results[problems[gameStage].balanceGameId]).reduce((acc, [_, value]) => {
             //로직재작성해야함
-            // console.log(value);
-            // console.log(targetValue);
-            // console.log(acc);
-            if (value === targetValue) {
-                acc++;
-            }
+            console.log(value);
+            console.log(targetValue);
+            console.log(acc);
+            // if (value === targetValue) {
+            //     acc++;
+            // }
             return acc;
         }, 0);
         return count;

@@ -8,7 +8,7 @@ interface ChoiceTimerProps {
 
 const ChoiceTimer = ({ onEnd }: ChoiceTimerProps) => {
     const restSec = useTimer(CHOICE_TIMER, onEnd);
-    // console.log(restSec);
+    console.log(restSec);
     return (
         <div className="flex">
             <GameHeartIcon className="z-20" width={'2.625rem'} />
