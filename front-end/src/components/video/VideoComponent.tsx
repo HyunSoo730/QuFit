@@ -23,25 +23,7 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
         room?.localParticipant.isCameraEnabled && status === 'meeting',
     );
     const participants = useRoomParticipantsStore();
-    let widthClass = '';
 
-    switch (roomMax) {
-        case 8:
-            widthClass = 'w-1/4';
-            break;
-        case 6:
-            widthClass = 'w-1/3';
-            break;
-        case 4:
-            widthClass = 'w-1/2';
-            break;
-        case 2:
-            widthClass = 'w-full';
-            break;
-        default:
-            console.log('Invalid roomMax value');
-            break;
-    }
     useEffect(() => {
         if (videoElement.current) {
             track?.attach(videoElement.current);
@@ -64,7 +46,7 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
 
     return (
         <div
-            className={`${widthClass} relative z-50 flex flex-col justify-between p-4 rounded-xl aspect-video `}
+            className={`w-full relative z-50 flex flex-col justify-between p-4 rounded-xl `}
             // style={{ width, height }}
             onClick={changeCameraEnabled}
         >
@@ -94,13 +76,13 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
                 {isCameraEnable ? (
                     <video
                         ref={videoElement}
-                        className="w-full rounded-xl "
+                        className={`w-full rounded-xl `}
                         // style={{ width, height }}
                     />
                 ) : (
                     <>
                         <div
-                            className="relative flex items-center justify-center w-full bg-white aspect-video opacity-40 rounded-xl"
+                            className={`w-full relative flex items-center justify-center bg-white aspect-video opacity-40 rounded-xl`}
                             // style={{ width, height }}
                         >
                             <CameraOffIcon

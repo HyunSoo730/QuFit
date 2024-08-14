@@ -12,7 +12,6 @@ interface ParticipantVideoProps {
 const ParticipantVideo = ({ roomMax, gender, status, participants }: ParticipantVideoProps) => {
     let numPeople = 0;
     const { hostId } = useRoom();
-
     return (
         <div className="flex justify-center w-full gap-1 ">
             {participants.map((participant) => {

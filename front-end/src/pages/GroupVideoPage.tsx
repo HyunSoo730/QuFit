@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useRoomMaxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -39,11 +39,9 @@ type beforeResult = {
     videoRoomId: number;
 };
 function GroupVideoPage() {
-    const roomMax = 8;
-    // const { videoRoomId } = useParams();
+    const roomMax = useRoomMaxStore();
     const [roomStep, setRoomStep] = useState<RoomStep>('end');
     const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
-    // const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
@@ -175,7 +173,7 @@ function GroupVideoPage() {
             </Modal>
             {isMeeting && (
                 <div className="flex flex-col justify-between w-full h-screen ">
-                    <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" participants={participants} />
+                    <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
                     <div className="flex flex-col items-center justify-center py-4">
                         {roomStep === 'active' && <GameIntro onNext={startGame} />}
                         {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
@@ -228,7 +226,7 @@ function GroupVideoPage() {
                         )}
                         {roomStep === 'end' && <GameEnd restSec={restSec} />}
                     </div>
-                    <ParticipantVideo roomMax={roomMax} gender="f" status="meeting" participants={participants} />
+                    <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
                 </div>
             )}
         </>

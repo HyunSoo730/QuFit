@@ -16,6 +16,7 @@ interface State {
     roomId: number | undefined;
     otherGenderParticipants: RoomParticipant[];
     otherIdx: number;
+    roomMax: number | undefined;
 
     maleParticipants: RoomParticipant[];
     femaleParticipants: RoomParticipant[];
@@ -30,6 +31,7 @@ interface Action {
     setRoomId: (id: number) => void;
     setOtherGenderParticipants: (participants: RoomParticipant[]) => void;
     setOtherIdx: (idx: number) => void;
+    setRoomMax: (roomMax: number) => void;
 
     setMaleParticipants: (participants: RoomParticipant[] | undefined) => void;
     setFemaleParticipants: (participants: RoomParticipant[] | undefined) => void;
@@ -37,6 +39,7 @@ interface Action {
 }
 
 const useRoomStore = create<State & Action>((set) => ({
+    roomMax: undefined,
     room: undefined,
     participants: [],
     myName: '',
@@ -49,6 +52,7 @@ const useRoomStore = create<State & Action>((set) => ({
     femaleParticipants: [],
     privateParticipants: [],
 
+    setRoomMax: (roomMax) => set({ roomMax: roomMax }),
     setRoom: (room) => set({ room: room }),
     addParticipant: (participant) =>
         set((state) => ({
@@ -76,6 +80,7 @@ export const useOtherIdxStore = () => useRoomStore((state) => state.otherIdx);
 export const useMaleParticipantsStore = () => useRoomStore((state) => state.maleParticipants);
 export const useFemaleParticipantsStore = () => useRoomStore((state) => state.femaleParticipants);
 export const usePrivateParticipantsStore = () => useRoomStore((state) => state.privateParticipants);
+export const useRoomMaxStore = () => useRoomStore((state) => state.roomMax);
 
 export const useSetRoomStateStore = () => useRoomStore((state) => state.setRoom);
 export const useRoomAddParticipantStore = () => useRoomStore((state) => state.addParticipant);
@@ -87,3 +92,4 @@ export const useSetOtherIdxStore = () => useRoomStore((state) => state.setOtherI
 export const useSetMaleParticipantsStore = () => useRoomStore((state) => state.setMaleParticipants);
 export const useSetFemaleParticipantsStore = () => useRoomStore((state) => state.setFemaleParticipants);
 export const useSetPrivateParticipantsStore = () => useRoomStore((state) => state.setPrivateParticipants);
+export const useSetRoomMaxStore = () => useRoomStore((state) => state.setRoomMax);

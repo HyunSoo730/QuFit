@@ -6,11 +6,13 @@ import RoomCard from '@components/main/RoomCard';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useRoom from '@hooks/useRoom';
+import { useSetRoomMaxStore } from '@stores/video/roomStore';
 
 const CreateRoomPage = () => {
     const navigate = useNavigate();
 
     const { createRoom } = useRoom();
+    const setRoomMax = useSetRoomMaxStore();
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -380,15 +382,16 @@ const CreateRoomPage = () => {
                         {/* 방 만들기 버튼 */}
                         <div className="flex w-full my-10">
                             <button
-                                onClick={() =>
+                                onClick={() => {
+                                    setRoomMax(parseInt(roomSize));
                                     createRoom({
                                         videoRoomName: roomTitle,
                                         maxParticipants: parseInt(roomSize),
                                         mainTag: topPriorityTagState,
                                         videoRoomHobbies: hobbyTagsId,
                                         videoRoomPersonalities: idealTypeTagsId,
-                                    })
-                                }
+                                    });
+                                }}
                                 className="px-12 py-6 ml-auto text-2xl font-bold text-white bg-opacity-70 bg-pink rounded-xl"
                             >
                                 방 만들기
