@@ -143,6 +143,7 @@ function GroupVideoPage() {
     };
 
     useEffect(() => {
+        console.log("GroupVideoPage: 참가자 목록", participants);
         setRoomId(Number(roomId));
         connect(client, onConnect);
         return () => disConnect(client);
