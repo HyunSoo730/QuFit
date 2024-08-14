@@ -21,25 +21,28 @@ const ParticipantVideo = ({ roomMax, gender }: ParticipantVideoProps) => {
                     numPeople++;
                     return (
                         <VideoComponent
-                            key={participant.nickname}
-                            id={member?.memberId}
+                            key={participant.id} // participant.nickname에서 participant.id로 변경하여 고유성을 보장
+                            id={participant.id}
                             track={
                                 participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined
                             }
                             isManager={participant.id === hostId}
                             participateName={participant.nickname!}
-                            faceLandmarkerReady={participant.faceLandmarkerReady} // 추가
+                            faceLandmarkerReady={participant.faceLandmarkerReady} 
+                            faceLandmarker={participant.faceLandmarker}
                         />
                     );
                 }
+                return null;
             })}
             {Array(roomMax / 2 - numPeople)
                 .fill(0)
-                .map(() => (
-                    <EmptyVideo />
+                .map((_, index) => (
+                    <EmptyVideo key={index} /> 
                 ))}
         </div>
     );
 };
 
 export default ParticipantVideo;
+
