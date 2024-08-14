@@ -24,6 +24,7 @@ export const END_POINT = {
     VIDEO_RECOMMENDATION: `qufit/video/recommendation`,
     FRIEND : 'qufit/friend',
     GAME: `qufit/game`,
+    ADMIN: `qufit/admin`,
 };
 
 export const HTTP_STATUS = {

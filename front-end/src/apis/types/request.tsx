@@ -28,3 +28,8 @@ export interface VideoRoomRequest {
     videoRoomPersonalities: number[];
     statusType?: number;
 }
+
+export interface AdminLoginRequest {
+    userId: string;
+    password: string;
+}
