@@ -3,7 +3,7 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { instance } from '@apis/axios';
 import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
@@ -41,17 +41,17 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('result');
-    // const { createRoom, joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
-    const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
+    const { createRoom, joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    // const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
-    const roomId = 80;
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
     const problems = useProblemsStore();
     const setProblems = useSetProblemsStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();
+    const { roomId } = useParams();
 
     const otherIdx = useOtherIdxStore();
 
@@ -111,7 +111,7 @@ function GroupVideoPage() {
                 isGameStart: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
         setRoomStep('loading');
     };
@@ -122,14 +122,14 @@ function GroupVideoPage() {
                 isChoiceStart: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
         setGameStage((prev) => prev + 1);
         // setRoomStep('play');
     };
 
     const endChoice = (choice: any) => {
-        publishSocket(choice, client, roomId);
+        publishSocket(choice, client, Number(roomId));
     };
 
     const endGame = () => {
@@ -139,20 +139,26 @@ function GroupVideoPage() {
                 isGameEnd: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
         setRoomStep('end');
     };
 
     useEffect(() => {
-        setRoomId(roomId); //나중에 param에서 따와야함
+        setRoomId(Number(roomId)); //나중에 param에서 따와야함
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
         if (member?.gender === 'm') {
-            // createRoom(videoRoomName, maxParticipants, mainTag, videoRoomHobbies, videoRoomPersonalities);
+            createRoom({
+                videoRoomName: '개인방',
+                maxParticipants: 2,
+                mainTag: '',
+                videoRoomHobbies: [],
+                videoRoomPersonalities: [],
+            });
         }
         open();
     });
@@ -194,7 +200,7 @@ function GroupVideoPage() {
                                             getResult: true,
                                         },
                                         client,
-                                        roomId,
+                                        Number(roomId),
                                     );
                                 setRoomStep('resultLoading2');
                             }}

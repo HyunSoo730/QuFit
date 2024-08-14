@@ -24,9 +24,9 @@ const GameResult = ({ title, onNext, scenario1, scenario2, onStop, gameStage }: 
             console.log(value);
             console.log(targetValue);
             console.log(acc);
-            // if (value === targetValue) {
-            //     acc++;
-            // }
+            if (value === targetValue) {
+                acc++;
+            }
             return acc;
         }, 0);
         return count;
