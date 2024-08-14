@@ -10,7 +10,8 @@ import MeetingStartButton from '@components/game/MeetingStartButton';
 import { PATH } from '@routers/PathConstants';
 
 const VideoWaitPage = () => {
-    const roomMax = useRoomMaxStore();
+    // const roomMax = useRoomMaxStore();
+    const roomMax = 8;
     const [isMeetingStart, setIsMettingStart] = useState(false);
     const participants = useRoomParticipantsStore();
     const { leaveRoom } = useRoom();

@@ -20,9 +20,11 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
     const videoElement = useRef<HTMLVideoElement | null>(null);
     const [isMicEnable, setIsMicEnable] = useState(false);
     const [isCameraEnable, setIsCameraEnable] = useState(
-        room?.localParticipant.isCameraEnabled && status === 'meeting',
+        // room?.localParticipant.isCameraEnabled && status === 'meeting',
+        status === 'meeting',
     );
     const participants = useRoomParticipantsStore();
+    console.log(track);
 
     useEffect(() => {
         if (videoElement.current) {
@@ -47,7 +49,6 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
     return (
         <div
             className={`w-full relative z-50 flex flex-col justify-between p-4 rounded-xl `}
-            // style={{ width, height }}
             onClick={changeCameraEnabled}
         >
             <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
@@ -74,16 +75,11 @@ function VideoComponent({ track, status, isManager, participateName, roomMax, lo
             </div>
             <div className="absolute top-0 left-0 w-full -z-10">
                 {isCameraEnable ? (
-                    <video
-                        ref={videoElement}
-                        className={`w-full rounded-xl `}
-                        // style={{ width, height }}
-                    />
+                    <video ref={videoElement} className={`w-full rounded-xl `} />
                 ) : (
                     <>
                         <div
                             className={`w-full relative flex items-center justify-center bg-white aspect-video opacity-40 rounded-xl`}
-                            // style={{ width, height }}
                         >
                             <CameraOffIcon
                                 width={'10rem'}

@@ -39,7 +39,8 @@ type beforeResult = {
     videoRoomId: number;
 };
 function GroupVideoPage() {
-    const roomMax = useRoomMaxStore();
+    // const roomMax = useRoomMaxStore();
+    const roomMax = 8;
     const [roomStep, setRoomStep] = useState<RoomStep>('end');
     const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
@@ -122,7 +123,6 @@ function GroupVideoPage() {
             client,
             Number(roomId),
         );
-        // setRoomStep('play');
     };
 
     const endChoice = (choice: any) => {

@@ -22,6 +22,8 @@ const PersonalVideoPage = () => {
     const navigate = useNavigate();
     const otherIdx = useOtherIdxStore();
 
+    console.log(participants);
+
     const endTimer = () => {
         leaveRoom(Number(roomId));
         if (member?.gender === 'm') {
@@ -61,18 +63,8 @@ const PersonalVideoPage = () => {
                 <div className="flex flex-col justify-between h-full">
                     <PersonalVideoTimer endSec={PERSONAL_VIDEO_END_SEC} onEnd={endTimer} />
                     <div className="flex w-full gap-[2.5rem] p-12">
-                        <ParticipantVideo
-                            roomMax={2}
-                            gender="m"
-                            participants={privateParticipants}
-                            status={'meeting'}
-                        />
-                        <ParticipantVideo
-                            roomMax={2}
-                            gender="f"
-                            participants={privateParticipants}
-                            status={'meeting'}
-                        />
+                        <ParticipantVideo roomMax={2} gender="m" participants={participants} status={'meeting'} />
+                        <ParticipantVideo roomMax={2} gender="f" participants={participants} status={'meeting'} />
                     </div>
                     <PersonalResult />
                 </div>

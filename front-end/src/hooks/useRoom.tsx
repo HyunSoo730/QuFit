@@ -75,7 +75,6 @@ const useRoom = () => {
                 .slice(currentUserIndex)
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
-            console.log(reorderedOtherParticipants);
         }
     }, [isMake]);
 
@@ -116,7 +115,7 @@ const useRoom = () => {
                 onSuccess: async (data) => {
                     const room = new Room(ROOM_SETTING);
                     await room.connect(LIVEKIT_URL, data?.data.token);
-                    setRoom(room);
+
                     addRoomEventHandler(room, data.data.videoRoomId);
 
                     decideManager(room);
@@ -127,7 +126,7 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                     });
-
+                    setRoom(room);
                     moveURL(window.location.pathname, data.data.videoRoomId);
                 },
                 onError: async (data) => {
@@ -139,7 +138,7 @@ const useRoom = () => {
 
     const joinRoom = async (videoRoomId: number) => {
         const room = new Room(ROOM_SETTING);
-        setRoom(room);
+
         joinVideoRoom.mutate(videoRoomId, {
             onSuccess: async (response) => {
                 await room.connect(LIVEKIT_URL, response?.data.token);
@@ -170,6 +169,8 @@ const useRoom = () => {
                 moveURL(window.location.pathname, videoRoomId);
             },
         });
+
+        setRoom(room);
     };
 
     const moveURL = (currentPath: string, videoRoomId: number) => {
@@ -200,6 +201,7 @@ const useRoom = () => {
         if (remmoveParticipants) {
             curPrivateParticipants.push(remmoveParticipants);
         }
+
         setPrivateParticipants(curPrivateParticipants);
         setOtherIdx(otherIdx + 1);
     };
