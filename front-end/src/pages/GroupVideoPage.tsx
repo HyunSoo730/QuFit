@@ -53,6 +53,7 @@ function GroupVideoPage() {
     const { roomId } = useParams();
     const [isMeeting, setIsMeeting] = useState(true);
 
+    console.log(participants);
     const otherIdx = useOtherIdxStore();
 
     const handleConfirmModal = async () => {

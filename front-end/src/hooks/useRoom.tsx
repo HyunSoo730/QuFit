@@ -212,6 +212,7 @@ const useRoom = () => {
                 setRoom(undefined);
             },
         });
+        setParticipants([]);
     };
 
     const setPrivateRoom = () => {
