@@ -21,20 +21,20 @@ export const registMember = () =>
         },
     });
 
-    export const updateMemberInfoMutation = () =>{
-        return useMutation({
-            mutationFn: (data: MemberInfoDTO) => putMemberInfo(data),
-            onSuccess: () => {
-                console.log('성공');
-            },
-            onError: (error) => {
-                console.log('onError', error);
-            },
-            onSettled: () => {
-                console.log('onSettled');
-            },
-        });
-    };
+export const updateMemberInfoMutation = () => {
+    return useMutation({
+        mutationFn: (data: MemberInfoDTO) => putMemberInfo(data),
+        onSuccess: () => {
+            console.log('성공');
+        },
+        onError: (error) => {
+            console.log('onError', error);
+        },
+        onSettled: () => {
+            console.log('onSettled');
+        },
+    });
+};
 
 export const useMemberQuery = () =>
     useQuery({
