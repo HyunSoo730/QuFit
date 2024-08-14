@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getChat, deleteFriend, postFriend } from '@apis/chat/ChatApi';
+import { getFriend, deleteFriend, postFriend, getChat } from '@apis/chat/ChatApi';
 import { FriendListResponse } from '@apis/types/response';
 import { useState } from 'react';
 
@@ -10,7 +10,7 @@ export const useFriendListQuery = (page: number, size: number) => {
     return useQuery<FriendListResponse, Error>({
         queryKey: ['friendList', page, size],
         queryFn: () =>
-            getChat(page, size)
+            getFriend(page, size)
                 .then((response) => response.data)
                 .catch(() => setFefetch(false)),
         enabled: refetch,
@@ -47,3 +47,9 @@ export const usePostFriendMutation = () => {
         },
     });
 };
+
+export const useChatListQuery = (memberId: number) =>
+    useQuery({
+        queryKey: ['chatList'],
+        queryFn: () => getChat(memberId),
+    });

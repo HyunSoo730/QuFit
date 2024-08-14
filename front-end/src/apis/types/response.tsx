@@ -43,3 +43,15 @@ export interface FriendListResponse {
         pageSize: number;
     };
 }
+
+export interface ChatListProps {
+    chatRoomId: number;
+    otherMemberNickname: string;
+    profileImage: string;
+    otherMemberId: number;
+    lastMessage: string;
+    unreadCount: number;
+    lastMessageId?: string;
+    lastMessageTime?: string;
+    lastReadMessageId?: string;
+}

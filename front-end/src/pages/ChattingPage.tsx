@@ -4,16 +4,11 @@ import ChatRoom from '@components/chat/ChatRoom';
 // import { FriendsInfoDummy } from '@dummy/Dummy';
 import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
-import { useChatInfoList, useSetChatInfoList } from '@stores/chat/chatInfoListStore';
-import { instance } from '@apis/axios';
 import { useEffect, useRef, useState } from 'react';
-import { useFriendListQuery } from '@queries/useChatQuery';
-import { FriendInfoProps } from '@apis/types/response';
+import { useFriendListQuery, useChatListQuery } from '@queries/useChatQuery';
+import { FriendInfoProps, ChatListProps } from '@apis/types/response';
 
 const ChattingPage = () => {
-    const chatInfoList = useChatInfoList();
-    const setChatInfoList = useSetChatInfoList();
-
     const buttonFocus = useTabStateStore((state) => state.buttonFocus);
     const setButtonFocus = useTabStateStore((state) => state.setButtonFocus);
 
@@ -28,17 +23,8 @@ const ChattingPage = () => {
 
     const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
 
-    useEffect(() => {
-        instance
-            .get(`/qufit/chat/rooms/2`)
-            .then((res) => {
-                setChatInfoList(res.data);
-                console.log('채팅 리스트 응답 성공:', res);
-            })
-            .catch((err: string) => {
-                console.log('채팅 리스트 응답 실패:', err);
-            });
-    }, []);
+    const ID = 2;
+    const chatListData = useChatListQuery(ID).data?.data;
 
     useEffect(() => {
         if (friendListData) {
@@ -108,7 +94,7 @@ const ChattingPage = () => {
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {chatInfoList.map((chat) => (
+                        {chatListData?.map((chat: ChatListProps) => (
                             <ChatInfo
                                 key={chat.chatRoomId}
                                 id={chat.chatRoomId}
