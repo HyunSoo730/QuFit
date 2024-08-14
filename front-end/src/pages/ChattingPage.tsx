@@ -6,8 +6,9 @@ import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import { useChatInfoList, useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import { instance } from '@apis/axios';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFriendListQuery } from '@queries/useChatQuery';
+import { FriendInfoProps } from '@apis/types/response';
 
 const ChattingPage = () => {
     const chatInfoList = useChatInfoList();
@@ -18,9 +19,14 @@ const ChattingPage = () => {
 
     const chatState = useChatStateStore((state) => state.chatState);
 
-    const PAGE = 0;
-    const SIZE = 10; // 임의 설정
-    const { data: friendListData } = useFriendListQuery(PAGE, SIZE);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [page, setPage] = useState(0);
+
+    const SIZE = 20;
+    const { data: friendListData } = useFriendListQuery(page, SIZE);
+    const totalPage = friendListData?.page.totalPages;
+
+    const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
 
     useEffect(() => {
         instance
@@ -33,6 +39,37 @@ const ChattingPage = () => {
                 console.log('채팅 리스트 응답 실패:', err);
             });
     }, []);
+
+    useEffect(() => {
+        if (friendListData) {
+            setFriendList((prev) => [...prev, ...friendListData.friendList] as FriendInfoProps[]);
+        }
+    }, [friendListData]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (
+                entries[0].intersectionRect.height === 0 &&
+                entries[0].intersectionRect.width !== 0 &&
+                totalPage &&
+                page <= totalPage - 1
+            ) {
+                setPage((prev) => {
+                    return prev + 1;
+                });
+            }
+        });
+
+        if (scrollRef.current) {
+            observer.observe(scrollRef.current);
+        }
+
+        return () => {
+            if (scrollRef.current) {
+                observer.unobserve(scrollRef.current);
+            }
+        };
+    }, [totalPage]);
 
     return (
         <div className="absolute z-10 flex w-full h-full">
@@ -58,7 +95,7 @@ const ChattingPage = () => {
                 </div>
                 {buttonFocus === 'friend' ? (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {friendListData?.friendList.map((friend) => (
+                        {friendList.map((friend) => (
                             <FriendInfo
                                 key={friend.id}
                                 otherMemberId={friend.id}
@@ -66,6 +103,8 @@ const ChattingPage = () => {
                                 profileImage={friend.profileImage}
                             />
                         ))}
+
+                        <div ref={scrollRef} />
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">

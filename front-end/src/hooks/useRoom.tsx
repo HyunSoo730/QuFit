@@ -72,7 +72,6 @@ const useRoom = () => {
                 .slice(currentUserIndex)
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
-            console.log(reorderedOtherParticipants);
         }
     }, [isMake]);
 

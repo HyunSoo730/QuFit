@@ -27,19 +27,19 @@ export interface MemberInfoDTO {
     typePersonality: Tag[];
 }
 
-// 친구 정보 받기 
-export interface FriendInfo {
+// 친구 정보 받기
+export interface FriendInfoProps {
     id: number;
     nickname: string;
     profileImage: string;
-  }
-  
-  export interface FriendListResponse {
-    friendList: FriendInfo[];
+}
+
+export interface FriendListResponse {
+    friendList: FriendInfoProps[];
     page: {
-      totalElements: number;
-      totalPages: number;
-      currentPage: number;
-      pageSize: number;
+        totalElements: number;
+        totalPages: number;
+        currentPage: number;
+        pageSize: number;
     };
-  }
+}
