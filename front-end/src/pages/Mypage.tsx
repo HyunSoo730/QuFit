@@ -107,9 +107,8 @@ const MyPage = () => {
                         onNext={(data: MemberInfoDTO) => {
                             console.log(isUpdateInfo)
                             if (isUpdateInfo) {
-                                console.log("나 업데이트할게")
-                                console.log(data)
                                 {handleUpdateMemberInfoButton(data)}
+                                setIsUpdateInfo(false);
                             }
                         setStep('MemberInfo');                      
             }}
