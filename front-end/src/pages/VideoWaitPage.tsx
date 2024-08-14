@@ -17,8 +17,9 @@ const VideoWaitPage = () => {
     const { leaveRoom } = useRoom();
     const { roomId } = useParams();
     const setRoomId = useSetRoomIdStore();
-    const client = useRef<StompJs.Client | null>(null);
     const navigate = useNavigate();
+
+    const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
             const response = JSON.parse(message.body);
