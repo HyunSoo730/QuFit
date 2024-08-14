@@ -5,8 +5,10 @@ interface LoadingProps {
     onNext: () => void;
 }
 const Loading = ({ onNext }: LoadingProps) => {
-    const restSec = useTimer(LOADING_SEC, onNext);
-    console.log(restSec);
+    // const restSec = useTimer(LOADING_SEC, onNext);
+    // console.log(restSec);
+
+    useTimer(LOADING_SEC, onNext);
     return (
         <div className="relative flex items-center justify-center p-3 bg-black aspect-gameBg">
             <div className="flex justify-center rounded-lg opacity-0 item-center">
