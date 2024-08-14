@@ -10,3 +10,7 @@ export const getChat = async (page: number, size: number) => {
 export const deleteFriend = async (friendId: number) => {
     return await instance.delete(`${END_POINT.FRIEND}/${friendId}`);
 };
+
+export const postFriend = async (friendId: number) => {
+    return await instance.post(END_POINT.FRIEND, friendId);
+};

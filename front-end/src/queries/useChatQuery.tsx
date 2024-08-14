@@ -1,13 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getChat } from '@apis/chat/ChatApi';
+import { getChat, deleteFriend, postFriend } from '@apis/chat/ChatApi';
 import { FriendListResponse } from '@apis/types/response';
-import { deleteFriend } from '@apis/chat/ChatApi';
+import { useState } from 'react';
 
 // React Query로 친구 목록 가져오기
 export const useFriendListQuery = (page: number, size: number) => {
+    const [refetch, setFefetch] = useState(true);
+
     return useQuery<FriendListResponse, Error>({
         queryKey: ['friendList', page, size],
-        queryFn: () => getChat(page, size).then((response) => response.data),
+        queryFn: () =>
+            getChat(page, size)
+                .then((response) => response.data)
+                .catch(() => setFefetch(false)),
+        enabled: refetch,
     });
 };
 
@@ -24,6 +30,20 @@ export const useDeleteFriendMutation = () => {
         },
         onError: (error) => {
             console.error('친구 삭제 실패:', error);
+        },
+    });
+};
+
+export const usePostFriendMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (friendId: number) => postFriend(friendId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['friendList'] });
+        },
+        onError: (error) => {
+            console.error('친구 추가 실패:', error);
         },
     });
 };

@@ -20,7 +20,7 @@ const ChattingPage = () => {
 
     const PAGE = 0;
     const SIZE = 10; // 임의 설정
-    const { data: friendListData, isLoading, error } = useFriendListQuery(PAGE, SIZE);
+    const { data: friendListData } = useFriendListQuery(PAGE, SIZE);
 
     useEffect(() => {
         instance
@@ -58,20 +58,14 @@ const ChattingPage = () => {
                 </div>
                 {buttonFocus === 'friend' ? (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {isLoading ? (
-                            <p>로딩 중...</p>
-                        ) : error ? (
-                            <p>Error: {error.message}</p>
-                        ) : (
-                            friendListData?.friendList.map((friend) => (
-                                <FriendInfo
-                                    key={friend.id}
-                                    otherMemberId={friend.id}
-                                    nickname={friend.nickname}
-                                    profileImage={friend.profileImage}
-                                />
-                            ))
-                        )}
+                        {friendListData?.friendList.map((friend) => (
+                            <FriendInfo
+                                key={friend.id}
+                                otherMemberId={friend.id}
+                                nickname={friend.nickname}
+                                profileImage={friend.profileImage}
+                            />
+                        ))}
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
