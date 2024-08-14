@@ -63,11 +63,12 @@ function VideoComponent({
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.onloadedmetadata = () => {
-                console.log('Video metadata loaded for', participateName);
+                console.log('VideoComponent: 비디오 메타데이터 로드됨 - 참가자 이름:', participateName);
                 videoRef.current!.play();
 
                 // 비디오가 로드된 후에 얼굴 인식을 시작하도록 설정
                 if (faceLandmarkerReady && faceLandmarker) {
+                    console.log('VideoComponent: 얼굴 인식 시작 - 참가자 이름:', participateName);
                     const interval = setInterval(() => {
                         if (
                             videoRef.current &&
@@ -79,6 +80,7 @@ function VideoComponent({
                                 const result = faceLandmarker.detectForVideo(videoRef.current, Date.now());
 
                                 if (result.faceLandmarks && result.faceLandmarks.length > 0) {
+                                    console.log('VideoComponent: 얼굴 랜드마크 감지됨 - 참가자 이름:', participateName);
                                     const landmarks = result.faceLandmarks[0];
                                     const avgPosition = new THREE.Vector3();
                                     const indices = [0, 1, 4, 6, 9, 13, 14, 17, 33, 263, 61, 291, 199];
@@ -113,7 +115,7 @@ function VideoComponent({
                                     }
                                 }
                             } catch (error) {
-                                console.error('Face detection error for', participateName, ':', error);
+                                console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
                     }, 16);

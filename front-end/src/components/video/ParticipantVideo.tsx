@@ -17,6 +17,11 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
         <div className="flex justify-center w-full gap-1 ">
             {participants.map((participant) => {
                 if (participant.gender === gender) {
+                    console.log("ParticipantVideo: 참가자 렌더링 - 이름:", participant.nickname, "ID:", participant.id);
+                    console.log("ParticipantVideo: FaceLandmarker 준비 상태:", participant.faceLandmarkerReady);
+                    console.log("ParticipantVideo: FaceLandmarker 객체:", participant.faceLandmarker);
+                    console.log("ParticipantVideo: 비디오 트랙:", participant.info!.videoTrackPublications.values().next().value?.videoTrack);
+
                     numPeople++;
                     return (
                         <VideoComponent
