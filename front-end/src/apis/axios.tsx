@@ -6,23 +6,32 @@ export const qufitAcessTokenC = import.meta.env.VITE_QUFIT_ACCESS_TOKEN_C;
 export const qufitAcessTokenD = import.meta.env.VITE_QUFIT_ACCESS_TOKEN_D;
 
 //로그인을 하고 해야하는 API
-let accessToken = '';
-if (location.port === '3000') {
-    accessToken = qufitAcessTokenA;
-} else if (location.port === '3001') {
-    accessToken = qufitAcessTokenB;
-} else if (location.port === '3002') {
-    accessToken = qufitAcessTokenC;
-} else if (location.port === '3003') {
-    accessToken = qufitAcessTokenD;
-} else {
-    accessToken = qufitAcessTokenA;
-}
 
+let accessToken = '';
+if (window.location.hostname === 'localhost') {
+    if (location.port === '3000') {
+        // accessToken = qufitAcessTokenA;
+        localStorage.setItem('accessToken', qufitAcessTokenA);
+    } else if (location.port === '3001') {
+        // accessToken = qufitAcessTokenB;
+        localStorage.setItem('accessToken', qufitAcessTokenB);
+    } else if (location.port === '3002') {
+        // accessToken = qufitAcessTokenC;
+        localStorage.setItem('accessToken', qufitAcessTokenC);
+    } else if (location.port === '3003') {
+        // accessToken = qufitAcessTokenD;
+        localStorage.setItem('accessToken', qufitAcessTokenD);
+    } else {
+        // accessToken = qufitAcessTokenA;
+        localStorage.setItem('accessToken', qufitAcessTokenA);
+    }
+} else {
+    accessToken = localStorage.getItem('accessToken') || '';
+}
 export const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
     },
 });
 
@@ -38,6 +47,17 @@ export const kakaoInstance = axios.create({
 export const defaultInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
 });
+
+instance.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    () => {},
+);
 
 instance.interceptors.response.use(
     (response) => {
