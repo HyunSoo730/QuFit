@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 interface MoveRoomModalProps {
     onClick: () => void;
     onClose: () => void;

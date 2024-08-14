@@ -1,3 +1,4 @@
+import { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { Room } from 'livekit-client';
 import { Participant } from 'livekit-client';
 import { create } from 'zustand';
@@ -7,6 +8,8 @@ export interface RoomParticipant {
     gender: 'f' | 'm' | undefined;
     nickname: string | undefined;
     info: Participant | undefined;
+    faceLandmarkerReady: boolean; // 추가
+    faceLandmarker: FaceLandmarker | null; // 방 참가자별로 FaceLandmarker 인스턴스 가지고 있도록 해야했음.
 }
 
 interface State {
@@ -36,6 +39,7 @@ interface Action {
     setMaleParticipants: (participants: RoomParticipant[] | undefined) => void;
     setFemaleParticipants: (participants: RoomParticipant[] | undefined) => void;
     setPrivateParticipants: (participants: RoomParticipant[] | undefined) => void;
+    updateParticipant: (id: number, update: Partial<RoomParticipant>) => void; // 업데이트 메서드 추가
 }
 
 const useRoomStore = create<State & Action>((set) => ({
@@ -69,6 +73,11 @@ const useRoomStore = create<State & Action>((set) => ({
     setMaleParticipants: (participants) => set({ maleParticipants: participants }),
     setFemaleParticipants: (participants) => set({ femaleParticipants: participants }),
     setPrivateParticipants: (participants) => set({ privateParticipants: participants }),
+
+    updateParticipant: (id, update) =>
+        set((state) => ({
+            participants: state.participants.map((p) => (p.id === id ? { ...p, ...update } : p)),
+        })),
 }));
 
 export const useRoomStateStore = () => useRoomStore((state) => state.room);
@@ -93,3 +102,4 @@ export const useSetMaleParticipantsStore = () => useRoomStore((state) => state.s
 export const useSetFemaleParticipantsStore = () => useRoomStore((state) => state.setFemaleParticipants);
 export const useSetPrivateParticipantsStore = () => useRoomStore((state) => state.setPrivateParticipants);
 export const useSetRoomMaxStore = () => useRoomStore((state) => state.setRoomMax);
+export const useUpdateParticipantStore = () => useRoomStore((state) => state.updateParticipant); // 새로운 업데이트 메서드

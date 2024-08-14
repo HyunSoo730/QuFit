@@ -28,6 +28,7 @@ import { Room, RoomEvent } from 'livekit-client';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
+import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const useRoom = () => {
     const room = useRoomStateStore();
@@ -86,8 +87,17 @@ const useRoom = () => {
                     (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
                         member.id === Number(participant.identity),
                 );
-                addParticipant({ ...newParticipant, info: participant });
-            } catch (error) {}
+
+                const faceLandmarker = await initializeFaceLandmarker();
+                addParticipant({
+                    ...newParticipant,
+                    info: participant,
+                    faceLandmarkerReady: !!faceLandmarker,
+                    faceLandmarker: faceLandmarker,
+                });
+            } catch (error) {
+                console.error('Error in addRoomEventHandler:', error);
+            }
         });
     };
 
@@ -120,17 +130,21 @@ const useRoom = () => {
 
                     decideManager(room);
                     setHostId(member?.memberId!);
+
+                    const faceLandmarker = await initializeFaceLandmarker();
                     addParticipant({
                         id: member?.memberId,
                         gender: member?.gender,
                         nickname: member?.nickname,
                         info: room.localParticipant,
+                        faceLandmarkerReady: !!faceLandmarker,
+                        faceLandmarker: faceLandmarker,
                     });
                     setRoom(room);
                     moveURL(window.location.pathname, data.data.videoRoomId);
                 },
                 onError: async (data) => {
-                    console.log(data);
+                    console.log('Error creating room:', data);
                 },
             },
         );
@@ -145,23 +159,35 @@ const useRoom = () => {
                 const curParticipants: RoomParticipant[] = [];
                 try {
                     const response = await getVideoDetail(videoRoomId);
-                    Array.from(room.remoteParticipants.values()).forEach((participant) => {
+                    Array.from(room.remoteParticipants.values()).forEach(async (participant) => {
                         const newParticipant = response.data.members.find(
                             (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
                                 String(member.id) === participant.identity,
                         );
-                        curParticipants.push({ ...newParticipant, info: participant });
+
+                        const faceLandmarker = await initializeFaceLandmarker();
+                        curParticipants.push({
+                            ...newParticipant,
+                            info: participant,
+                            faceLandmarkerReady: !!faceLandmarker,
+                            faceLandmarker: faceLandmarker,
+                        });
                     });
                     setHostId(response.data.hostId);
                 } catch (error) {
-                    console.log(error);
+                    console.log('Error fetching video details:', error);
                 }
+
+                const faceLandmarker = await initializeFaceLandmarker();
                 curParticipants.push({
                     id: member?.memberId,
                     gender: member?.gender,
                     nickname: member?.nickname,
                     info: room.localParticipant,
+                    faceLandmarkerReady: !!faceLandmarker,
+                    faceLandmarker: faceLandmarker,
                 });
+
                 setParticipants(curParticipants);
                 addRoomEventHandler(room, videoRoomId);
                 decideManager(room);
@@ -219,5 +245,29 @@ const useRoom = () => {
         participants,
     };
 };
+
+async function initializeFaceLandmarker(): Promise<FaceLandmarker | null> {
+    try {
+        const filesetResolver = await FilesetResolver.forVisionTasks(
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm', // 여기 URL을 수정
+        );
+
+        const faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
+            baseOptions: {
+                modelAssetPath:
+                    'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
+                delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numFaces: 1,
+            outputFaceBlendshapes: true,
+            outputFacialTransformationMatrixes: true,
+        });
+        return faceLandmarker;
+    } catch (error) {
+        console.error('Failed to initialize FaceLandmarker:', error);
+        return null;
+    }
+}
 
 export default useRoom;

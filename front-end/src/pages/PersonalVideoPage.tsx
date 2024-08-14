@@ -2,7 +2,7 @@ import ParticipantVideo from '@components/video/ParticipantVideo';
 import PersonalResult from '@components/video/PersonalResult';
 import PersonalVideoTimer from '@components/video/PersonalVideoTimer';
 import useModal from '@hooks/useModal';
-import { useOtherIdxStore, usePrivateParticipantsStore, useRoomParticipantsStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useRoomParticipantsStore } from '@stores/video/roomStore';
 import { useState } from 'react';
 import { PERSONAL_VIDEO_END_SEC } from '@components/game/Constants';
 import useRoom from '@hooks/useRoom';
@@ -13,7 +13,7 @@ import { instance } from '@apis/axios';
 import { PATH } from '@routers/PathConstants';
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
-    const privateParticipants = usePrivateParticipantsStore();
+    // const privateParticipants = usePrivateParticipantsStore();
     const [isMeeting, setIsMeeting] = useState(true);
     const { leaveRoom, createRoom, joinRoom, setPrivateRoom, otherGenderParticipants } = useRoom();
     const { open, close, Modal } = useModal();
@@ -22,7 +22,7 @@ const PersonalVideoPage = () => {
     const navigate = useNavigate();
     const otherIdx = useOtherIdxStore();
 
-    console.log(participants);
+    // console.log(participants);
 
     const endTimer = () => {
         leaveRoom(Number(roomId));

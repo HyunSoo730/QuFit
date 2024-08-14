@@ -12,6 +12,7 @@ interface ParticipantVideoProps {
 const ParticipantVideo = ({ roomMax, gender, status, participants }: ParticipantVideoProps) => {
     let numPeople = 0;
     const { hostId } = useRoom();
+
     return (
         <div className="flex justify-center w-full gap-1 ">
             {participants.map((participant) => {
@@ -20,21 +21,25 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
                     return (
                         <VideoComponent
                             roomMax={roomMax}
-                            key={participant.nickname}
+                            key={participant.id} // participant.nickname에서 participant.id로 변경하여 고유성을 보장
+                            id={participant.id}
                             track={
                                 participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined
                             }
                             isManager={participant.id === hostId}
                             participateName={participant.nickname!}
+                            faceLandmarkerReady={participant.faceLandmarkerReady}
+                            faceLandmarker={participant.faceLandmarker}
                             status={status}
                         />
                     );
                 }
+                return null;
             })}
             {Array(roomMax / 2 - numPeople)
                 .fill(0)
-                .map(() => (
-                    <EmptyVideo roomMax={2} />
+                .map((_, index) => (
+                    <EmptyVideo key={index} />
                 ))}
         </div>
     );
