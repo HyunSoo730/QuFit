@@ -41,7 +41,7 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('active');
+    const [roomStep, setRoomStep] = useState<RoomStep>('end');
     const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     // const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
@@ -144,7 +144,7 @@ function GroupVideoPage() {
     };
 
     useEffect(() => {
-        setRoomId(Number(roomId)); //나중에 param에서 따와야함
+        setRoomId(Number(roomId));
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
@@ -170,7 +170,7 @@ function GroupVideoPage() {
                 <MoveRoomModal
                     onClose={close}
                     onClick={handleConfirmModal}
-                    message={'잠시 후 일대일 미팅으로 이동됩니다.'}
+                    message={'단체 미팅이 종료되었습니다. 다음 방으로 이동해주세요.'}
                 />
             </Modal>
             {isMeeting && (

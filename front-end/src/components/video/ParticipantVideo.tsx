@@ -14,12 +14,13 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
     const { hostId } = useRoom();
 
     return (
-        <div className="flex justify-center w-full gap-1 lg:gap-3 2xl:gap-4">
+        <div className="flex justify-center w-full gap-1 ">
             {participants.map((participant) => {
                 if (participant.gender === gender) {
                     numPeople++;
                     return (
                         <VideoComponent
+                            roomMax={roomMax}
                             key={participant.nickname}
                             track={
                                 participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined
@@ -34,7 +35,7 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
             {Array(roomMax / 2 - numPeople)
                 .fill(0)
                 .map(() => (
-                    <EmptyVideo />
+                    <EmptyVideo roomMax={2} />
                 ))}
         </div>
     );

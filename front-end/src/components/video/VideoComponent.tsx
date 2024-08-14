@@ -15,7 +15,7 @@ interface VideoComponentProps {
     roomMax?: number;
 }
 
-function VideoComponent({ track, status, isManager, participateName, local = false }: VideoComponentProps) {
+function VideoComponent({ track, status, isManager, participateName, roomMax, local = false }: VideoComponentProps) {
     const room = useRoomStateStore();
     const videoElement = useRef<HTMLVideoElement | null>(null);
     const [isMicEnable, setIsMicEnable] = useState(false);
@@ -23,7 +23,25 @@ function VideoComponent({ track, status, isManager, participateName, local = fal
         room?.localParticipant.isCameraEnabled && status === 'meeting',
     );
     const participants = useRoomParticipantsStore();
+    let widthClass = '';
 
+    switch (roomMax) {
+        case 8:
+            widthClass = 'w-1/4';
+            break;
+        case 6:
+            widthClass = 'w-1/3';
+            break;
+        case 4:
+            widthClass = 'w-1/2';
+            break;
+        case 2:
+            widthClass = 'w-full';
+            break;
+        default:
+            console.log('Invalid roomMax value');
+            break;
+    }
     useEffect(() => {
         if (videoElement.current) {
             track?.attach(videoElement.current);
@@ -46,7 +64,7 @@ function VideoComponent({ track, status, isManager, participateName, local = fal
 
     return (
         <div
-            className="relative z-50 flex flex-col justify-between w-1/4 p-4 rounded-xl aspect-video max-[]"
+            className={`${widthClass} relative z-50 flex flex-col justify-between p-4 rounded-xl aspect-video `}
             // style={{ width, height }}
             onClick={changeCameraEnabled}
         >

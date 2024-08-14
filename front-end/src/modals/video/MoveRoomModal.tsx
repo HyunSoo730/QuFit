@@ -1,5 +1,3 @@
-import { GROUP_VIDEO_END_SEC } from '@components/game/Constants';
-import useTimer from '@hooks/useTimer';
 import { useEffect, useState } from 'react';
 
 interface MoveRoomModalProps {
@@ -15,6 +13,8 @@ interface MoveRoomModalProps {
     : '잠시 후 미팅이 종료됩니다. 수고하셨습니다? 감사합니다?'
     */
 }
+
+//친구 추가 로직
 
 const MoveRoomModal = ({ onClose, message, onClick }: MoveRoomModalProps) => {
     const [count, setCount] = useState(5);
@@ -35,9 +35,7 @@ const MoveRoomModal = ({ onClose, message, onClick }: MoveRoomModalProps) => {
         <>
             <div className="fixed top-0 left-0 w-screen h-screen bg-Dark_Layout-100 bg-opacity-60" onClick={onClose} />
             <div className="flex flex-col items-center p-10 text-white bg-transparent effect-purePink rounded-2xl gap-9">
-                <h2 className="flex p-3 text-lg font-bold text-center">
-                    {'미팅 시간이 종료되었어요. 다음 방으로 이동해주세요.'}
-                </h2>
+                <h2 className="flex p-3 text-lg font-bold text-center">{message}</h2>
                 <button
                     onClick={() => {
                         onClick();

@@ -45,7 +45,7 @@ export default {
             },
             animation: {
                 choice: 'choice 6s',
-                private: 'private 300s',
+                private: 'private 20s',
             },
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",

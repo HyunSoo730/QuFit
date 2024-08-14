@@ -20,6 +20,7 @@ import {
     useRoomStateStore,
     useSetHostIdStore,
     useSetOtherGenderParticipantsStore,
+    useSetOtherIdxStore,
     useSetPrivateParticipantsStore,
     useSetRoomStateStore,
 } from '@stores/video/roomStore';
@@ -44,6 +45,8 @@ const useRoom = () => {
 
     const otherGenderParticipants = useOtherGenderParticipantsStore();
     const otherIdx = useOtherIdxStore();
+    const setOtherIdx = useSetOtherIdxStore();
+
     const [isMake] = useState(false);
 
     const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
@@ -198,6 +201,7 @@ const useRoom = () => {
             curPrivateParticipants.push(remmoveParticipants);
         }
         setPrivateParticipants(curPrivateParticipants);
+        setOtherIdx(otherIdx + 1);
     };
 
     return {
