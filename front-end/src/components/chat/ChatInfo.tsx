@@ -1,4 +1,3 @@
-import { DoorExitIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
 import { useEffect, useState } from 'react';
@@ -44,8 +43,6 @@ const ChatInfo = ({
 
         const chatDate = `${year}. ${month}. ${day}`;
 
-        console.log(chatDate);
-
         if (unreadCount > 99) {
             setUnreadCnt('99+');
         }
@@ -63,7 +60,7 @@ const ChatInfo = ({
 
             setLastMsgTime(`${hours}${minutes}`);
         }
-    }, []);
+    }, [unreadCount, lastMessageTime]);
 
     const handleOnClickButton = () => {
         setChatState([
@@ -105,9 +102,6 @@ const ChatInfo = ({
                             {unreadCnt}
                         </div>
                     )}
-                    <button>
-                        <DoorExitIcon className="w-8 lg:w-7 md:w-10 xs:w-7" />
-                    </button>
                 </div>
             </div>
         </div>

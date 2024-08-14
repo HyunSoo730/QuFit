@@ -1,4 +1,4 @@
-import { CupidIcon, XIcon, EmptyChatIcon } from '@assets/svg/chat';
+import { CupidIcon, XIcon, EmptyChatIcon, DoorExitIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
 import { useSetChatInfoList } from '@stores/chat/chatInfoListStore';
@@ -55,6 +55,8 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     const otherDifferTimeList: number[] = [];
 
     const msgBox = chatList.map((item, idx) => {
+        console.log('chatState:', chatState);
+
         let isDate = true;
 
         const date = new Date(item.timestamp);
@@ -381,6 +383,8 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
             });
         }
 
+        setChatList([]);
+
         setIsClosed(true);
 
         setTimeout(() => {
@@ -438,11 +442,11 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                                     alt="user profile image"
                                     className="w-10 h-10 rounded-full lg:w-10 lg:h-10"
                                 />
-                                <p className="ml-3.5 font-medium text-white truncate max-w-72 lg:text-lg">{nickname}</p>
+                                <p className="mx-3.5 font-medium text-white truncate max-w-72 lg:text-lg">{nickname}</p>
+                                <button onClick={handleDelButton}>
+                                    <DoorExitIcon className="w-6 opacity-70 fill-smokeWhite lg:w-7 md:w-10 xs:w-7" />
+                                </button>
                             </div>
-                            <button onClick={handleDelButton} className="font-bold bg-pink">
-                                임시 삭제버튼
-                            </button>
                             <button onClick={handleCloseButton}>
                                 <XIcon className="w-10" />
                             </button>
