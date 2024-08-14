@@ -60,7 +60,7 @@ const MemberInfo = ({ onNext, registData, isUpdate }: InfoProps) => {
                     <div className="flex flex-col">
                         <SingleTagGroup label="성별" name="gender" onChange={handleChange} value={values.gender}>
                             {GENDER.map((gender) => (
-                                <SingleTag key={gender.param} value={gender.param} isUpdate={isUpdate}>
+                                <SingleTag key={gender.param} value={gender.param} disabled={!isUpdate}>
                                     {gender.text}
                                 </SingleTag>
                             ))}
@@ -79,7 +79,7 @@ const MemberInfo = ({ onNext, registData, isUpdate }: InfoProps) => {
                             value={values.locationId?.toString() || ''}
                         >
                             {LOCATION.map((location) => (
-                                <SingleTag key={location.code} value={location.code} isUpdate={isUpdate}>
+                                <SingleTag key={location.code} value={location.code} disabled={!isUpdate}>
                                     {location.name}
                                 </SingleTag>
                             ))}
@@ -132,7 +132,7 @@ const MemberInfo = ({ onNext, registData, isUpdate }: InfoProps) => {
                             value={values.memberMBTITag!}
                         >
                             {MBTI.map((mbti) => (
-                                <SingleTag key={mbti.tag_name} value={mbti.tag_name} isUpdate={isUpdate}>
+                                <SingleTag key={mbti.tag_name} value={mbti.tag_name} disabled={!isUpdate}>
                                     {mbti.tag_name}
                                 </SingleTag>
                             ))}
