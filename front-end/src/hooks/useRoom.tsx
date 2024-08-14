@@ -14,10 +14,10 @@ import {
     useRoomStateStore,
     useSetHostIdStore,
     useSetRoomStateStore,
-    useUpdateParticipantStore,  // 추가된 import
+    useUpdateParticipantStore,
 } from '@stores/video/roomStore';
 import { Room, RoomEvent } from 'livekit-client';
-import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'; // MediaPipe 관련 import 추가
+import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const useRoom = () => {
     const room = useRoomStateStore();
@@ -26,7 +26,6 @@ const useRoom = () => {
 
     const addParticipant = useRoomAddParticipantStore();
     const setParticipants = useRoomSetParticipantsStore();
-    // const updateParticipant = useUpdateParticipantStore(); // 추가된 부분
     const setHostId = useSetHostIdStore();
     const hostId = useHostIdStore();
     const createVideoRoom = useCreateVideoRoomMutation();
@@ -43,15 +42,16 @@ const useRoom = () => {
                         member.id === Number(participant.identity),
                 );
 
-                // FaceLandmarker 초기화
                 const faceLandmarker = await initializeFaceLandmarker();
                 addParticipant({
                     ...newParticipant,
                     info: participant,
                     faceLandmarkerReady: !!faceLandmarker,
-                    faceLandmarker: faceLandmarker, // 추가된 부분
+                    faceLandmarker: faceLandmarker,
                 });
-            } catch (error) {}
+            } catch (error) {
+                console.error('Error in addRoomEventHandler:', error);
+            }
         });
     };
 
@@ -77,7 +77,6 @@ const useRoom = () => {
                     decideManager(room);
                     setHostId(member?.memberId!);
                     
-                    // FaceLandmarker 초기화
                     const faceLandmarker = await initializeFaceLandmarker();
                     addParticipant({
                         id: member?.memberId,
@@ -85,11 +84,11 @@ const useRoom = () => {
                         nickname: member?.nickname,
                         info: room.localParticipant,
                         faceLandmarkerReady: !!faceLandmarker,
-                        faceLandmarker: faceLandmarker, // 추가된 부분
+                        faceLandmarker: faceLandmarker,
                     });
                 },
                 onError: async (data) => {
-                    console.log(data);
+                    console.log('Error creating room:', data);
                 },
             },
         );
@@ -110,21 +109,19 @@ const useRoom = () => {
                                 String(member.id) === participant.identity,
                         );
 
-                        // FaceLandmarker 초기화
                         const faceLandmarker = await initializeFaceLandmarker();
                         curParticipants.push({
                             ...newParticipant,
                             info: participant,
                             faceLandmarkerReady: !!faceLandmarker,
-                            faceLandmarker: faceLandmarker, // 추가된 부분
+                            faceLandmarker: faceLandmarker,
                         });
                     });
                     setHostId(response.data.hostId);
                 } catch (error) {
-                    console.log(error);
+                    console.log('Error fetching video details:', error);
                 }
                 
-                // Local Participant 추가
                 const faceLandmarker = await initializeFaceLandmarker();
                 curParticipants.push({
                     id: member?.memberId,
@@ -132,7 +129,7 @@ const useRoom = () => {
                     nickname: member?.nickname,
                     info: room.localParticipant,
                     faceLandmarkerReady: !!faceLandmarker,
-                    faceLandmarker: faceLandmarker, // 추가된 부분
+                    faceLandmarker: faceLandmarker,
                 });
                 
                 setParticipants(curParticipants);
@@ -154,18 +151,24 @@ const useRoom = () => {
     return { hostId, isHost, createRoom, joinRoom, leaveRoom };
 };
 
-// FaceLandmarker 초기화 함수 추가
 async function initializeFaceLandmarker(): Promise<FaceLandmarker | null> {
     try {
-        const filesetResolver = await FilesetResolver.forVisionTasks();
+        const filesetResolver = await FilesetResolver.forVisionTasks(
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm' // 여기 URL을 수정
+        );
+        
         const faceLandmarker = await FaceLandmarker.createFromOptions(
             filesetResolver,
             {
                 baseOptions: {
-                    modelAssetPath: '여기가 문제.', // 모델 경로 설정
+                    modelAssetPath:
+                        'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
+                    delegate: 'GPU',
                 },
                 runningMode: 'VIDEO',
                 numFaces: 1,
+                outputFaceBlendshapes: true,
+                outputFacialTransformationMatrixes: true,
             }
         );
         return faceLandmarker;

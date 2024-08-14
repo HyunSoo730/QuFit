@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from '@mediapipe/tasks-vision';
+import { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { CameraOffIcon, CrownIcon, MicOffIcon, MicOnIcon } from '@assets/svg/video';
-import { useRoomStateStore, useRoomSetParticipantsStore,useUpdateParticipantStore } from '@stores/video/roomStore';
-// import { RoomParticipant } from '@stores/video/roomStore';
-
+import { useRoomStateStore } from '@stores/video/roomStore';
 
 interface VideoComponentProps {
     track?: LocalVideoTrack | RemoteVideoTrack;
@@ -15,20 +13,9 @@ interface VideoComponentProps {
     local?: boolean;
     isManager: boolean;
     faceLandmarkerReady: boolean;
-    id: number|undefined;
+    faceLandmarker: FaceLandmarker | null;  // faceLandmarker를 prop으로 추가
+    id: number | undefined;
 }
-
-const options: FaceLandmarkerOptions = {
-    baseOptions: {
-        modelAssetPath:
-            'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
-        delegate: 'GPU',
-    },
-    numFaces: 1,
-    runningMode: 'VIDEO',
-    outputFaceBlendshapes: true,
-    outputFacialTransformationMatrixes: true,
-};
 
 function MaskModel({ position, rotation }: { position: THREE.Vector3; rotation: THREE.Euler }) {
     const { scene } = useGLTF('/assets/raccoon_head.glb');
@@ -56,6 +43,7 @@ function VideoComponent({
     participateName,
     local = false,
     faceLandmarkerReady,
+    faceLandmarker,  // faceLandmarker를 prop으로 받음
     id,
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -63,98 +51,67 @@ function VideoComponent({
     const [isCameraEnable, setIsCameraEnable] = useState(true);
     const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
     const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
-    const [isMediaPipeReady, setIsMediaPipeReady] = useState(false);
-    const [faceLandmarker, setFaceLandmarker] = useState<FaceLandmarker | null>(null);
     const room = useRoomStateStore();
-    // const setParticipants = useRoomSetParticipantsStore();
-    const updateParticipant = useUpdateParticipantStore(); // 추가된 부분
-
-    useEffect(() => {
-        if (!faceLandmarkerReady) {
-            const setupMediaPipe = async () => {
-                try {
-                    const filesetResolver = await FilesetResolver.forVisionTasks(
-                        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm',
-                    );
-                    const newFaceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
-                    setFaceLandmarker(newFaceLandmarker);
-                    console.log('MediaPipe Face Landmarker initialized for', participateName);
-                    setIsMediaPipeReady(true);
-    
-                    // 여기에서 updateParticipant로 상태 업데이트
-                    updateParticipant(id!, {
-                        faceLandmarkerReady: true,
-                        faceLandmarker: newFaceLandmarker,
-                    });
-                } catch (error) {
-                    console.error('Error initializing MediaPipe for', participateName, ':', error);
-                }
-            };
-            setupMediaPipe();
-        }
-    }, [faceLandmarkerReady, participateName, updateParticipant]);
-    
 
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.onloadedmetadata = () => {
                 console.log('Video metadata loaded for', participateName);
                 videoRef.current!.play();
+
+                // 비디오가 로드된 후에 얼굴 인식을 시작하도록 설정
+                if (faceLandmarkerReady && faceLandmarker) {
+                    const interval = setInterval(() => {
+                        if (
+                            videoRef.current &&
+                            videoRef.current.readyState === 4 &&
+                            videoRef.current.videoWidth > 0 &&
+                            videoRef.current.videoHeight > 0
+                        ) {
+                            try {
+                                const result = faceLandmarker.detectForVideo(videoRef.current, Date.now());
+
+                                if (result.faceLandmarks && result.faceLandmarks.length > 0) {
+                                    const landmarks = result.faceLandmarks[0];
+                                    const avgPosition = new THREE.Vector3();
+                                    const indices = [0, 1, 4, 6, 9, 13, 14, 17, 33, 263, 61, 291, 199];
+
+                                    indices.forEach((index) => {
+                                        avgPosition.add(
+                                            new THREE.Vector3(landmarks[index].x, landmarks[index].y, landmarks[index].z),
+                                        );
+                                    });
+                                    avgPosition.divideScalar(indices.length);
+
+                                    const x = Math.max(-3, Math.min(3, (avgPosition.x - 0.5) * 6));
+                                    const y = Math.max(-3, Math.min(3, -(avgPosition.y - 0.5) * 6));
+                                    const z = Math.max(-7.5, Math.min(0, -avgPosition.z * 15));
+
+                                    setMaskPosition(new THREE.Vector3(x, y, z));
+
+                                    if (result.facialTransformationMatrixes && result.facialTransformationMatrixes.length > 0) {
+                                        const matrix = new THREE.Matrix4().fromArray(result.facialTransformationMatrixes[0].data);
+                                        const rotation = new THREE.Euler().setFromRotationMatrix(matrix);
+                                        rotation.y *= -1;
+                                        setMaskRotation(rotation);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Face detection error for', participateName, ':', error);
+                            }
+                        }
+                    }, 16);
+
+                    return () => clearInterval(interval);
+                }
             };
+
             track?.attach(videoRef.current);
         }
         return () => {
             track?.detach();
         };
-    }, [track, participateName]);
-
-    useEffect(() => {
-        if (!videoRef.current || !isMediaPipeReady || !faceLandmarker) return;
-
-        const detectFace = async () => {
-            if (
-                videoRef.current &&
-                videoRef.current.readyState === 4 &&
-                videoRef.current.videoWidth > 0 &&
-                videoRef.current.videoHeight > 0
-            ) {
-                try {
-                    const result = faceLandmarker.detectForVideo(videoRef.current, Date.now());
-
-                    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
-                        const landmarks = result.faceLandmarks[0];
-                        const avgPosition = new THREE.Vector3();
-                        const indices = [0, 1, 4, 6, 9, 13, 14, 17, 33, 263, 61, 291, 199];
-
-                        indices.forEach((index) => {
-                            avgPosition.add(
-                                new THREE.Vector3(landmarks[index].x, landmarks[index].y, landmarks[index].z),
-                            );
-                        });
-                        avgPosition.divideScalar(indices.length);
-
-                        const x = Math.max(-3, Math.min(3, (avgPosition.x - 0.5) * 6));
-                        const y = Math.max(-3, Math.min(3, -(avgPosition.y - 0.5) * 6));
-                        const z = Math.max(-7.5, Math.min(0, -avgPosition.z * 15));
-
-                        setMaskPosition(new THREE.Vector3(x, y, z));
-
-                        if (result.facialTransformationMatrixes && result.facialTransformationMatrixes.length > 0) {
-                            const matrix = new THREE.Matrix4().fromArray(result.facialTransformationMatrixes[0].data);
-                            const rotation = new THREE.Euler().setFromRotationMatrix(matrix);
-                            rotation.y *= -1;
-                            setMaskRotation(rotation);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Face detection error for', participateName, ':', error);
-                }
-            }
-        };
-
-        const interval = setInterval(detectFace, 16);  // 이 부분을 requestAnimationFrame으로 변경 가능
-        return () => clearInterval(interval);
-    }, [isMediaPipeReady, participateName, faceLandmarker]);
+    }, [track, participateName, faceLandmarkerReady, faceLandmarker]);
 
     const changeCameraEnabled = () => {
         if (local) {
@@ -207,7 +164,7 @@ function VideoComponent({
                         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
                             <ambientLight intensity={0.5} />
                             <pointLight position={[10, 10, 10]} />
-                            {isMediaPipeReady && <MaskModel position={maskPosition} rotation={maskRotation} />}
+                            {faceLandmarkerReady && <MaskModel position={maskPosition} rotation={maskRotation} />}
                         </Canvas>
                     </>
                 ) : (
