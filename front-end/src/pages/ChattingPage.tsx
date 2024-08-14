@@ -24,7 +24,7 @@ const ChattingPage = () => {
     const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
 
     const ID = 2;
-    const chatListData = useChatListQuery(ID).data?.data;
+    const { data: chatListData, refetch } = useChatListQuery(ID);
 
     useEffect(() => {
         if (friendListData) {
@@ -94,7 +94,7 @@ const ChattingPage = () => {
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {chatListData?.map((chat: ChatListProps) => (
+                        {chatListData?.data.map((chat: ChatListProps) => (
                             <ChatInfo
                                 key={chat.chatRoomId}
                                 id={chat.chatRoomId}
@@ -102,6 +102,7 @@ const ChattingPage = () => {
                                 otherMemberId={chat.otherMemberId}
                                 profileImage={chat.profileImage}
                                 lastMessage={chat.lastMessage}
+                                lastMessageTime={chat.lastMessageTime}
                                 unreadCount={chat.unreadCount}
                             />
                         ))}
@@ -115,6 +116,7 @@ const ChattingPage = () => {
                         id={chatState[0].id}
                         nickname={chatState[0].nickname}
                         profileImage={chatState[0].profileImage}
+                        refetch={refetch}
                     />
                 </div>
             </div>

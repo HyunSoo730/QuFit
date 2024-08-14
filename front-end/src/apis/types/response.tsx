@@ -52,6 +52,6 @@ export interface ChatListProps {
     lastMessage: string;
     unreadCount: number;
     lastMessageId?: string;
-    lastMessageTime?: string;
+    lastMessageTime?: Date;
     lastReadMessageId?: string;
 }

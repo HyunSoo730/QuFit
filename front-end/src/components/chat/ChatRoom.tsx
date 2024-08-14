@@ -9,6 +9,7 @@ interface ChatRoomProps {
     id: number;
     nickname: string;
     profileImage: string;
+    refetch: () => void;
 }
 
 interface ChatListProps {
@@ -18,7 +19,7 @@ interface ChatListProps {
     timestamp: string;
 }
 
-const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
+const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     const senderId = 2;
 
     // Store
@@ -209,6 +210,7 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
             console.log('수신된 메시지:', message.body);
             let msg = JSON.parse(message.body);
             setNewMessage(msg);
+            refetch();
         } else {
             console.log('빈 메시지 수신');
         }
@@ -350,7 +352,7 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
                 content: chat,
             }),
         });
-
+        refetch();
         setChat('');
     };
 

@@ -11,18 +11,57 @@ interface ChatInfoProps {
     lastMessage: string;
     unreadCount: number;
     lastMessageId?: string;
-    lastMessageTime?: string;
+    lastMessageTime?: Date;
     lastReadMessageId?: string;
 }
 
-const ChatInfo = ({ id, nickname, profileImage, otherMemberId, lastMessage, unreadCount }: ChatInfoProps) => {
+const ChatInfo = ({
+    id,
+    nickname,
+    profileImage,
+    otherMemberId,
+    lastMessage,
+    lastMessageTime,
+    unreadCount,
+}: ChatInfoProps) => {
     const setChatState = useChatStateStore((state) => state.setChatState);
     const setIsClosed = useCloseStateStore((state) => state.setIsClosed);
     const [unreadCnt, setUnreadCnt] = useState(`${unreadCount}`);
+    const [lastMsgTime, setLastMsgTime] = useState('');
 
     useEffect(() => {
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth() + 1 >= 10 ? today.getMonth() + 1 : `0${today.getMonth() + 1}`;
+        const todayDay = today.getDate() >= 10 ? today.getDate() : `0${today.getDate()}`;
+
+        const todayDate = `${todayYear}. ${todayMonth}. ${todayDay}`;
+
+        const date = new Date(lastMessageTime as Date);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
+        const day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`;
+
+        const chatDate = `${year}. ${month}. ${day}`;
+
+        console.log(chatDate);
+
         if (unreadCount > 99) {
             setUnreadCnt('99+');
+        }
+
+        if (chatDate === '1970. 01. 01') {
+            setLastMsgTime('');
+            return;
+        }
+
+        if (todayDate !== chatDate) {
+            setLastMsgTime(chatDate);
+        } else {
+            const hours = date.getHours() >= 10 ? `${date.getHours()} : ` : `0${date.getHours()} : `;
+            const minutes = date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+
+            setLastMsgTime(`${hours}${minutes}`);
         }
     }, []);
 
@@ -53,7 +92,7 @@ const ChatInfo = ({ id, nickname, profileImage, otherMemberId, lastMessage, unre
                             <p className="mr-4 text-2xl text-white truncate max-w-72 lg:text-lg lg:mr-3 lg:max-w-60 xs:text-lg xs:max-w-32 xs:mr-1">
                                 {nickname}
                             </p>
-                            <p className="font-medium text-white opacity-80 lg:text-sm xs:text-sm">14 : 32</p>
+                            <p className="text-sm text-smokeWhite opacity-70 lg:text-sm xs:text-sm">{lastMsgTime}</p>
                         </div>
                         <p className="mt-2 text-xl text-left text-white truncate opacity-80 max-w-96 lg:text-lg lg:mt-1 lg:max-w-72 xs:text-sm xs:mt-1 xs:max-w-36">
                             {lastMessage}
