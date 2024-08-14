@@ -1,4 +1,5 @@
 import ParticipantVideo from '@components/video/ParticipantVideo';
+import PersonalVideoTimer from '@components/video/PersonalVideoTimer';
 import { usePrivateParticipantsStore, useRoomParticipantsStore } from '@stores/video/roomStore';
 
 const PersonalVideoPage = () => {
@@ -8,10 +9,11 @@ const PersonalVideoPage = () => {
     console.log(participants);
     console.log(privateParticipants);
     return (
-        <div className="flex flex-col gap-4">
-            <ParticipantVideo roomMax={4} gender="m" participants={privateParticipants} status={'meeting'} />
+        <div className="flex flex-col items-start gap-4">
+            <PersonalVideoTimer />
+            <ParticipantVideo roomMax={2} gender="m" participants={privateParticipants} status={'meeting'} />
 
-            <ParticipantVideo roomMax={4} gender="f" participants={privateParticipants} status={'meeting'} />
+            <ParticipantVideo roomMax={2} gender="f" participants={privateParticipants} status={'meeting'} />
         </div>
     );
 };

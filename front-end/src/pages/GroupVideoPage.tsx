@@ -41,9 +41,9 @@ type beforeResult = {
 function GroupVideoPage() {
     const roomMax = 8;
     // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('result');
-    // const { createRoom, joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
-    const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
+    const { createRoom, joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    // const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(0);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
@@ -152,7 +152,13 @@ function GroupVideoPage() {
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
         if (member?.gender === 'm') {
-            // createRoom(videoRoomName, maxParticipants, mainTag, videoRoomHobbies, videoRoomPersonalities);
+            createRoom({
+                videoRoomName: '개인방',
+                maxParticipants: 2,
+                mainTag: '',
+                videoRoomHobbies: [],
+                videoRoomPersonalities: [],
+            });
         }
         open();
     });

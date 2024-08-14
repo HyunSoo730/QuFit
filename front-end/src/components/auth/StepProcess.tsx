@@ -1,4 +1,12 @@
-import { ProcessCompleteIcon, ProcessIcon1, ProcessIcon2, ProcessIcon3, ProcessIcon4, ProcessIcon5, ProcessIcon6 } from '@assets/svg';
+import {
+    ProcessCompleteIcon,
+    ProcessIcon1,
+    ProcessIcon2,
+    ProcessIcon3,
+    ProcessIcon4,
+    ProcessIcon5,
+    ProcessIcon6,
+} from '@assets/svg';
 import { useMemo } from 'react';
 
 interface StepProcessProps {
@@ -20,7 +28,7 @@ const StepProcess = ({ count }: StepProcessProps) => {
                         <ProcessIcon3 />
                     ) : idx === 3 ? (
                         <ProcessIcon4 />
-                    ): idx === 4 ? (
+                    ) : idx === 4 ? (
                         <ProcessIcon5 />
                     ) : (
                         idx === 5 && <ProcessIcon6 />
