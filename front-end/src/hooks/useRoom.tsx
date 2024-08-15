@@ -1,4 +1,4 @@
-import { getVideoDetail } from '@apis/video/VideoApi';
+import { getVideoDetail, postVideoJoin } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
 import {
@@ -79,9 +79,12 @@ const useRoom = () => {
     }, [isMake, participants, member, setOtherGenderParticipants]);
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
+        console.log(room);
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
             try {
                 const response = await getVideoDetail(roomId);
+                console.log('방상세정보');
+                console.log(response);
                 const newParticipant = response.data.members.find(
                     (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
                         member.id === Number(participant.identity),
@@ -150,50 +153,51 @@ const useRoom = () => {
     };
 
     const joinRoom = async (videoRoomId: number) => {
+        console.log('새로운방 입장');
+
         const room = new Room(ROOM_SETTING);
+        try {
+            const response = await postVideoJoin(videoRoomId);
+            await room.connect(LIVEKIT_URL, response?.data.token);
+            const curParticipants: RoomParticipant[] = [];
+            try {
+                const response = await getVideoDetail(videoRoomId);
+                Array.from(room.remoteParticipants.values()).forEach(async (participant) => {
+                    const newParticipant = response.data.members.find(
+                        (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
+                            String(member.id) === participant.identity,
+                    );
 
-        joinVideoRoom.mutate(videoRoomId, {
-            onSuccess: async (response) => {
-                await room.connect(LIVEKIT_URL, response?.data.token);
-                const curParticipants: RoomParticipant[] = [];
-                try {
-                    const response = await getVideoDetail(videoRoomId);
-                    await Promise.all(Array.from(room.remoteParticipants.values()).map(async (participant) => {
-                        const newParticipant = response.data.members.find(
-                            (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
-                                String(member.id) === participant.identity,
-                        );
-
-                        const faceLandmarker = await initializeFaceLandmarker();
-                        curParticipants.push({
-                            ...newParticipant,
-                            info: participant,
-                            faceLandmarkerReady: !!faceLandmarker,
-                            faceLandmarker: faceLandmarker,
-                        });
-                    }));
-                    setHostId(response.data.hostId);
-                } catch (error) {
-                    console.log('Error fetching video details:', error);
-                }
-
-                const faceLandmarker = await initializeFaceLandmarker();
-                curParticipants.push({
-                    id: member?.memberId,
-                    gender: member?.gender,
-                    nickname: member?.nickname,
-                    info: room.localParticipant,
-                    faceLandmarkerReady: !!faceLandmarker,
-                    faceLandmarker: faceLandmarker,
+                    const faceLandmarker = await initializeFaceLandmarker();
+                    curParticipants.push({
+                        ...newParticipant,
+                        info: participant,
+                        faceLandmarkerReady: !!faceLandmarker,
+                        faceLandmarker: faceLandmarker,
+                    });
                 });
+                setHostId(response.data.hostId);
+            } catch (error) {
+                console.log('Error fetching video details:', error);
+            }
 
-                setParticipants(curParticipants);
-                addRoomEventHandler(room, videoRoomId);
-                decideManager(room);
+            const faceLandmarker = await initializeFaceLandmarker();
+            curParticipants.push({
+                id: member?.memberId,
+                gender: member?.gender,
+                nickname: member?.nickname,
+                info: room.localParticipant,
+                faceLandmarkerReady: !!faceLandmarker,
+                faceLandmarker: faceLandmarker,
+            });
+            setParticipants(curParticipants);
+            addRoomEventHandler(room, videoRoomId);
+            decideManager(room);
 
-                moveURL(window.location.pathname, videoRoomId);
-            },
-        });
+            moveURL(window.location.pathname, videoRoomId);
+        } catch (error) {
+            console.log(error);
+        }
 
         setRoom(room);
     };
@@ -270,3 +274,47 @@ async function initializeFaceLandmarker(): Promise<FaceLandmarker | null> {
 }
 
 export default useRoom;
+
+// joinVideoRoom.mutate(videoRoomId, {
+//     onSuccess: async (response) => {
+//         console.log('참여 성공');
+//         await room.connect(LIVEKIT_URL, response?.data.token);
+//         const curParticipants: RoomParticipant[] = [];
+//         try {
+//             const response = await getVideoDetail(videoRoomId);
+//             Array.from(room.remoteParticipants.values()).forEach(async (participant) => {
+//                 const newParticipant = response.data.members.find(
+//                     (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
+//                         String(member.id) === participant.identity,
+//                 );
+
+//                 const faceLandmarker = await initializeFaceLandmarker();
+//                 curParticipants.push({
+//                     ...newParticipant,
+//                     info: participant,
+//                     faceLandmarkerReady: !!faceLandmarker,
+//                     faceLandmarker: faceLandmarker,
+//                 });
+//             });
+//             setHostId(response.data.hostId);
+//         } catch (error) {
+//             console.log('Error fetching video details:', error);
+//         }
+
+//         const faceLandmarker = await initializeFaceLandmarker();
+//         curParticipants.push({
+//             id: member?.memberId,
+//             gender: member?.gender,
+//             nickname: member?.nickname,
+//             info: room.localParticipant,
+//             faceLandmarkerReady: !!faceLandmarker,
+//             faceLandmarker: faceLandmarker,
+//         });
+
+//         setParticipants(curParticipants);
+//         addRoomEventHandler(room, videoRoomId);
+//         decideManager(room);
+
+//         moveURL(window.location.pathname, videoRoomId);
+//     },
+// });

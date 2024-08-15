@@ -66,7 +66,7 @@ function GroupVideoPage() {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[otherIdx].id },
             });
-            joinRoom(response.data['videoRoomId: ']);
+            joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
         setPrivateRoom();
