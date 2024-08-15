@@ -13,6 +13,7 @@ import { instance } from '@apis/axios';
 import { PATH } from '@routers/PathConstants';
 import * as StompJs from '@stomp/stompjs';
 import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
+import { useProblemsStore, useResultsStore } from '@stores/video/gameStore';
 
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
@@ -27,10 +28,15 @@ const PersonalVideoPage = () => {
     const [isFriend, setIsFriend] = useState(false);
     const other = participants.find((participant) => participant.id !== member?.memberId);
     const [isFriendAccept, setIsFriendAccept] = useState(false);
-    //participants가 안담기내
-    console.log(participants);
 
-    console.log(otherGenderParticipants);
+    const problems = useProblemsStore();
+    const results = useResultsStore();
+
+    console.log(participants);
+    console.log(participants.length);
+    console.log(problems);
+    console.log(results);
+    //participants가 안담기내
     const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
         client.current?.subscribe(`/user/${member?.memberId}/sub/game`, (message) => {
@@ -141,7 +147,7 @@ const PersonalVideoPage = () => {
                         <ParticipantVideo roomMax={2} gender="m" participants={participants} status={'meeting'} />
                         <ParticipantVideo roomMax={2} gender="f" participants={participants} status={'meeting'} />
                     </div>
-                    <PersonalResult />
+                    <PersonalResult participants={participants} results={results} problems={problems} />
                 </div>
             )}
         </>
