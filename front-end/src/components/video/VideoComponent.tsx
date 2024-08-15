@@ -8,6 +8,19 @@ import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { CameraOffIcon, CrownIcon, MicOffIcon, MicOnIcon } from '@assets/svg/video';
 import { useRoomStateStore } from '@stores/video/roomStore';
 
+// 가면 URL 배열
+const maskUrls = [
+    '/public/assets/raccoon_head.glb',
+    '/public/assets/cat/scene.gltf',
+    '/public/assets/deer/scene.gltf',
+    '/public/assets/rabbit/scene.gltf',
+];
+
+// 참가자 순서에 따라 가면을 선택하는 함수
+function getMaskUrl(order: number): string {
+    return maskUrls[order % maskUrls.length];
+}
+
 interface VideoComponentProps {
     track?: LocalVideoTrack | RemoteVideoTrack;
     participateName: string;
@@ -18,6 +31,7 @@ interface VideoComponentProps {
     id: number | undefined;
     status: 'wait' | 'meeting';
     roomMax?: number;
+    participantOrder: number, // 참가자 순서에 따른 가면 선택 
 }
 
 class Avatar {
@@ -27,7 +41,14 @@ class Avatar {
 
     constructor(modelUrl: string, scene: THREE.Scene) {
         this.scene = scene;
+        this.loadModel(modelUrl);
+    }
+
+    loadModel(modelUrl: string) {
         this.loader.load(modelUrl, (gltf) => {
+            if (this.gltf) {
+                this.scene.remove(this.gltf);
+            }
             this.gltf = gltf.scene;
             this.scene.add(this.gltf);
         });
@@ -49,6 +70,7 @@ function VideoComponent({
     local = false,
     faceLandmarkerReady,
     faceLandmarker,
+    participantOrder,
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMicEnable, setIsMicEnable] = useState(true);
@@ -61,15 +83,16 @@ function VideoComponent({
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.onloadedmetadata = () => {
-                console.log('VideoComponent: 비디오 메타데이터 로드됨 - 참가자 이름:', participateName);
+                // console.log('VideoComponent: 비디오 메타데이터 로드됨 - 참가자 이름:', participateName);
                 videoRef.current!.play();
 
                 if (faceLandmarkerReady && faceLandmarker) {
-                    console.log('VideoComponent: 얼굴 인식 시작 - 참가자 이름:', participateName);
+                    // console.log('VideoComponent: 얼굴 인식 시작 - 참가자 이름:', participateName);
 
                     // Avatar 초기화
                     const scene = new THREE.Scene();
-                    const newAvatar = new Avatar('/assets/raccoon_head.glb', scene);
+                    const maskUrl = getMaskUrl(participantOrder);
+                    const newAvatar = new Avatar(maskUrl, scene);
                     setAvatar(newAvatar);
 
                     const interval = setInterval(() => {
@@ -120,7 +143,7 @@ function VideoComponent({
                                     }
                                 }
                             } catch (error) {
-                                console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
+                                // console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
                     }, 16);

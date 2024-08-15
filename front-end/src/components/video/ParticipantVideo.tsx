@@ -15,7 +15,7 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
 
     return (
         <div className="flex justify-center w-full gap-1 ">
-            {participants.map((participant) => {
+            {participants.map((participant, index) => {
                 if (participant.gender === gender) {
                     const videoTrack = participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined;
                     
@@ -42,6 +42,7 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
                             faceLandmarkerReady={participant.faceLandmarkerReady}
                             faceLandmarker={participant.faceLandmarker}
                             status={status}
+                            participantOrder={index} // 참가자 순서 전달
                         />
                     );
                 }
