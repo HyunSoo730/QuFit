@@ -17,7 +17,6 @@ import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/webso
 
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
-    // const privateParticipants = usePrivateParticipantsStore();
     const [isMeeting, setIsMeeting] = useState(true);
     const { leaveRoom, createRoom, joinRoom, setPrivateRoom, otherGenderParticipants } = useRoom();
     const { open, close, Modal } = useModal();
@@ -28,26 +27,39 @@ const PersonalVideoPage = () => {
     const [isFriend, setIsFriend] = useState(false);
     const other = participants.find((participant) => participant.id !== member?.memberId);
     const [isFriendAccept, setIsFriendAccept] = useState(false);
+    //participants가 안담기내
+    console.log(participants);
+    console.log(other);
 
     const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
-        client.current?.subscribe(`/user/${other?.id}/sub/game`, (message) => {
+        client.current?.subscribe(`/user/${member?.memberId}/sub/game`, (message) => {
             const response = JSON.parse(message.body);
+            console.log(response);
 
             afterSubscribe(response, '상대방이 친구를 수락했습니다.', () => {
-                isFriend && setIsFriendAccept(true);
-                isFriend &&
-                    publishSocket(
-                        {
-                            memberA: member?.memberId,
-                            memberB: other?.id,
-                        },
-                        client,
-                        Number(roomId),
-                    );
+                console.log(response);
+                setIsFriendAccept(true);
+            });
+
+            afterSubscribe(response, '친구가 추가되었습니디.', () => {
+                console.log(response);
             });
         });
     };
+
+    useEffect(() => {
+        if (isFriend && isFriendAccept) {
+            publishSocket(
+                {
+                    memberA: member?.memberId,
+                    memberB: other?.id,
+                },
+                client,
+                Number(roomId),
+            );
+        }
+    }, [isFriend, isFriendAccept]);
 
     const wantFriend = () => {
         publishSocket(
@@ -62,12 +74,9 @@ const PersonalVideoPage = () => {
     };
 
     useEffect(() => {
-        // setRoomId(Number(roomId)); //나중에 param에서 따와야함
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
-
-    // console.log(participants);
 
     const endTimer = () => {
         leaveRoom(Number(roomId));
@@ -105,7 +114,7 @@ const PersonalVideoPage = () => {
                     onClose={close}
                     onClick={handleConfirmModal}
                     message={
-                        isFriendAccept
+                        isFriendAccept && isFriend
                             ? '상대방과 친구가 되었어요!. 다른 방으로 이동해주세요.'
                             : '상대방과 친구가 되지 못했어요. 다른 방으로 이동해주세요.'
                     }
