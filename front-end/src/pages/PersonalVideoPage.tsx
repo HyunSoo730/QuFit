@@ -13,12 +13,11 @@ import { instance } from '@apis/axios';
 import { PATH } from '@routers/PathConstants';
 import * as StompJs from '@stomp/stompjs';
 import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
-// import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
     const [isMeeting, setIsMeeting] = useState(true);
-    const { leaveRoom, createRoom, joinRoom, setPrivateRoom, otherGenderParticipants } = useRoom();
+    const { leaveRoom, createRoom, joinRoom, otherGenderParticipants } = useRoom();
     const { open, close, Modal } = useModal();
     const { roomId } = useParams();
     const { member } = useMember();

@@ -20,7 +20,6 @@ import {
     useSetRoomStateStore,
 } from '@stores/video/roomStore';
 import { Room, RoomEvent } from 'livekit-client';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
@@ -40,8 +39,6 @@ const useRoom = () => {
     const otherGenderParticipants = useOtherGenderParticipantsStore();
     const otherIdx = useOtherIdxStore();
     const setOtherIdx = useSetOtherIdxStore();
-
-    const [isMake] = useState(false);
 
     const setOtherGenderParticipants = useSetOtherGenderParticipantsStore();
     const participants = useRoomParticipantsStore();

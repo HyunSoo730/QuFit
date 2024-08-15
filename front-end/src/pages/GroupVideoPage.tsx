@@ -42,7 +42,7 @@ function GroupVideoPage() {
     // const roomMax = useRoomMaxStore();
     const roomMax = 8;
     const [roomStep, setRoomStep] = useState<RoomStep>('end');
-    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const { createRoom, joinRoom, leaveRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();

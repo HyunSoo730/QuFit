@@ -37,7 +37,7 @@ export const connect = (client: { current: StompJs.Client | null }, onConnect: (
             connectHeaders: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
-            debug: function (str) {
+            debug: function () {
                 // console.log('소켓 디버그:', str);
             },
             reconnectDelay: 5000,

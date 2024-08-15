@@ -15,7 +15,7 @@ interface RoomEntryModalProps {
 
 export const RecommendRoomModal = ({ onClose }: RecommendRoomModalProps) => {
     const navigate = useNavigate();
-    const [page, setPage] = useState(0);
+    const [page, _] = useState(0);
     const { data: recommendedRoomList } = useRecommendedVideoRoomQuery(page);
 
     return (
