@@ -9,7 +9,7 @@ import TypeInfo from '@components/auth/TypeInfo';
 import TypeAge from '@components/auth/TypeAge';
 import SignUpEnd from '@components/auth/SignUpEnd';
 import { useState } from 'react';
-import { useAccessTokenStore } from '@stores/auth/signUpStore';
+import { useKaKaoAccessTokenStore } from '@stores/auth/signUpStore';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import { registMember } from '@queries/useMemberQuery';
@@ -34,7 +34,7 @@ const SignupPage = () => {
         typeHobbyTags: [],
         typePersonalityTags: [],
     });
-    const accessToken = useAccessTokenStore();
+    const accessToken = useKaKaoAccessTokenStore();
     const signup = registMember();
     const navigate = useNavigate();
 

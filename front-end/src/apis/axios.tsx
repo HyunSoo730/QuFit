@@ -39,7 +39,7 @@ export const instance = axios.create({
 export const kakaoInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
-        Authorization: accessToken,
+        accessToken: accessToken,
     },
 });
 
