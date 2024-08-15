@@ -6,6 +6,7 @@ import IntroductionPage from '@pages/IntroductionPage';
 import KakaoRedirectPage from '@pages/KaKaoRedirectPage';
 import MainPage from '@pages/MainPage';
 import CreateRoomPage from '@pages/CreateRoomPage';
+import RecommendedRoomPage from '@pages/RecommendedRoomPage';
 import MyPage from '@pages/Mypage';
 import NotFoundPage from '@pages/NotFoundPage';
 import PersonalVideoPage from '@pages/PersonalVideoPage';
@@ -30,6 +31,10 @@ const Router = () => {
                 {
                     path: PATH.CREATE_ROOM,
                     element: <CreateRoomPage />,
+                },
+                {
+                    path: PATH.RECOMMEND_ROOM,
+                    element: <RecommendedRoomPage />,
                 },
                 {
                     path: PATH.CHATTING,
