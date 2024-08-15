@@ -129,7 +129,7 @@ const MainPage = () => {
                         </span>
                     </button>
                 </div>
-                <button className="relative flex items-center justify-center h-12 border-[0.1875rem] rounded-full w-36 border-smokeWhite hover:animate-pulse lg:scale-90 xs:scale-90 xs:w-14">
+                <button className="relative flex items-center justify-center h-12 border-[0.1875rem] rounded-full w-36 border-smokeWhite lg:scale-90 xs:scale-90 xs:w-14">
                     <div className="z-10 flex items-center">
                         <FilterIcon className="w-6" />
                         <p className="pb-0.5 ml-2 text-xl font-medium text-smokeWhite xs:hidden">Filter</p>

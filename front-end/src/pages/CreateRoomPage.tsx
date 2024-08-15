@@ -172,19 +172,19 @@ const CreateRoomPage = () => {
                         </div>
                         <RadioGroup value={roomSize} name="roomSize" onChange={(e) => setRoomSize(e.target.value)}>
                             <Radio
-                                value="4"
+                                value="2"
                                 className="px-5 py-1.5 mr-3 rounded-full w-fit border border-smokeWhite border-opacity-30 text-smokeWhite has-[:checked]:text-pink has-[:checked]:bg-pink has-[:checked]:bg-opacity-5 has-[:checked]:border-pink"
                             >
                                 2 : 2
                             </Radio>
                             <Radio
-                                value="6"
+                                value="3"
                                 className="px-5 py-1.5 mr-3 rounded-full w-fit border border-smokeWhite border-opacity-30 text-smokeWhite has-[:checked]:text-pink has-[:checked]:bg-pink has-[:checked]:bg-opacity-5 has-[:checked]:border-pink"
                             >
                                 3 : 3
                             </Radio>
                             <Radio
-                                value="8"
+                                value="4"
                                 className="px-5 py-1.5 mr-3 rounded-full w-fit border border-smokeWhite border-opacity-30 text-smokeWhite has-[:checked]:text-pink has-[:checked]:bg-pink has-[:checked]:bg-opacity-5 has-[:checked]:border-pink"
                             >
                                 4 : 4
@@ -369,7 +369,7 @@ const CreateRoomPage = () => {
                                         hobbyTags={hobbyTags}
                                         personalityTags={idealTypeTags}
                                         mainTag={topPriorityTagState}
-                                        maxParticipants={parseInt(roomSize) / 2}
+                                        maxParticipants={parseInt(roomSize)}
                                         curMCount={0}
                                         curWCount={0}
                                         isButton={false}

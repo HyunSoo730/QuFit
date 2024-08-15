@@ -116,8 +116,8 @@ export const useFilteredVideoRoomQuery = (page: number, size: number, tagIds: nu
     });
 
 //추천받은 방 목록 조회
-export const useRecommendedVideoRoomQuery = (page: number, size: number) =>
+export const useRecommendedVideoRoomQuery = (page: number) =>
     useQuery({
-        queryKey: ['recommendedVideoRoom', page, size],
-        queryFn: () => getVideoRecommendation(page, size),
+        queryKey: ['recommendedVideoRoom', page],
+        queryFn: () => getVideoRecommendation(page),
     });
