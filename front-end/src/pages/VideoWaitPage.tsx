@@ -50,24 +50,23 @@ const VideoWaitPage = () => {
     }, []);
 
     return (
-        <>
-            <div className="flex flex-col justify-between w-full h-screen ">
+        <div className="flex flex-col h-screen">
+            <div className="flex-shrink-0">
                 <ParticipantVideo roomMax={roomMax!} gender="m" status="wait" participants={participants} />
-                <div className="flex flex-col items-center justify-center py-4">
-                    <div className="flex flex-col gap-4">
-                        <button onClick={() => leaveRoom(Number(roomId))}>나가기</button>
-                    </div>
-                    <MeetingStartButton
-                        onNext={() => {
-                            navigate(PATH.GROUP_VIDEO(Number(roomId)));
-                        }}
-                        isStart={isMeetingStart}
-                        onClick={startMeeting}
-                    />
-                </div>
+            </div>
+            <div className="flex-grow flex items-center justify-center">
+                <MeetingStartButton
+                    onNext={() => {
+                        navigate(PATH.GROUP_VIDEO(Number(roomId)));
+                    }}
+                    isStart={isMeetingStart}
+                    onClick={startMeeting}
+                />
+            </div>
+            <div className="flex-shrink-0">
                 <ParticipantVideo participants={participants} roomMax={roomMax!} gender="f" status="wait" />
             </div>
-        </>
+        </div>
     );
 };
 

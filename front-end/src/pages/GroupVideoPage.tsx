@@ -171,9 +171,15 @@ function GroupVideoPage() {
                 />
             </Modal>
             {isMeeting && (
-                <div className="flex flex-col justify-between w-full h-screen ">
-                    <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
-                    <div className="flex flex-col items-center justify-center py-4">
+                <div className="flex flex-col justify-between w-full h-screen"> {/* 전체 화면을 차지하는 flex 레이아웃 */}
+                    
+                    {/* 상단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
+                    </div>
+    
+                    {/* 중앙에 위치한 게임 관련 콘텐츠 */}
+                    <div className="flex flex-col items-center justify-center flex-grow py-4">
                         {roomStep === 'active' && <GameIntro onNext={startGame} />}
                         {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
                         {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
@@ -211,7 +217,6 @@ function GroupVideoPage() {
                                 }}
                             />
                         )}
-
                         {roomStep === 'result' && (
                             <GameResult
                                 id={problems[gameStage].balanceGameId}
@@ -225,11 +230,17 @@ function GroupVideoPage() {
                         )}
                         {roomStep === 'end' && <GameEnd restSec={restSec} />}
                     </div>
-                    <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+    
+                    {/* 하단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+                    </div>
+    
                 </div>
             )}
         </>
     );
+    
 }
 
 export default GroupVideoPage;
