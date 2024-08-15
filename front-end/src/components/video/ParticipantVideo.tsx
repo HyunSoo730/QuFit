@@ -19,9 +19,18 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
         <div className="flex justify-center w-full gap-1 ">
             {participants.map((participant, index) => {
                 if (participant.gender === gender) {
-                    const videoTrack = participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined;
+                    const videoTrack =
+                        participant.info!.videoTrackPublications.values().next().value?.videoTrack || undefined;
 
-                    // 비디오 트랙이 없어도 렌더링하고, VideoComponent에서 가면을 먼저 표시하도록 함
+                    // 비디오 트랙이 없을 경우 렌더링을 하지 않음
+                    if (!videoTrack) {
+                        console.warn(
+                            'ParticipantVideo: 비디오 트랙이 설정되지 않았습니다 - 참가자 이름:',
+                            participant.nickname,
+                        );
+                        return null;
+                    }
+
                     numPeople++;
                     return (
                         <VideoComponent

@@ -6,6 +6,7 @@ import IntroductionPage from '@pages/IntroductionPage';
 import KakaoRedirectPage from '@pages/KaKaoRedirectPage';
 import MainPage from '@pages/MainPage';
 import CreateRoomPage from '@pages/CreateRoomPage';
+import RecommendedRoomPage from '@pages/RecommendedRoomPage';
 import MyPage from '@pages/Mypage';
 import NotFoundPage from '@pages/NotFoundPage';
 import PersonalVideoPage from '@pages/PersonalVideoPage';
@@ -17,6 +18,17 @@ import Admin from '@pages/Admin';
 
 const Router = () => {
     const routes: RouteObject[] = [
+        {
+            path: PATH.ROOT,
+            errorElement: <NotFoundPage />,
+            children: [
+                {
+                    path: PATH.ROOT,
+                    element: <IntroductionPage />,
+                },
+                { path: PATH.INTRODUCTION, element: <IntroductionPage /> },
+            ],
+        },
         //header가 있는 페이지
         {
             path: PATH.ROOT,
@@ -30,6 +42,10 @@ const Router = () => {
                 {
                     path: PATH.CREATE_ROOM,
                     element: <CreateRoomPage />,
+                },
+                {
+                    path: PATH.RECOMMEND_ROOM,
+                    element: <RecommendedRoomPage />,
                 },
                 {
                     path: PATH.CHATTING,
@@ -74,11 +90,6 @@ const Router = () => {
         {
             path: 'auth/kakao',
             element: <KakaoRedirectPage />,
-        },
-        {
-            path: PATH.ROOT,
-            errorElement: <NotFoundPage />,
-            children: [{ path: PATH.INTRODUCTION, element: <IntroductionPage /> }],
         },
     ];
 
