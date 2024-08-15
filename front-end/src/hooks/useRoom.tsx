@@ -1,11 +1,7 @@
-import { getVideoDetail, postVideoJoin } from '@apis/video/VideoApi';
+import { getVideoDetail, postVideo, postVideoJoin } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
-import {
-    useCreateVideoRoomMutation,
-    useJoinVideoRoomMutation,
-    useLeaveVideoRoomMutation,
-} from '@queries/useVideoQuery';
+import { useCreateVideoRoomMutation, useLeaveVideoRoomMutation } from '@queries/useVideoQuery';
 import { VideoRoomRequest } from '@apis/types/request';
 import {
     RoomParticipant,
@@ -16,7 +12,6 @@ import {
     useRoomAddParticipantStore,
     useRoomParticipantsStore,
     useRoomSetParticipantsStore,
-    useRoomStateStore,
     useSetHostIdStore,
     useSetOtherGenderParticipantsStore,
     useSetOtherIdxStore,
@@ -30,7 +25,6 @@ import { PATH } from '@routers/PathConstants';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const useRoom = () => {
-    const room = useRoomStateStore();
     const setRoom = useSetRoomStateStore();
     const { member } = useMember();
     const navigate = useNavigate();
@@ -38,8 +32,6 @@ const useRoom = () => {
     const setParticipants = useRoomSetParticipantsStore();
     const setHostId = useSetHostIdStore();
     const hostId = useHostIdStore();
-    const createVideoRoom = useCreateVideoRoomMutation();
-    const joinVideoRoom = useJoinVideoRoomMutation();
     const leaveVideoRoom = useLeaveVideoRoomMutation();
     const isHost = member?.memberId === hostId;
 
@@ -79,7 +71,6 @@ const useRoom = () => {
     }, [isMake, participants, member, setOtherGenderParticipants]);
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
-        console.log(room);
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
             try {
                 const response = await getVideoDetail(roomId);
@@ -107,59 +98,56 @@ const useRoom = () => {
         await room.localParticipant.enableCameraAndMicrophone();
     };
 
-    const createRoom = ({
+    const createRoom = async ({
         videoRoomName,
         maxParticipants,
         mainTag,
         videoRoomHobbies,
         videoRoomPersonalities,
     }: VideoRoomRequest) => {
-        createVideoRoom.mutate(
-            {
+        try {
+            const data = await postVideo({
                 videoRoomName: videoRoomName,
                 maxParticipants: maxParticipants,
                 mainTag: mainTag,
                 videoRoomHobbies: videoRoomHobbies,
                 videoRoomPersonalities: videoRoomPersonalities,
                 statusType: 1,
-            },
-            {
-                onSuccess: async (data) => {
-                    const room = new Room(ROOM_SETTING);
-                    await room.connect(LIVEKIT_URL, data?.data.token);
+            });
+            const room = new Room(ROOM_SETTING);
+            await room.connect(LIVEKIT_URL, data?.data.token);
 
-                    addRoomEventHandler(room, data.data.videoRoomId);
+            addRoomEventHandler(room, data.data.videoRoomId);
 
-                    decideManager(room);
-                    setHostId(member?.memberId!);
+            decideManager(room);
+            setHostId(member?.memberId!);
 
-                    const faceLandmarker = await initializeFaceLandmarker();
-                    addParticipant({
-                        id: member?.memberId,
-                        gender: member?.gender,
-                        nickname: member?.nickname,
-                        info: room.localParticipant,
-                        faceLandmarkerReady: !!faceLandmarker,
-                        faceLandmarker: faceLandmarker,
-                    });
-                    setRoom(room);
-                    moveURL(window.location.pathname, data.data.videoRoomId);
-                },
-                onError: async (data) => {
-                    console.log('Error creating room:', data);
-                },
-            },
-        );
+            const faceLandmarker = await initializeFaceLandmarker();
+            addParticipant({
+                id: member?.memberId,
+                gender: member?.gender,
+                nickname: member?.nickname,
+                info: room.localParticipant,
+                faceLandmarkerReady: !!faceLandmarker,
+                faceLandmarker: faceLandmarker,
+            });
+
+            console.log('createRoom 들어온 사람의 정보입니다.');
+            console.log(room.localParticipant);
+            setRoom(room);
+            moveURL(window.location.pathname, data.data.videoRoomId);
+        } catch (error) {
+            console.log('방생성 에러');
+        }
     };
 
     const joinRoom = async (videoRoomId: number) => {
-        console.log('새로운방 입장');
-
-        const room = new Room(ROOM_SETTING);
         try {
+            const room = new Room(ROOM_SETTING);
             const response = await postVideoJoin(videoRoomId);
-            await room.connect(LIVEKIT_URL, response?.data.token);
+            await room.connect(LIVEKIT_URL, response.data.token);
             const curParticipants: RoomParticipant[] = [];
+            //remote사용자를 담는 과정
             try {
                 const response = await getVideoDetail(videoRoomId);
                 Array.from(room.remoteParticipants.values()).forEach(async (participant) => {
@@ -181,6 +169,8 @@ const useRoom = () => {
                 console.log('Error fetching video details:', error);
             }
 
+            console.log('joinRoom으로 들어온 사람의 정보입니다.');
+            console.log(room.localParticipant);
             const faceLandmarker = await initializeFaceLandmarker();
             curParticipants.push({
                 id: member?.memberId,
@@ -196,10 +186,8 @@ const useRoom = () => {
 
             moveURL(window.location.pathname, videoRoomId);
         } catch (error) {
-            console.log(error);
+            console.log('에러다');
         }
-
-        setRoom(room);
     };
 
     const moveURL = (currentPath: string, videoRoomId: number) => {
@@ -318,3 +306,43 @@ export default useRoom;
 //         moveURL(window.location.pathname, videoRoomId);
 //     },
 // });
+
+// createVideoRoom.mutate(
+//     {
+//         videoRoomName: videoRoomName,
+//         maxParticipants: maxParticipants,
+//         mainTag: mainTag,
+//         videoRoomHobbies: videoRoomHobbies,
+//         videoRoomPersonalities: videoRoomPersonalities,
+//         statusType: 1,
+//     },
+//     {
+//         onSuccess: async (data) => {
+//             const room = new Room(ROOM_SETTING);
+//             await room.connect(LIVEKIT_URL, data?.data.token);
+
+//             addRoomEventHandler(room, data.data.videoRoomId);
+
+//             decideManager(room);
+//             setHostId(member?.memberId!);
+
+//             const faceLandmarker = await initializeFaceLandmarker();
+//             addParticipant({
+//                 id: member?.memberId,
+//                 gender: member?.gender,
+//                 nickname: member?.nickname,
+//                 info: room.localParticipant,
+//                 faceLandmarkerReady: !!faceLandmarker,
+//                 faceLandmarker: faceLandmarker,
+//             });
+
+//             console.log('createRoom 들어온 사람의 정보입니다.');
+//             console.log(room.localParticipant);
+//             setRoom(room);
+//             moveURL(window.location.pathname, data.data.videoRoomId);
+//         },
+//         onError: async (data) => {
+//             console.log('Error creating room:', data);
+//         },
+//     },
+// );
