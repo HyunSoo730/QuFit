@@ -4,6 +4,7 @@ import { FilterIcon } from '@assets/svg/main';
 import Radio from '@components/common/radio/Radio';
 import RadioGroup from '@components/common/radio/RadioGroup';
 import { Hobbies, Personalities } from '@dummy/Tags';
+import useTagFilterStore from '@stores/video/tagFilterStore';
 
 interface SideBarProps {
     isOpenSideBar: boolean;
@@ -12,13 +13,17 @@ interface SideBarProps {
 
 const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
     const [isOpen, setIsOpen] = useState(isOpenSideBar);
-
     const [tagState, setTagState] = useState('hobby');
 
-    const [hobbyTagsId, setHobbyTagsId] = useState<number[]>([]);
-    const [idealTypeTagsId, setIdealTypeTagsId] = useState<number[]>([]);
+    // 스토어
+    const hobbyTagsId = useTagFilterStore((state) => state.hobbyTagsId);
+    const setHobbyTagsId = useTagFilterStore((state) => state.setHobbyTagsId);
 
-    const [tags, setTags] = useState<string[]>([]);
+    const idealTypeTagsId = useTagFilterStore((state) => state.idealTypeTagsId);
+    const setIdealTypeTagsId = useTagFilterStore((state) => state.setIdealTypeTagsId);
+
+    const tags = useTagFilterStore((state) => state.tags);
+    const setTags = useTagFilterStore((state) => state.setTags);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -30,49 +35,35 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
 
     const handleOnClickButton = (type: string, tagId: number, tag: string) => {
         if (type === 'hobby') {
-            setHobbyTagsId((prev) => {
-                if (prev.includes(tagId)) {
-                    return prev.filter((id) => id !== tagId);
-                } else if (prev.length < 5) {
-                    return [...prev, tagId];
-                } else {
-                    return prev;
-                }
-            });
-            setTags((prev) => {
-                if (prev.includes(tag)) {
-                    return prev.filter((prop) => prop !== tag);
-                } else if (prev.length < 10 && hobbyTagsId.length < 5) {
-                    return [...prev, tag];
-                } else {
-                    return prev;
-                }
-            });
+            if (hobbyTagsId.includes(tagId)) {
+                setHobbyTagsId(hobbyTagsId.filter((id) => id !== tagId));
+            } else if (hobbyTagsId.length < 5) {
+                setHobbyTagsId([...hobbyTagsId, tagId]);
+            }
+
+            if (tags.includes(tag)) {
+                setTags(tags.filter((prop) => prop !== tag));
+            } else if (tags.length < 10 && hobbyTagsId.length < 5) {
+                setTags([...tags, tag]);
+            }
         } else if (type === 'idealType') {
-            setIdealTypeTagsId((prev) => {
-                if (prev.includes(tagId)) {
-                    return prev.filter((id) => id !== tagId);
-                } else if (prev.length < 5) {
-                    return [...prev, tagId];
-                } else {
-                    return prev;
-                }
-            });
-            setTags((prev) => {
-                if (prev.includes(tag)) {
-                    return prev.filter((prop) => prop !== tag);
-                } else if (prev.length < 10 && idealTypeTagsId.length < 5) {
-                    return [...prev, tag];
-                } else {
-                    return prev;
-                }
-            });
+            if (idealTypeTagsId.includes(tagId)) {
+                setIdealTypeTagsId(idealTypeTagsId.filter((id) => id !== tagId));
+            } else if (idealTypeTagsId.length < 5) {
+                setIdealTypeTagsId([...idealTypeTagsId, tagId]);
+            }
+
+            if (tags.includes(tag)) {
+                setTags(tags.filter((prop) => prop !== tag));
+            } else if (tags.length < 10 && idealTypeTagsId.length < 5) {
+                setTags([...tags, tag]);
+            }
         }
     };
 
     useEffect(() => {
-        console.log(hobbyTagsId, idealTypeTagsId);
-    }, [hobbyTagsId, idealTypeTagsId]);
+        console.log(hobbyTagsId, idealTypeTagsId, tags);
+    }, [hobbyTagsId, idealTypeTagsId, tags]);
 
     return (
         <div
