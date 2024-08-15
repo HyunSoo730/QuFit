@@ -1,13 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getChat } from '@apis/chat/ChatApi';
+import { getFriend, deleteFriend, postFriend, getChat, postChat } from '@apis/chat/ChatApi';
 import { FriendListResponse } from '@apis/types/response';
-import { deleteFriend } from '@apis/chat/ChatApi';
+import useChatStateStore from '@stores/chat/chatStateStore';
+import { useState } from 'react';
 
 // React Query로 친구 목록 가져오기
 export const useFriendListQuery = (page: number, size: number) => {
+    const [refetch, setFefetch] = useState(true);
+
     return useQuery<FriendListResponse, Error>({
         queryKey: ['friendList', page, size],
-        queryFn: () => getChat(page, size).then((response) => response.data),
+        queryFn: () =>
+            getFriend(page, size)
+                .then((response) => response.data)
+                .catch(() => setFefetch(false)),
+        enabled: refetch,
     });
 };
 
@@ -24,6 +31,53 @@ export const useDeleteFriendMutation = () => {
         },
         onError: (error) => {
             console.error('친구 삭제 실패:', error);
+        },
+    });
+};
+
+export const usePostFriendMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (friendId: number) => postFriend(friendId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['friendList'] });
+        },
+        onError: (error) => {
+            console.error('친구 추가 실패:', error);
+        },
+    });
+};
+
+export const useChatListQuery = (memberId: number) =>
+    useQuery({
+        queryKey: ['chatList'],
+        queryFn: () => getChat(memberId),
+    });
+
+export const usePostChatMutation = (
+    otherMemberId: number,
+    nickname: string,
+    profileImage: string,
+    chatRoomId: number,
+) => {
+    const setChatState = useChatStateStore((state) => state.setChatState);
+
+    return useMutation({
+        mutationFn: () => postChat(otherMemberId),
+        onSuccess: () => {
+            console.log('채팅방 생성 성공');
+            setChatState([
+                {
+                    id: chatRoomId,
+                    nickname: nickname,
+                    profileImage: profileImage,
+                    otherMemberId: otherMemberId,
+                },
+            ]);
+        },
+        onError: (error) => {
+            console.error('채팅방 생성 실패:', error);
         },
     });
 };

@@ -1,38 +1,60 @@
 import FriendInfo from '@components/chat/FriendInfo';
 import ChatInfo from '@components/chat/ChatInfo';
 import ChatRoom from '@components/chat/ChatRoom';
-// import { FriendsInfoDummy } from '@dummy/Dummy';
 import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
-import { useChatInfoList, useSetChatInfoList } from '@stores/chat/chatInfoListStore';
-import { instance } from '@apis/axios';
-import { useEffect } from 'react';
-import { useFriendListQuery } from '@queries/useChatQuery';
+import { useEffect, useRef, useState } from 'react';
+import { useFriendListQuery, useChatListQuery } from '@queries/useChatQuery';
+import { FriendInfoProps, ChatListProps } from '@apis/types/response';
 
 const ChattingPage = () => {
-    const chatInfoList = useChatInfoList();
-    const setChatInfoList = useSetChatInfoList();
-
     const buttonFocus = useTabStateStore((state) => state.buttonFocus);
     const setButtonFocus = useTabStateStore((state) => state.setButtonFocus);
 
     const chatState = useChatStateStore((state) => state.chatState);
 
-    const PAGE = 0;
-    const SIZE = 10; // 임의 설정
-    const { data: friendListData, isLoading, error } = useFriendListQuery(PAGE, SIZE);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [page, setPage] = useState(0);
+
+    const SIZE = 20;
+    const { data: friendListData } = useFriendListQuery(page, SIZE);
+    const totalPage = friendListData?.page.totalPages;
+
+    const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
+
+    const ID = 2;
+    const { data: chatListData, refetch } = useChatListQuery(ID);
 
     useEffect(() => {
-        instance
-            .get(`/qufit/chat/rooms/2`)
-            .then((res) => {
-                setChatInfoList(res.data);
-                console.log('채팅 리스트 응답 성공:', res);
-            })
-            .catch((err: string) => {
-                console.log('채팅 리스트 응답 실패:', err);
-            });
-    }, []);
+        if (friendListData) {
+            setFriendList((prev) => [...prev, ...friendListData.friendList] as FriendInfoProps[]);
+        }
+    }, [friendListData]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (
+                entries[0].intersectionRect.height === 0 &&
+                entries[0].intersectionRect.width !== 0 &&
+                totalPage &&
+                page <= totalPage - 1
+            ) {
+                setPage((prev) => {
+                    return prev + 1;
+                });
+            }
+        });
+
+        if (scrollRef.current) {
+            observer.observe(scrollRef.current);
+        }
+
+        return () => {
+            if (scrollRef.current) {
+                observer.unobserve(scrollRef.current);
+            }
+        };
+    }, [totalPage]);
 
     return (
         <div className="absolute z-10 flex w-full h-full">
@@ -58,24 +80,21 @@ const ChattingPage = () => {
                 </div>
                 {buttonFocus === 'friend' ? (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {isLoading ? (
-                            <p>로딩 중...</p>
-                        ) : error ? (
-                            <p>Error: {error.message}</p>
-                        ) : (
-                            friendListData?.friendList.map((friend) => (
-                                <FriendInfo
-                                    key={friend.id}
-                                    otherMemberId={friend.id}
-                                    nickname={friend.nickname}
-                                    profileImage={friend.profileImage}
-                                />
-                            ))
-                        )}
+                        {friendList.map((friend) => (
+                            <FriendInfo
+                                key={friend.id}
+                                otherMemberId={friend.id}
+                                chatRoomId={friend.chatRoomId}
+                                nickname={friend.nickname}
+                                profileImage={friend.profileImage}
+                            />
+                        ))}
+
+                        <div ref={scrollRef} />
                     </div>
                 ) : (
                     <div className="z-10 overflow-y-auto scrollbar-hide">
-                        {chatInfoList.map((chat) => (
+                        {chatListData?.data.map((chat: ChatListProps) => (
                             <ChatInfo
                                 key={chat.chatRoomId}
                                 id={chat.chatRoomId}
@@ -83,6 +102,7 @@ const ChattingPage = () => {
                                 otherMemberId={chat.otherMemberId}
                                 profileImage={chat.profileImage}
                                 lastMessage={chat.lastMessage}
+                                lastMessageTime={chat.lastMessageTime}
                                 unreadCount={chat.unreadCount}
                             />
                         ))}
@@ -96,6 +116,7 @@ const ChattingPage = () => {
                         id={chatState[0].id}
                         nickname={chatState[0].nickname}
                         profileImage={chatState[0].profileImage}
+                        refetch={refetch}
                     />
                 </div>
             </div>

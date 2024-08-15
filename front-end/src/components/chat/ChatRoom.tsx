@@ -1,4 +1,4 @@
-import { CupidIcon, XIcon, EmptyChatIcon } from '@assets/svg/chat';
+import { CupidIcon, XIcon, EmptyChatIcon, DoorExitIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
 import { useSetChatInfoList } from '@stores/chat/chatInfoListStore';
@@ -9,6 +9,7 @@ interface ChatRoomProps {
     id: number;
     nickname: string;
     profileImage: string;
+    refetch: () => void;
 }
 
 interface ChatListProps {
@@ -18,7 +19,7 @@ interface ChatListProps {
     timestamp: string;
 }
 
-const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
+const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     const senderId = 2;
 
     // Store
@@ -27,8 +28,6 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
 
     const chatState = useChatStateStore((state) => state.chatState);
     const setChatState = useChatStateStore((state) => state.setChatState);
-
-    const setChatInfoList = useSetChatInfoList();
 
     // 채팅 전송 및 수신을 위한 값들
     const client = useRef<StompJs.Client | null>(null);
@@ -206,9 +205,9 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
 
     const callback = function (message: { body: string }) {
         if (message.body) {
-            console.log('수신된 메시지:', message.body);
             let msg = JSON.parse(message.body);
             setNewMessage(msg);
+            refetch();
         } else {
             console.log('빈 메시지 수신');
         }
@@ -228,13 +227,12 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
         if (client.current?.active) {
             if (firstMessageId === nowFirstMessageId) {
                 setHasMore(false);
-                console.log('더 불러올 메시지가 없습니다.', firstMessageId);
+                console.log('더 불러올 메시지가 없습니다.');
                 return;
             }
 
             const subscription = client.current?.subscribe(`/user/${senderId}/sub/chat.messages.${id}`, (message) => {
                 const messages = JSON.parse(message.body);
-                console.log('스크롤 구독 메시지:', messages.messages);
                 setNowFirstMessageId(messages.messages[0].id);
                 setChatList((chats) => [...messages.messages, ...chats]);
                 setDataLength(dataLength + 1);
@@ -256,8 +254,6 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
     }, [dataLength]);
 
     const fetchData = () => {
-        console.log('fetchData 호출');
-
         if (scrollContainerRef.current) {
             setScrollTopUpdate(scrollContainerRef.current.scrollTop);
         }
@@ -274,7 +270,6 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
     };
 
     useEffect(() => {
-        console.log('맨 아래로 스크롤');
         scrollToBottom();
     }, [isChat]);
 
@@ -287,7 +282,7 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
                     Authorization: `Bearer ${import.meta.env.VITE_TEST_TOKEN}`,
                 },
                 debug: function (str) {
-                    console.log('소켓 디버그:', str);
+                    console.log(str);
                 },
                 reconnectDelay: 5000,
                 heartbeatIncoming: 4000,
@@ -350,7 +345,7 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
                 content: chat,
             }),
         });
-
+        refetch();
         setChat('');
     };
 
@@ -379,6 +374,8 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
             });
         }
 
+        setChatList([]);
+
         setIsClosed(true);
 
         setTimeout(() => {
@@ -399,12 +396,8 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
                 destination: `/pub/chat.removeRoom/${id}`,
             });
 
-            console.log('채팅방 삭제 요청', id);
-
-            client.current?.subscribe(`/user/${senderId}/sub/chat.rooms`, (list) => {
-                console.log('채팅방 리스트 다시 불러오기', list.body);
-                const response = JSON.parse(list.body);
-                setChatInfoList(response);
+            client.current?.subscribe(`/user/${senderId}/sub/chat.rooms`, () => {
+                refetch();
             });
         } catch (err) {
             console.log(err);
@@ -436,11 +429,11 @@ const ChatRoom = ({ id, nickname }: ChatRoomProps) => {
                                     alt="user profile image"
                                     className="w-10 h-10 rounded-full lg:w-10 lg:h-10"
                                 />
-                                <p className="ml-3.5 font-medium text-white truncate max-w-72 lg:text-lg">{nickname}</p>
+                                <p className="mx-3.5 font-medium text-white truncate max-w-72 lg:text-lg">{nickname}</p>
+                                <button onClick={handleDelButton}>
+                                    <DoorExitIcon className="w-6 opacity-70 fill-smokeWhite lg:w-7 md:w-10 xs:w-7" />
+                                </button>
                             </div>
-                            <button onClick={handleDelButton} className="font-bold bg-pink">
-                                임시 삭제버튼
-                            </button>
                             <button onClick={handleCloseButton}>
                                 <XIcon className="w-10" />
                             </button>
