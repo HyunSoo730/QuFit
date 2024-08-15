@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
@@ -74,8 +74,10 @@ function VideoComponent({
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMicEnable, setIsMicEnable] = useState(true);
-    const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
-    const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
+    // const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
+    // const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
+    const maskPositionRef = useRef(new THREE.Vector3());  // position 객체를 Ref로 관리
+    const maskRotationRef = useRef(new THREE.Euler());    // rotation 객체를 Ref로 관리
     const [avatar, setAvatar] = useState<Avatar | null>(null);
     const room = useRoomStateStore();
     const [isCameraEnable, setIsCameraEnable] = useState(status === 'meeting');
@@ -121,7 +123,7 @@ function VideoComponent({
                                     const y = Math.max(-3, Math.min(3, -(avgPosition.y - 0.5) * 6));
                                     const z = Math.max(-7.5, Math.min(0, -avgPosition.z * 15));
 
-                                    setMaskPosition(new THREE.Vector3(x, y, z));
+                                    maskPositionRef.current.set(x, y, z);  // 기존의 setState 대신 Ref의 메서드 사용
 
                                     if (
                                         result.facialTransformationMatrixes &&
@@ -130,12 +132,11 @@ function VideoComponent({
                                         const matrix = new THREE.Matrix4().fromArray(
                                             result.facialTransformationMatrixes[0].data,
                                         );
-                                        const rotation = new THREE.Euler().setFromRotationMatrix(matrix);
-                                        rotation.y *= -1;
-                                        setMaskRotation(rotation);
+                                        maskRotationRef.current.setFromRotationMatrix(matrix);
+                                        maskRotationRef.current.y *= -1;
 
                                         // Avatar 업데이트
-                                        newAvatar.updateTransform(new THREE.Vector3(x, y, z), rotation);
+                                        newAvatar.updateTransform(maskPositionRef.current, maskRotationRef.current);
                                     }
                                 }
                             } catch (error) {
