@@ -1,9 +1,9 @@
 import { END_POINT } from '@apis/ApiConstants';
 import { signup } from '@apis/auth/AuthApi';
-import { putMemberInfo } from '@apis/auth/MemberApi';
+import { putMemberInfo, postProfile } from '@apis/auth/MemberApi';
 import { instance } from '@apis/axios';
 import { MemberInfoDTO } from '@apis/types/request';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const registMember = () =>
     useMutation({
@@ -41,3 +41,22 @@ export const useMemberQuery = () =>
         queryKey: ['member'],
         queryFn: () => instance.get(END_POINT.MEMBER),
     });
+
+export const useProfileMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => postProfile(),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['member'] });
+        },
+
+        onError: (error) => {
+            console.log('onError', error);
+        },
+        onSettled: () => {
+            console.log('onSettled');
+        },
+    });
+};
