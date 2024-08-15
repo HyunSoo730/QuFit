@@ -16,7 +16,7 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
     const { hostId } = useRoom();
 
     return (
-        <div className="flex justify-center w-full gap-1"> {/* gap-4로 각 비디오 간의 간격을 조정 */}
+        <div className="flex justify-center w-full gap-2 h-full"> {/* 높이를 100%로 설정 */}
             {participants.map((participant, index) => {
                 if (participant.gender === gender) {
                     const videoTrack =
@@ -33,12 +33,11 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
                     numPeople++;
                     return (
                         <div
-                            className="w-1/4 min-w-[250px] max-w-[350px] h-auto flex-grow-0 flex-shrink-0"
-                            style={{ minHeight: '500px', maxHeight: '500px' }} // 고정된 높이와 최소/최대 너비 설정
+                            className="w-1/4 min-w-[200px] max-w-[300px] h-full" // 높이를 100%로 설정
+                            key={participant.id}
                         >
                             <VideoComponent
                                 roomMax={roomMax}
-                                key={participant.id}
                                 id={participant.id}
                                 track={videoTrack}
                                 isManager={participant.id === hostId}
@@ -46,7 +45,7 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
                                 faceLandmarkerReady={participant.faceLandmarkerReady}
                                 faceLandmarker={participant.faceLandmarker}
                                 status={status}
-                                participantOrder={index} // 참가자 순서 전달
+                                participantOrder={index}
                             />
                         </div>
                     );
@@ -57,10 +56,10 @@ const ParticipantVideo = ({ roomMax, gender, status, participants }: Participant
                 .fill(0)
                 .map((_, index) => (
                     <div
-                        className="w-1/4 min-w-[250px] max-w-[350px] h-auto flex-grow-0 flex-shrink-0"
-                        style={{ minHeight: '250px', maxHeight: '350px' }} // 빈 비디오 컨테이너에도 동일한 높이 설정
+                        className="w-1/4 min-w-[200px] max-w-[300px] h-full" // 높이를 100%로 설정
+                        key={`empty-${index}`}
                     >
-                        <EmptyVideo key={index} />
+                        <EmptyVideo />
                     </div>
                 ))}
         </div>

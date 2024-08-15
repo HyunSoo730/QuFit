@@ -177,7 +177,7 @@ function VideoComponent({
 
     return (
         <div
-            className="relative z-50 flex flex-col justify-between w-full p-4 rounded-xl h-videoFixed min-h-videoMin" // 고정된 높이와 최소 높이 적용
+            className="relative z-50 flex flex-col justify-between w-full h-full p-4 rounded-xl"
             onClick={changeCameraEnabled}
         >
             <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
@@ -204,19 +204,17 @@ function VideoComponent({
                     </>
                 )}
             </div>
-            <div className="absolute top-0 left-0 w-full -z-10">
+            <div className="absolute top-0 left-0 w-full h-full -z-10">
                 {isCameraEnable || !local ? (
                     <>
-                        {/* 비디오와 Canvas를 감싸는 div에 opacity transition 적용 */}
-                        <div className={`relative ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 h-full`}>
-                            <video ref={videoRef} className="w-full rounded-xl h-full object-cover" /> {/* 비디오의 높이 고정 */}
+                        <div className={`relative w-full h-full ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+                            <video ref={videoRef} className="absolute top-0 left-0 w-full h-full object-cover rounded-xl" />
                             <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
                                 <ambientLight intensity={0.5} />
                                 <pointLight position={[10, 10, 10]} />
                                 {avatar && avatar.gltf && <primitive object={avatar.gltf} scale={[6, 6, 6]} />}
                             </Canvas>
                         </div>
-                        {/* 가면이 준비되지 않았을 때 로딩 메시지 표시 */}
                         {!isMaskReady && (
                             <div className="absolute top-0 left-0 w-full h-full bg-gray-800 flex items-center justify-center">
                                 <p className="text-white">Loading....</p>
@@ -224,7 +222,7 @@ function VideoComponent({
                         )}
                     </>
                 ) : (
-                    <div className="relative flex items-center justify-center w-full bg-white h-full opacity-40 rounded-xl"> {/* 고정된 높이 적용 */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-white opacity-40 rounded-xl flex items-center justify-center">
                         <CameraOffIcon
                             width={'10rem'}
                             className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
