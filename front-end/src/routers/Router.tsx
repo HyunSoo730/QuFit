@@ -18,6 +18,17 @@ import Admin from '@pages/Admin';
 
 const Router = () => {
     const routes: RouteObject[] = [
+        {
+            path: PATH.ROOT,
+            errorElement: <NotFoundPage />,
+            children: [
+                {
+                    path: PATH.ROOT,
+                    element: <IntroductionPage />,
+                },
+                { path: PATH.INTRODUCTION, element: <IntroductionPage /> },
+            ],
+        },
         //header가 있는 페이지
         {
             path: PATH.ROOT,
@@ -79,11 +90,6 @@ const Router = () => {
         {
             path: 'auth/kakao',
             element: <KakaoRedirectPage />,
-        },
-        {
-            path: PATH.ROOT,
-            errorElement: <NotFoundPage />,
-            children: [{ path: PATH.INTRODUCTION, element: <IntroductionPage /> }],
         },
     ];
 

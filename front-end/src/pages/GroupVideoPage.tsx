@@ -41,7 +41,7 @@ type beforeResult = {
 function GroupVideoPage() {
     // const roomMax = useRoomMaxStore();
     const roomMax = 8;
-    const [roomStep, setRoomStep] = useState<RoomStep>('end');
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
@@ -55,7 +55,6 @@ function GroupVideoPage() {
 
     const otherIdx = useOtherIdxStore();
     const setOtherIdx = useSetOtherIdxStore();
-    console.log(otherGenderParticipants);
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
