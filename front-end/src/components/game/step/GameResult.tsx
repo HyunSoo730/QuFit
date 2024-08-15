@@ -1,8 +1,7 @@
 import TypingText from '@components/game/TypingText';
-
 import useRoom from '@hooks/useRoom';
 import { useProblemsStore, useResultsStore } from '@stores/video/gameStore';
-
+import playGame from '@assets/gif/playGame.gif';
 interface GameResultProps {
     onStop: () => void;
     onNext: () => void;
@@ -45,7 +44,7 @@ const GameResult = ({ title, onNext, scenario1, scenario2, onStop, gameStage }: 
     return (
         <div className="relative flex items-center justify-center p-3 bg-black aspect-gameBg">
             <div className="flex justify-center rounded-lg item-center">
-                <img src="/src/assets/gif/밸런스게임중.gif" alt="밸런스게임중" className="w-full rounded-2xl" />
+                <img src={playGame} alt="밸런스게임중" className="w-full rounded-2xl" />
             </div>
 
             <div className="absolute bottom-[1.5rem] gap-[1rem] flex flex-col w-[calc(100%-5rem)] p-[2rem] bg-black opacity-50 min-h-[10rem]">

@@ -4,7 +4,7 @@ import ChoiceTimer from '@components/game/ChoiceTimer';
 import TypingText from '@components/game/TypingText';
 import { useRoomIdStore } from '@stores/video/roomStore';
 import { useState } from 'react';
-
+import beforeGame from '@assets/gif/beforeGame.gif';
 interface GamePlayProps {
     onNext: (choice: any) => void;
     title: string;
@@ -29,7 +29,7 @@ const GamePlay = ({ id, title, scenario1, scenario2, onNext }: GamePlayProps) =>
     return (
         <div className="relative flex items-center justify-center p-3 bg-black aspect-gameBg">
             <div className="flex justify-center rounded-lg item-center">
-                <img src="/src/assets/gif/밸런스게임중.gif" alt="밸런스게임중" className="w-full rounded-2xl" />
+                <img src={beforeGame} alt="밸런스게임중" className="w-full rounded-2xl" />
             </div>
             {startTimer && (
                 <div className="absolute top-[2rem] left-[2rem] ">
