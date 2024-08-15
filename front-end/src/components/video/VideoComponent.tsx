@@ -31,7 +31,7 @@ interface VideoComponentProps {
     id: number | undefined;
     status: 'wait' | 'meeting';
     roomMax?: number;
-    participantOrder: number; // 참가자 순서에 따른 가면 선택
+    participantOrder: number;
 }
 
 class Avatar {
@@ -62,6 +62,7 @@ class Avatar {
     }
 }
 
+// 최신 코드
 function VideoComponent({
     track,
     isManager,
@@ -74,13 +75,12 @@ function VideoComponent({
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMicEnable, setIsMicEnable] = useState(true);
-    // const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
-    // const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
-    const maskPositionRef = useRef(new THREE.Vector3());  // position 객체를 Ref로 관리
-    const maskRotationRef = useRef(new THREE.Euler());    // rotation 객체를 Ref로 관리
+    const maskPositionRef = useRef(new THREE.Vector3());
+    const maskRotationRef = useRef(new THREE.Euler());
     const [avatar, setAvatar] = useState<Avatar | null>(null);
     const room = useRoomStateStore();
     const [isCameraEnable, setIsCameraEnable] = useState(status === 'meeting');
+    const [isMaskReady, setIsMaskReady] = useState(false); // 가면 준비 상태
 
     useEffect(() => {
         if (videoRef.current) {
@@ -89,9 +89,15 @@ function VideoComponent({
 
                 if (faceLandmarkerReady && faceLandmarker) {
                     const scene = new THREE.Scene();
-                    const maskUrl = getMaskUrl(participantOrder); // 참가자 순서에 따른 가면 선택
+                    const maskUrl = getMaskUrl(participantOrder);
                     const newAvatar = new Avatar(maskUrl, scene);
                     setAvatar(newAvatar);
+
+                    // 가면 로딩 완료 시 isMaskReady를 true로 설정
+                    newAvatar.loader.manager.onLoad = () => {
+                        setIsMaskReady(true);
+                    };
+                    
 
                     const interval = setInterval(() => {
                         if (
@@ -123,7 +129,7 @@ function VideoComponent({
                                     const y = Math.max(-3, Math.min(3, -(avgPosition.y - 0.5) * 6));
                                     const z = Math.max(-7.5, Math.min(0, -avgPosition.z * 15));
 
-                                    maskPositionRef.current.set(x, y, z);  // 기존의 setState 대신 Ref의 메서드 사용
+                                    maskPositionRef.current.set(x, y, z);
 
                                     if (
                                         result.facialTransformationMatrixes &&
@@ -133,10 +139,7 @@ function VideoComponent({
                                             result.facialTransformationMatrixes[0].data,
                                         );
                                         maskRotationRef.current.setFromRotationMatrix(matrix);
-                                        // ! 좌우 반전 해결
-                                        // maskRotationRef.current.y *= -1;
 
-                                        // Avatar 업데이트
                                         newAvatar.updateTransform(maskPositionRef.current, maskRotationRef.current);
                                     }
                                 }
@@ -144,7 +147,7 @@ function VideoComponent({
                                 console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
-                    }, 50); // 50ms 로 수정
+                    }, 50);
 
                     return () => clearInterval(interval);
                 }
@@ -204,13 +207,21 @@ function VideoComponent({
             <div className="absolute top-0 left-0 w-full -z-10">
                 {isCameraEnable || !local ? (
                     <>
-                        <video ref={videoRef} className="w-full rounded-xl" />
-                        <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                            <ambientLight intensity={0.5} />
-                            <pointLight position={[10, 10, 10]} />
-                            {/* Avatar가 로드된 경우에만 MaskModel 적용 */}
-                            {avatar && avatar.gltf && <primitive object={avatar.gltf} scale={[6, 6, 6]} />}
-                        </Canvas>
+                        {/* 비디오와 Canvas를 감싸는 div에 opacity transition 적용 */}
+                        <div className={`relative ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+                            <video ref={videoRef} className="w-full rounded-xl" />
+                            <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+                                <ambientLight intensity={0.5} />
+                                <pointLight position={[10, 10, 10]} />
+                                {avatar && avatar.gltf && <primitive object={avatar.gltf} scale={[6, 6, 6]} />}
+                            </Canvas>
+                        </div>
+                        {/* 가면이 준비되지 않았을 때 로딩 메시지 표시 */}
+                        {!isMaskReady && (
+                            <div className="absolute top-0 left-0 w-full h-full bg-gray-800 flex items-center justify-center">
+                                <p className="text-white">Loading....</p>
+                            </div>
+                        )}
                     </>
                 ) : (
                     <div className="relative flex items-center justify-center w-full bg-white aspect-video opacity-40 rounded-xl">
@@ -224,5 +235,6 @@ function VideoComponent({
         </div>
     );
 }
+
 
 export default VideoComponent;

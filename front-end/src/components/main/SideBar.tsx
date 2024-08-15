@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { XIcon } from '@assets/svg/chat';
 import { FilterIcon } from '@assets/svg/main';
 import Radio from '@components/common/radio/Radio';
