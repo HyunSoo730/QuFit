@@ -147,7 +147,7 @@ const CreateRoomPage = () => {
                 </div>
 
                 {/* 인원수, 태그 선택 유무 */}
-                <div className="flex flex-col w-full mt-10 bg-white py-11 px-9 h-80 rounded-3xl bg-opacity-15">
+                <div className="flex flex-col w-full mt-10 bg-white py-11 px-9 rounded-3xl bg-opacity-15">
                     <div>
                         <div className="flex items-center mb-7">
                             <p className="text-2xl font-medium text-smokeWhite mr-3.5">
