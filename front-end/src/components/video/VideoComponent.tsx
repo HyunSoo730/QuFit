@@ -97,6 +97,7 @@ function VideoComponent({
                     newAvatar.loader.manager.onLoad = () => {
                         setIsMaskReady(true);
                     };
+                    
 
                     const interval = setInterval(() => {
                         if (
