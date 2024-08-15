@@ -25,6 +25,7 @@ export const END_POINT = {
     FRIEND: 'qufit/friend',
     CHAT: 'qufit/chat/rooms',
     GAME: `qufit/game`,
+    ADMIN: `qufit/admin`,
 };
 
 export const HTTP_STATUS = {

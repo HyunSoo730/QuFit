@@ -8,6 +8,7 @@ export const PATH = {
     CREATE_ROOM: '/main/create',
     CHATTING: '/chatting',
     MY_PAGE: '/mypage',
+    ADMIN: '/admin',
     GROUP_VIDEO: (roomId: number | string) => `/video/group/${roomId}`,
     WAIT: (roomId: number | string) => `/video/wait/${roomId}`,
     PERSONAL_VIDEO: (roomId: number | string) => `/video/personal/${roomId}`,

@@ -33,9 +33,9 @@ export const publishSocket = (data: any, client: { current: StompJs.Client | nul
 export const connect = (client: { current: StompJs.Client | null }, onConnect: () => void) => {
     try {
         client.current = new StompJs.Client({
-            brokerURL: `ws://i11a209.p.ssafy.io:8080/stomp/chat`,
+            brokerURL: import.meta.env.VITE_WEBSOCKET_BASE_URL,
             connectHeaders: {
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
             debug: function (str) {
                 console.log('소켓 디버그:', str);

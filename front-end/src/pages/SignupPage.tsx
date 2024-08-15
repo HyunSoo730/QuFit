@@ -8,8 +8,11 @@ import StepProcess from '@components/auth/StepProcess';
 import TypeInfo from '@components/auth/TypeInfo';
 import TypeAge from '@components/auth/TypeAge';
 import SignUpEnd from '@components/auth/SignUpEnd';
-// import { useAccessTokenStore } from '@stores/auth/signUpStore';
 import { useState } from 'react';
+import { useAccessTokenStore } from '@stores/auth/signUpStore';
+import { useNavigate } from 'react-router-dom';
+import { PATH } from '@routers/PathConstants';
+import { registMember } from '@queries/useMemberQuery';
 
 export interface SignUpProps {
     onNext: (data: any) => void;
@@ -31,7 +34,10 @@ const SignupPage = () => {
         typeHobbyTags: [],
         typePersonalityTags: [],
     });
-    // const accessToken = useAccessTokenStore();
+    const accessToken = useAccessTokenStore();
+    const signup = registMember();
+    const navigate = useNavigate();
+
     const [step, setStep] = useState(0);
     const welcomeMessage = registerData.nickname
         ? `큐핏에 오신걸 환영해요, ${registerData.nickname}님!`
@@ -42,7 +48,24 @@ const SignupPage = () => {
             <div className="max-w-[69.5rem] w-[69.5rem] h-[28.75rem] rounded-3xl shadow-xl bg-white flex justify-between px-20 py-9 ">
                 {step === 6 ? (
                     <div className="flex justify-center w-full">
-                        <SignUpEnd />
+                        <SignUpEnd 
+                        registData={registerData}
+                        onNext={(data: MemberInfoDTO) => {
+                            signup.mutate(
+                                { data, token: accessToken || '' },
+                                {
+                                    onSuccess: (response) => {
+                                        console.log(response);
+                                    },
+                                    onError: (error) => {
+                                        console.log(error);
+                                    },
+                                },
+                            )
+                            navigate(PATH.INTRODUCTION);
+                        }
+                        }
+                            />
                     </div>
                 ) : (
                     <>
