@@ -12,6 +12,7 @@ import { PATH } from '@routers/PathConstants';
 const VideoWaitPage = () => {
     // const roomMax = useRoomMaxStore();
     const roomMax = 8;
+    const { otherGenderSetting } = useRoom();
     const [isMeetingStart, setIsMettingStart] = useState(false);
     const participants = useRoomParticipantsStore();
     const { leaveRoom } = useRoom();
@@ -26,6 +27,7 @@ const VideoWaitPage = () => {
 
             afterSubscribe(response, '미팅룸 시작을 성공했습니다.', () => {
                 setIsMettingStart(true);
+                otherGenderSetting();
             });
         });
     };
@@ -38,6 +40,7 @@ const VideoWaitPage = () => {
             client,
             Number(roomId),
         );
+        // otherGenderSetting();
     };
 
     useEffect(() => {
