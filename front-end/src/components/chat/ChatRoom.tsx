@@ -1,7 +1,6 @@
 import { CupidIcon, XIcon, EmptyChatIcon, DoorExitIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
-import { useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import * as StompJs from '@stomp/stompjs';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';

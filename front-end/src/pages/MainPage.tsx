@@ -3,6 +3,7 @@ import LottieComponent from '@components/common/LottieComponent';
 import loader from '@assets/lottie/loader.json';
 import { BoxIcon, RecommendRoomIcon, FilterIcon } from '@assets/svg/main';
 import RoomCard from '@components/main/RoomCard';
+import SideBar from '@components/main/SideBar';
 import { RecommendRoomModal } from '@modals/main/RoomModal';
 import useModal from '@hooks/useModal';
 import { useVideoRoomQuery } from '@queries/useVideoQuery';
@@ -10,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import useMember from '@hooks/useMember';
 import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC } from '@apis/axios';
-
 interface RoomsInfoProps {
     videoRoomId: number;
     videoRoomName: string;
@@ -26,6 +26,8 @@ const MainPage = () => {
     const navigate = useNavigate();
 
     const { open, Modal, close } = useModal();
+
+    const [isOpenSideBar, setIsOpenSideBar] = useState(false);
 
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -129,7 +131,12 @@ const MainPage = () => {
                         </span>
                     </button>
                 </div>
-                <button className="relative flex items-center justify-center h-12 border-[0.1875rem] rounded-full w-36 border-smokeWhite lg:scale-90 xs:scale-90 xs:w-14">
+                <button
+                    onClick={() => {
+                        setIsOpenSideBar((prevState) => !prevState);
+                    }}
+                    className="relative flex items-center justify-center h-12 border-[0.1875rem] rounded-full w-36 border-smokeWhite lg:scale-90 xs:scale-90 xs:w-14"
+                >
                     <div className="z-10 flex items-center">
                         <FilterIcon className="w-6" />
                         <p className="pb-0.5 ml-2 text-xl font-medium text-smokeWhite xs:hidden">Filter</p>
@@ -168,6 +175,13 @@ const MainPage = () => {
                 )}
                 <div ref={endRef} />
             </div>
+            {isOpenSideBar ? (
+                <div className="absolute top-0 right-0 z-20 h-full w-96">
+                    <SideBar isOpenSideBar={isOpenSideBar} setIsOpenSideBar={setIsOpenSideBar} />
+                </div>
+            ) : (
+                <></>
+            )}
             <Modal>
                 <RecommendRoomModal onClose={close} />
             </Modal>
