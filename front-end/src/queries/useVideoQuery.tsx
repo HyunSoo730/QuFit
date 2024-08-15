@@ -82,9 +82,7 @@ export const useRemoveVideoRoomMutation = () =>
 export const useJoinVideoRoomMutation = () =>
     useMutation({
         mutationFn: (videoRoomId: number) => postVideoJoin(videoRoomId),
-        onSuccess: () => {
-            console.log('성공');
-        },
+
         onError: (error) => {
             console.log('onError', error);
         },

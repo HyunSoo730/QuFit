@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -42,7 +42,7 @@ function GroupVideoPage() {
     // const roomMax = useRoomMaxStore();
     const roomMax = 8;
     const [roomStep, setRoomStep] = useState<RoomStep>('end');
-    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const { createRoom, joinRoom, leaveRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
@@ -53,9 +53,9 @@ function GroupVideoPage() {
     const { roomId } = useParams();
     const [isMeeting, setIsMeeting] = useState(true);
 
-    console.log(participants);
     const otherIdx = useOtherIdxStore();
-
+    const setOtherIdx = useSetOtherIdxStore();
+    console.log(otherGenderParticipants);
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
@@ -64,12 +64,13 @@ function GroupVideoPage() {
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
             const response = await instance.get(`qufit/video/recent`, {
-                params: { hostId: otherGenderParticipants[otherIdx].id },
+                params: { hostId: otherGenderParticipants[0].id },
             });
-            joinRoom(response.data['videoRoomId: ']);
+            joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
-        setPrivateRoom();
+
+        setOtherIdx(otherIdx + 1);
     };
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
@@ -92,12 +93,10 @@ function GroupVideoPage() {
                     acc[result.balanceGameId][result.memberId] = result.choiceNum;
                     return acc;
                 }, {});
-                console.log(processedResult);
                 setResults(processedResult);
             });
 
             afterSubscribe(response, '게임이 종료됐습니다.', () => {
-                console.log(response);
                 setRoomStep('end');
             });
         });
