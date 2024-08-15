@@ -63,6 +63,7 @@ const ChatInfo = ({
     }, [unreadCount, lastMessageTime]);
 
     const handleOnClickButton = () => {
+        console.log('채팅리스트:', )
         setChatState([
             {
                 id: id,

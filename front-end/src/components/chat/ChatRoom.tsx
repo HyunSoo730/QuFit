@@ -29,8 +29,6 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     const chatState = useChatStateStore((state) => state.chatState);
     const setChatState = useChatStateStore((state) => state.setChatState);
 
-    const setChatInfoList = useSetChatInfoList();
-
     // 채팅 전송 및 수신을 위한 값들
     const client = useRef<StompJs.Client | null>(null);
 
@@ -55,8 +53,6 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     const otherDifferTimeList: number[] = [];
 
     const msgBox = chatList.map((item, idx) => {
-        console.log('chatState:', chatState);
-
         let isDate = true;
 
         const date = new Date(item.timestamp);
@@ -209,7 +205,6 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
 
     const callback = function (message: { body: string }) {
         if (message.body) {
-            console.log('수신된 메시지:', message.body);
             let msg = JSON.parse(message.body);
             setNewMessage(msg);
             refetch();
@@ -232,13 +227,12 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
         if (client.current?.active) {
             if (firstMessageId === nowFirstMessageId) {
                 setHasMore(false);
-                console.log('더 불러올 메시지가 없습니다.', firstMessageId);
+                console.log('더 불러올 메시지가 없습니다.');
                 return;
             }
 
             const subscription = client.current?.subscribe(`/user/${senderId}/sub/chat.messages.${id}`, (message) => {
                 const messages = JSON.parse(message.body);
-                console.log('스크롤 구독 메시지:', messages.messages);
                 setNowFirstMessageId(messages.messages[0].id);
                 setChatList((chats) => [...messages.messages, ...chats]);
                 setDataLength(dataLength + 1);
@@ -260,8 +254,6 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     }, [dataLength]);
 
     const fetchData = () => {
-        console.log('fetchData 호출');
-
         if (scrollContainerRef.current) {
             setScrollTopUpdate(scrollContainerRef.current.scrollTop);
         }
@@ -278,7 +270,6 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
     };
 
     useEffect(() => {
-        console.log('맨 아래로 스크롤');
         scrollToBottom();
     }, [isChat]);
 
@@ -291,7 +282,7 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                     Authorization: `Bearer ${import.meta.env.VITE_TEST_TOKEN}`,
                 },
                 debug: function (str) {
-                    console.log('소켓 디버그:', str);
+                    console.log(str);
                 },
                 reconnectDelay: 5000,
                 heartbeatIncoming: 4000,
@@ -405,12 +396,8 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                 destination: `/pub/chat.removeRoom/${id}`,
             });
 
-            console.log('채팅방 삭제 요청', id);
-
-            client.current?.subscribe(`/user/${senderId}/sub/chat.rooms`, (list) => {
-                console.log('채팅방 리스트 다시 불러오기', list.body);
-                const response = JSON.parse(list.body);
-                setChatInfoList(response);
+            client.current?.subscribe(`/user/${senderId}/sub/chat.rooms`, () => {
+                refetch();
             });
         } catch (err) {
             console.log(err);

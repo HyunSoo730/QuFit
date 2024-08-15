@@ -18,3 +18,7 @@ export const postFriend = async (friendId: number) => {
 export const getChat = async (memberId: number) => {
     return await instance.get(`${END_POINT.CHAT}/${memberId}`);
 };
+
+export const postChat = async (otherMemberId: number) => {
+    return await instance.post(`${END_POINT.CHAT}/${otherMemberId}`);
+};

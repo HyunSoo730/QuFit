@@ -1,7 +1,6 @@
 import FriendInfo from '@components/chat/FriendInfo';
 import ChatInfo from '@components/chat/ChatInfo';
 import ChatRoom from '@components/chat/ChatRoom';
-// import { FriendsInfoDummy } from '@dummy/Dummy';
 import useTabStateStore from '@stores/chat/tabStateStore';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import { useEffect, useRef, useState } from 'react';
@@ -85,6 +84,7 @@ const ChattingPage = () => {
                             <FriendInfo
                                 key={friend.id}
                                 otherMemberId={friend.id}
+                                chatRoomId={friend.chatRoomId}
                                 nickname={friend.nickname}
                                 profileImage={friend.profileImage}
                             />

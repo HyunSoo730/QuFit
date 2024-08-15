@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getFriend, deleteFriend, postFriend, getChat } from '@apis/chat/ChatApi';
+import { getFriend, deleteFriend, postFriend, getChat, postChat } from '@apis/chat/ChatApi';
 import { FriendListResponse } from '@apis/types/response';
+import useChatStateStore from '@stores/chat/chatStateStore';
 import { useState } from 'react';
 
 // React Query로 친구 목록 가져오기
@@ -53,3 +54,30 @@ export const useChatListQuery = (memberId: number) =>
         queryKey: ['chatList'],
         queryFn: () => getChat(memberId),
     });
+
+export const usePostChatMutation = (
+    otherMemberId: number,
+    nickname: string,
+    profileImage: string,
+    chatRoomId: number,
+) => {
+    const setChatState = useChatStateStore((state) => state.setChatState);
+
+    return useMutation({
+        mutationFn: () => postChat(otherMemberId),
+        onSuccess: () => {
+            console.log('채팅방 생성 성공');
+            setChatState([
+                {
+                    id: chatRoomId,
+                    nickname: nickname,
+                    profileImage: profileImage,
+                    otherMemberId: otherMemberId,
+                },
+            ]);
+        },
+        onError: (error) => {
+            console.error('채팅방 생성 실패:', error);
+        },
+    });
+};

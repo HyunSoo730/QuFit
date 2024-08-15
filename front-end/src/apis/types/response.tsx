@@ -30,6 +30,7 @@ export interface MemberInfoDTO {
 // 친구 정보 받기
 export interface FriendInfoProps {
     id: number;
+    chatRoomId: number;
     nickname: string;
     profileImage: string;
 }
