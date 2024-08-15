@@ -44,10 +44,6 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
         }
     };
 
-    useEffect(() => {
-        console.log(tagsId, tags);
-    }, [tagsId, tags]);
-
     return (
         <div
             className={`h-full flex flex-col bg-smokeWhite rounded-l-3xl w-96 px-10 ${
@@ -94,7 +90,7 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
                 )}
                 {tags.map((tag, index) => (
                     <button
-                        key={index}
+                        key={tag}
                         onClick={() => handleOnClickButton(tagsId[index], tag)}
                         className="flex items-center justify-center mr-1.5 rounded-lg pl-2.5 pr-3.5 h-7 mb-2 bg-black bg-opacity-5"
                     >
@@ -108,8 +104,8 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
             {tagState === 'hobby' ? (
                 <div className="flex flex-col w-full overflow-y-auto scrollbar-hide">
                     <div className="flex flex-col mt-4">
-                        {Hobbies.map((hobby, index) => (
-                            <div key={index}>
+                        {Hobbies.map((hobby) => (
+                            <div key={hobby.category}>
                                 <p className="font-medium text-black mb-2.5">{hobby.category}</p>
                                 <div className="flex flex-wrap mb-6">
                                     {hobby.tags.map((tag, tagIndex) => (
@@ -133,8 +129,8 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
             ) : (
                 <div className="flex flex-col w-full overflow-y-auto scrollbar-hide">
                     <div className="flex flex-col mt-4">
-                        {Personalities.map((personality, index) => (
-                            <div key={index}>
+                        {Personalities.map((personality) => (
+                            <div key={personality.category}>
                                 <p className="font-medium text-black mb-2.5">{personality.category}</p>
                                 <div className="flex flex-wrap mb-6">
                                     {personality.tags.map((tag, tagIndex) => (

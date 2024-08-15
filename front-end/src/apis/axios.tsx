@@ -1,5 +1,7 @@
 import { HTTP_STATUS, KAKAO_LOGIN_URL } from '@apis/ApiConstants';
 import axios from 'axios';
+import qs from 'qs';
+
 export const qufitAcessTokenA = import.meta.env.VITE_QUFIT_ACCESS_TOKEN_A;
 export const qufitAcessTokenB = import.meta.env.VITE_QUFIT_ACCESS_TOKEN_B;
 export const qufitAcessTokenC = import.meta.env.VITE_QUFIT_ACCESS_TOKEN_C;
@@ -32,6 +34,9 @@ export const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
         Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+    },
+    paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: 'repeat' });
     },
 });
 

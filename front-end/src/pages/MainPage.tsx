@@ -6,9 +6,10 @@ import RoomCard from '@components/main/RoomCard';
 import SideBar from '@components/main/SideBar';
 import { RecommendRoomModal } from '@modals/main/RoomModal';
 import useModal from '@hooks/useModal';
-import { useVideoRoomQuery } from '@queries/useVideoQuery';
+import { useVideoRoomQuery, useFilteredVideoRoomQuery } from '@queries/useVideoQuery';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
+import useTagFilterStore from '@stores/video/tagFilterStore';
 import useMember from '@hooks/useMember';
 import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC } from '@apis/axios';
 interface RoomsInfoProps {
@@ -36,7 +37,8 @@ const MainPage = () => {
 
     const endRef = useRef<HTMLDivElement>(null);
 
-    const getRoomsData = useVideoRoomQuery(page, 24, 1);
+    const tagIds = useTagFilterStore((state) => state.tagsId);
+    const getRoomsData = useFilteredVideoRoomQuery(page, 24, tagIds);
     const RoomsInfoList = getRoomsData.data?.data?.videoRoomList;
 
     const { member } = useMember();
@@ -52,6 +54,10 @@ const MainPage = () => {
             setRoomsList((prev) => [...prev, ...RoomsInfoList]);
         }
     }, [RoomsInfoList]);
+
+    useEffect(() => {
+        setRoomsList([]);
+    }, [tagIds]);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -144,10 +150,10 @@ const MainPage = () => {
                 </button>
             </div>
             <div className="relative grid w-full h-full grid-cols-3 gap-8 overflow-y-auto scrollbar-hide md:grid-cols-2 lg:gap-6 xl:grid-cols-4 xl:gap-6 sm:grid-cols-2 xs:grid-cols-1">
-                {roomsList &&
+                {roomsList.length > 0 ? (
                     roomsList.map((data: RoomsInfoProps) => (
                         <RoomCard
-                            key={data.videoRoomId}
+                            key={`${data.videoRoomId}${data.videoRoomName}${data.videoRoomHobby}${data.videoRoomPersonality}`}
                             id={data.videoRoomId}
                             title={data.videoRoomName.length === 0 ? '✨ 큐핏의 화살을 맞은 방' : data.videoRoomName}
                             hobbyTags={data.videoRoomHobby}
@@ -158,7 +164,15 @@ const MainPage = () => {
                             mainTag={data.mainTag}
                             isButton={true}
                         />
-                    ))}
+                    ))
+                ) : (
+                    <div className="absolute flex flex-col items-center justify-center w-full h-full">
+                        <p className="text-2xl text-smokeWhite">
+                            방이 <span className="text-4xl font-medium text-pink animate-pulse">텅</span> 비었어요!
+                        </p>
+                        <p className="mt-2 opacity-60 text-smokeWhite">방 만들기를 눌러 큐핏과 함께해 주세요.</p>
+                    </div>
+                )}
                 {getRoomsData.isLoading && (
                     <div className="absolute flex items-center justify-center w-full h-full">
                         <LottieComponent
