@@ -10,27 +10,35 @@ import { useTokenStore } from '@stores/auth/tokenStore';
 
 //로그인을 하고 해야하는 API
 
-// let accessToken = '';
-// if (window.location.hostname === 'localhost') {
-//     if (location.port === '3000') {
-//         // accessToken = qufitAcessTokenA;
-//         localStorage.setItem('accessToken', qufitAcessTokenA);
-//     } else if (location.port === '3001') {
-//         // accessToken = qufitAcessTokenB;
-//         localStorage.setItem('accessToken', qufitAcessTokenB);
-//     } else if (location.port === '3002') {
-//         // accessToken = qufitAcessTokenC;
-//         localStorage.setItem('accessToken', qufitAcessTokenC);
-//     } else if (location.port === '3003') {
-//         // accessToken = qufitAcessTokenD;
-//         localStorage.setItem('accessToken', qufitAcessTokenD);
-//     } else {
-//         // accessToken = qufitAcessTokenA;
-//         localStorage.setItem('accessToken', qufitAcessTokenA);
-//     }
-// } else {
-//     accessToken = localStorage.getItem('accessToken') || '';
-// }
+let accessToken = '';
+if (window.location.hostname === 'localhost') {
+    if (location.port === '3000') {
+        // accessToken = qufitAcessTokenA;
+        useTokenStore.getState().setAccessToken(qufitAcessTokenA);
+        // localStorage.setItem('accessToken', qufitAcessTokenA);
+    } else if (location.port === '3001') {
+        // accessToken = qufitAcessTokenB;
+        // localStorage.setItem('accessToken', qufitAcessTokenB);
+        useTokenStore.getState().setAccessToken(qufitAcessTokenB);
+    } else if (location.port === '3002') {
+        // accessToken = qufitAcessTokenC;
+        // localStorage.setItem('accessToken', qufitAcessTokenC);
+        useTokenStore.getState().setAccessToken(qufitAcessTokenC);
+
+    } else if (location.port === '3003') {
+        // accessToken = qufitAcessTokenD;
+        // localStorage.setItem('accessToken', qufitAcessTokenD);
+        useTokenStore.getState().setAccessToken(qufitAcessTokenD);
+
+    } else {
+        // accessToken = qufitAcessTokenA;
+        // localStorage.setItem('accessToken', qufitAcessTokenA);
+        useTokenStore.getState().setAccessToken(qufitAcessTokenA);
+    }
+} else {
+    // accessToken = localStorage.getItem('accessToken') || '';
+    accessToken = useTokenStore.getState().accessToken || '';
+}
 export const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     // headers: {
