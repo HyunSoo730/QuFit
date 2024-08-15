@@ -84,7 +84,7 @@ const VideoWaitPage = () => {
     }, [render]);
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen justify-between">
             <div className="flex-shrink-0">
                 <ParticipantVideo roomMax={roomMax!} gender="m" status="wait" participants={participants} />
             </div>
