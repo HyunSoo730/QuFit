@@ -5,9 +5,23 @@ import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import { KAKAO_LOGIN_URL } from '@apis/ApiConstants';
 import { Link } from 'react-router-dom';
+import useModal from '@hooks/useModal';
+import AlertModal from '@modals/AlertModal';
+import { useEffect } from 'react';
+import useIsPendingStore from '@stores/auth/isPendingStore';
+
 
 const IntroductionPage = () => {
     const navigate = useNavigate();
+    const {Modal, open, close } = useModal();
+
+    const isPending = useIsPendingStore((state) => state.isPending);
+
+    useEffect(() => {
+        if (isPending) {
+            open();
+        }
+    }, [isPending]);
 
     return (
         <div className="flex w-screen h-screen bg-black">
@@ -52,6 +66,10 @@ const IntroductionPage = () => {
                 end={100}
                 className="absolute z-0 w-full h-full"
             />
+
+        <Modal>
+            <AlertModal contents={`아직 관리자가 승인하지 않았어요ㅜㅜ`} onClose={close}/>
+        </Modal>
         </div>
     );
 };

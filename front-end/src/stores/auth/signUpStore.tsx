@@ -13,11 +13,11 @@ const useSignUpStore = create(
     persist<State & Action>(
         (set) => ({
             accessToken: '',
-            setAccessToken: (accessToken) => set({ accessToken: accessToken }),
+            setAccessToken: (kakaoAccessToken) => set({ accessToken: kakaoAccessToken }),
         }),
         { name: 'accessToken', storage: createJSONStorage(() => localStorage) },
     ),
 );
 
-export const useAccessTokenStore = () => useSignUpStore((state) => state.accessToken);
-export const useSetAccessTokenStore = () => useSignUpStore((state) => state.setAccessToken);
+export const useKaKaoAccessTokenStore = () => useSignUpStore((state) => state.accessToken);
+export const useSetKaKaoAccessTokenStore = () => useSignUpStore((state) => state.setAccessToken);

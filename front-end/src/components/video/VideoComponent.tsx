@@ -1,11 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { CameraOffIcon, CrownIcon, MicOffIcon, MicOnIcon } from '@assets/svg/video';
 import { useRoomStateStore } from '@stores/video/roomStore';
+
+// 가면 URL 배열
+const maskUrls = [
+    '/assets/raccoon_head.glb',
+    '/assets/cat/scene.gltf',
+    '/assets/deer/scene.gltf',
+    '/assets/rabbit/scene.gltf',
+];
+
+// 참가자 순서에 따라 가면을 선택하는 함수
+function getMaskUrl(order: number): string {
+    return maskUrls[order % maskUrls.length];
+}
 
 interface VideoComponentProps {
     track?: LocalVideoTrack | RemoteVideoTrack;
@@ -13,32 +27,42 @@ interface VideoComponentProps {
     local?: boolean;
     isManager: boolean;
     faceLandmarkerReady: boolean;
-    faceLandmarker: FaceLandmarker | null; // faceLandmarker를 prop으로 추가
+    faceLandmarker: FaceLandmarker | null;
     id: number | undefined;
     status: 'wait' | 'meeting';
     roomMax?: number;
+    participantOrder: number;
 }
 
-function MaskModel({ position, rotation }: { position: THREE.Vector3; rotation: THREE.Euler }) {
-    const { scene } = useGLTF('/assets/raccoon_head.glb');
-    const currentPosition = useRef(new THREE.Vector3());
-    const currentRotation = useRef(new THREE.Euler());
+class Avatar {
+    scene: THREE.Scene;
+    loader: GLTFLoader = new GLTFLoader();
+    gltf: THREE.Group | null = null;
 
-    useFrame(() => {
-        if (scene) {
-            currentPosition.current.lerp(position, 0.3);
-            currentRotation.current.x += (rotation.x - currentRotation.current.x) * 0.3;
-            currentRotation.current.y += (rotation.y - currentRotation.current.y) * 0.3;
-            currentRotation.current.z += (rotation.z - currentRotation.current.z) * 0.3;
+    constructor(modelUrl: string, scene: THREE.Scene) {
+        this.scene = scene;
+        this.loadModel(modelUrl);
+    }
 
-            scene.position.copy(currentPosition.current);
-            scene.rotation.copy(currentRotation.current);
+    loadModel(modelUrl: string) {
+        this.loader.load(modelUrl, (gltf) => {
+            if (this.gltf) {
+                this.scene.remove(this.gltf);
+            }
+            this.gltf = gltf.scene;
+            this.scene.add(this.gltf);
+        });
+    }
+
+    updateTransform(position: THREE.Vector3, rotation: THREE.Euler) {
+        if (this.gltf) {
+            this.gltf.position.copy(position);
+            this.gltf.rotation.copy(rotation);
         }
-    });
-
-    return <primitive object={scene} scale={[6, 6, 6]} />;
+    }
 }
 
+// 최신 코드
 function VideoComponent({
     track,
     isManager,
@@ -46,28 +70,35 @@ function VideoComponent({
     status,
     local = false,
     faceLandmarkerReady,
-    faceLandmarker, // faceLandmarker를 prop으로 받음
+    faceLandmarker,
+    participantOrder,
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMicEnable, setIsMicEnable] = useState(true);
-    const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
-    const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
+    const maskPositionRef = useRef(new THREE.Vector3());
+    const maskRotationRef = useRef(new THREE.Euler());
+    const [avatar, setAvatar] = useState<Avatar | null>(null);
     const room = useRoomStateStore();
-    const [isCameraEnable, setIsCameraEnable] = useState(
-        // room?.localParticipant.isCameraEnabled && status === 'meeting',
-        status === 'meeting',
-    );
-    // const participants = useRoomParticipantsStore();
-    // console.log(track);
+    const [isCameraEnable, setIsCameraEnable] = useState(status === 'meeting');
+    const [isMaskReady, setIsMaskReady] = useState(false); // 가면 준비 상태
 
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.onloadedmetadata = () => {
-                console.log('Video metadata loaded for', participateName);
                 videoRef.current!.play();
 
-                // 비디오가 로드된 후에 얼굴 인식을 시작하도록 설정
                 if (faceLandmarkerReady && faceLandmarker) {
+                    const scene = new THREE.Scene();
+                    const maskUrl = getMaskUrl(participantOrder);
+                    const newAvatar = new Avatar(maskUrl, scene);
+                    setAvatar(newAvatar);
+
+                    // 가면 로딩 완료 시 isMaskReady를 true로 설정
+                    newAvatar.loader.manager.onLoad = () => {
+                        setIsMaskReady(true);
+                    };
+                    
+
                     const interval = setInterval(() => {
                         if (
                             videoRef.current &&
@@ -98,7 +129,7 @@ function VideoComponent({
                                     const y = Math.max(-3, Math.min(3, -(avgPosition.y - 0.5) * 6));
                                     const z = Math.max(-7.5, Math.min(0, -avgPosition.z * 15));
 
-                                    setMaskPosition(new THREE.Vector3(x, y, z));
+                                    maskPositionRef.current.set(x, y, z);
 
                                     if (
                                         result.facialTransformationMatrixes &&
@@ -107,16 +138,16 @@ function VideoComponent({
                                         const matrix = new THREE.Matrix4().fromArray(
                                             result.facialTransformationMatrixes[0].data,
                                         );
-                                        const rotation = new THREE.Euler().setFromRotationMatrix(matrix);
-                                        rotation.y *= -1;
-                                        setMaskRotation(rotation);
+                                        maskRotationRef.current.setFromRotationMatrix(matrix);
+
+                                        newAvatar.updateTransform(maskPositionRef.current, maskRotationRef.current);
                                     }
                                 }
                             } catch (error) {
-                                console.error('Face detection error for', participateName, ':', error);
+                                console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
-                    }, 16);
+                    }, 50);
 
                     return () => clearInterval(interval);
                 }
@@ -127,7 +158,7 @@ function VideoComponent({
         return () => {
             track?.detach();
         };
-    }, [track, participateName, faceLandmarkerReady, faceLandmarker]);
+    }, [track, participateName, faceLandmarkerReady, faceLandmarker, participantOrder]);
 
     const changeCameraEnabled = () => {
         if (local) {
@@ -146,7 +177,7 @@ function VideoComponent({
 
     return (
         <div
-            className="relative z-50 flex flex-col justify-between w-full p-4 rounded-xl aspect-video max-[]"
+            className="relative z-50 flex flex-col justify-between w-full h-full p-4 rounded-xl"
             onClick={changeCameraEnabled}
         >
             <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
@@ -173,18 +204,25 @@ function VideoComponent({
                     </>
                 )}
             </div>
-            <div className="absolute top-0 left-0 w-full -z-10">
+            <div className="absolute top-0 left-0 w-full h-full -z-10">
                 {isCameraEnable || !local ? (
                     <>
-                        <video ref={videoRef} className="w-full rounded-xl" />
-                        <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                            <ambientLight intensity={0.5} />
-                            <pointLight position={[10, 10, 10]} />
-                            {faceLandmarkerReady && <MaskModel position={maskPosition} rotation={maskRotation} />}
-                        </Canvas>
+                        <div className={`relative w-full h-full ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+                            <video ref={videoRef} className="absolute top-0 left-0 w-full h-full object-cover rounded-xl" />
+                            <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+                                <ambientLight intensity={0.5} />
+                                <pointLight position={[10, 10, 10]} />
+                                {avatar && avatar.gltf && <primitive object={avatar.gltf} scale={[6, 6, 6]} />}
+                            </Canvas>
+                        </div>
+                        {!isMaskReady && (
+                            <div className="absolute top-0 left-0 w-full h-full bg-gray-800 flex items-center justify-center">
+                                <p className="text-white">Loading....</p>
+                            </div>
+                        )}
                     </>
                 ) : (
-                    <div className="relative flex items-center justify-center w-full bg-white aspect-video opacity-40 rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-full bg-white opacity-40 rounded-xl flex items-center justify-center">
                         <CameraOffIcon
                             width={'10rem'}
                             className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
@@ -194,6 +232,8 @@ function VideoComponent({
             </div>
         </div>
     );
+    
 }
+
 
 export default VideoComponent;

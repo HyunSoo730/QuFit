@@ -35,8 +35,8 @@ export const getVideoFilter = async (page: number, size: number, tagIds: number[
     return await instance.get(END_POINT.VIDEO_FILTER, { params: { page: page, size: size, tagIds: tagIds } });
 };
 
-export const getVideoRecommendation = async (page: number, size: number) => {
-    return await instance.get(END_POINT.VIDEO_RECOMMENDATION, { params: { page: page, size: size } });
+export const getVideoRecommendation = async (page: number) => {
+    return await instance.get(END_POINT.VIDEO_RECOMMENDATION, { params: { page: page } });
 };
 
 export const useBalanceGameQuery = () =>

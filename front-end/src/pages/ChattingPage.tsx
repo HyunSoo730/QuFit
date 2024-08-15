@@ -6,6 +6,7 @@ import useChatStateStore from '@stores/chat/chatStateStore';
 import { useEffect, useRef, useState } from 'react';
 import { useFriendListQuery, useChatListQuery } from '@queries/useChatQuery';
 import { FriendInfoProps, ChatListProps } from '@apis/types/response';
+import { useMemberInfoStore } from '@stores/member/memberStore';
 
 const ChattingPage = () => {
     const buttonFocus = useTabStateStore((state) => state.buttonFocus);
@@ -21,9 +22,10 @@ const ChattingPage = () => {
     const totalPage = friendListData?.page.totalPages;
 
     const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
-
-    const ID = 2;
-    const { data: chatListData, refetch } = useChatListQuery(ID);
+    
+    const member = useMemberInfoStore();
+    const ID = member?.memberId;
+    const { data: chatListData, refetch } = useChatListQuery(ID!);
 
     useEffect(() => {
         if (friendListData) {

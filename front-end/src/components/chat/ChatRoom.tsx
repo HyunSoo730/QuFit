@@ -1,10 +1,12 @@
 import { CupidIcon, XIcon, EmptyChatIcon, DoorExitIcon } from '@assets/svg/chat';
 import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
-import { useSetChatInfoList } from '@stores/chat/chatInfoListStore';
 import * as StompJs from '@stomp/stompjs';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useMemberInfoStore } from '@stores/member/memberStore';
+import { useTokenStore } from '@stores/auth/tokenStore';
+
 interface ChatRoomProps {
     id: number;
     nickname: string;
@@ -20,7 +22,8 @@ interface ChatListProps {
 }
 
 const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
-    const senderId = 2;
+    const member = useMemberInfoStore();
+    const senderId = member?.memberId;
 
     // Store
     const isClosed = useCloseStateStore((state) => state.isClosed);
@@ -275,11 +278,13 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
 
     // 소켓 연결
     const connect = () => {
+        const accessToken = useTokenStore.getState().accessToken;
+
         try {
             client.current = new StompJs.Client({
                 brokerURL: import.meta.env.VITE_WEBSOCKET_BASE_URL,
                 connectHeaders: {
-                    Authorization: `Bearer ${import.meta.env.VITE_TEST_TOKEN}`,
+                    Authorization: `Bearer  ${accessToken}`,
                 },
                 debug: function (str) {
                     console.log(str);

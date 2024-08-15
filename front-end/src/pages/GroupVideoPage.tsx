@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -39,10 +39,9 @@ type beforeResult = {
     videoRoomId: number;
 };
 function GroupVideoPage() {
-    // const roomMax = useRoomMaxStore();
     const roomMax = 8;
-    const [roomStep, setRoomStep] = useState<RoomStep>('end');
-    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const [roomStep, setRoomStep] = useState<RoomStep>('active');
+    const { createRoom, joinRoom, leaveRoom, participants, otherGenderParticipants } = useRoom();
     const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
@@ -53,8 +52,8 @@ function GroupVideoPage() {
     const { roomId } = useParams();
     const [isMeeting, setIsMeeting] = useState(true);
 
-    console.log(participants);
     const otherIdx = useOtherIdxStore();
+    const setOtherIdx = useSetOtherIdxStore();
 
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
@@ -64,12 +63,13 @@ function GroupVideoPage() {
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
             const response = await instance.get(`qufit/video/recent`, {
-                params: { hostId: otherGenderParticipants[otherIdx].id },
+                params: { hostId: otherGenderParticipants[0].id },
             });
-            joinRoom(response.data['videoRoomId: ']);
+            joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
-        setPrivateRoom();
+
+        setOtherIdx(otherIdx + 1);
     };
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
@@ -92,12 +92,10 @@ function GroupVideoPage() {
                     acc[result.balanceGameId][result.memberId] = result.choiceNum;
                     return acc;
                 }, {});
-                console.log(processedResult);
                 setResults(processedResult);
             });
 
             afterSubscribe(response, '게임이 종료됐습니다.', () => {
-                console.log(response);
                 setRoomStep('end');
             });
         });
@@ -173,9 +171,15 @@ function GroupVideoPage() {
                 />
             </Modal>
             {isMeeting && (
-                <div className="flex flex-col justify-between w-full h-screen ">
-                    <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
-                    <div className="flex flex-col items-center justify-center py-4">
+                <div className="flex flex-col justify-between w-full h-screen"> {/* 전체 화면을 차지하는 flex 레이아웃 */}
+                    
+                    {/* 상단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
+                    </div>
+    
+                    {/* 중앙에 위치한 게임 관련 콘텐츠 */}
+                    <div className="flex flex-col items-center justify-center flex-grow py-4">
                         {roomStep === 'active' && <GameIntro onNext={startGame} />}
                         {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
                         {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
@@ -213,7 +217,6 @@ function GroupVideoPage() {
                                 }}
                             />
                         )}
-
                         {roomStep === 'result' && (
                             <GameResult
                                 id={problems[gameStage].balanceGameId}
@@ -227,11 +230,17 @@ function GroupVideoPage() {
                         )}
                         {roomStep === 'end' && <GameEnd restSec={restSec} />}
                     </div>
-                    <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+    
+                    {/* 하단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+                    </div>
+    
                 </div>
             )}
         </>
     );
+    
 }
 
 export default GroupVideoPage;

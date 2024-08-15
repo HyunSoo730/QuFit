@@ -12,9 +12,9 @@ import { PATH } from '@routers/PathConstants';
 const VideoWaitPage = () => {
     // const roomMax = useRoomMaxStore();
     const roomMax = 8;
+    const { otherGenderSetting } = useRoom();
     const [isMeetingStart, setIsMettingStart] = useState(false);
     const participants = useRoomParticipantsStore();
-    const { leaveRoom } = useRoom();
     const { roomId } = useParams();
     const setRoomId = useSetRoomIdStore();
     const navigate = useNavigate();
@@ -26,6 +26,7 @@ const VideoWaitPage = () => {
 
             afterSubscribe(response, '미팅룸 시작을 성공했습니다.', () => {
                 setIsMettingStart(true);
+                otherGenderSetting();
             });
         });
     };
@@ -38,33 +39,68 @@ const VideoWaitPage = () => {
             client,
             Number(roomId),
         );
+        // otherGenderSetting();
     };
+    ``;
 
     useEffect(() => {
         setRoomId(Number(roomId)); //나중에 param에서 따와야함
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
+    const [render, setRender] = useState(10);
+    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setRender((prev: number) => prev - 1);
+        }, 100);
+
+        setTimerId(timer);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [participants]);
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setRender((prev: number) => prev - 1);
+        }, 100);
+
+        setTimerId(timer);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (render === 0) {
+            if (timerId) {
+                clearInterval(timerId);
+                setTimerId(null);
+            }
+        }
+    }, [render]);
 
     return (
-        <>
-            <div className="flex flex-col justify-between w-full h-screen ">
+        <div className="flex flex-col h-screen justify-between">
+            <div className="flex-shrink-0">
                 <ParticipantVideo roomMax={roomMax!} gender="m" status="wait" participants={participants} />
-                <div className="flex flex-col items-center justify-center py-4">
-                    <div className="flex flex-col gap-4">
-                        <button onClick={() => leaveRoom(Number(roomId))}>나가기</button>
-                    </div>
-                    <MeetingStartButton
-                        onNext={() => {
-                            navigate(PATH.GROUP_VIDEO(Number(roomId)));
-                        }}
-                        isStart={isMeetingStart}
-                        onClick={startMeeting}
-                    />
-                </div>
+            </div>
+            <div className="flex-grow flex items-center justify-center">
+                <MeetingStartButton
+                    onNext={() => {
+                        navigate(PATH.GROUP_VIDEO(Number(roomId)));
+                    }}
+                    isStart={isMeetingStart}
+                    onClick={startMeeting}
+                />
+            </div>
+            <div className="flex-shrink-0">
                 <ParticipantVideo participants={participants} roomMax={roomMax!} gender="f" status="wait" />
             </div>
-        </>
+        </div>
     );
 };
 

@@ -6,6 +6,7 @@ export const PATH = {
     INTRODUCTION: '/introduction',
     MAIN: '/main',
     CREATE_ROOM: '/main/create',
+    RECOMMEND_ROOM: '/main/recommend',
     CHATTING: '/chatting',
     MY_PAGE: '/mypage',
     ADMIN: '/admin',
