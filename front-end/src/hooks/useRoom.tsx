@@ -1,7 +1,7 @@
 import { getVideoDetail, postVideo, postVideoJoin } from '@apis/video/VideoApi';
 import { LIVEKIT_URL, ROOM_SETTING } from '@components/video/VideoConstants';
 import useMember from '@hooks/useMember';
-import { useCreateVideoRoomMutation, useLeaveVideoRoomMutation } from '@queries/useVideoQuery';
+import { useLeaveVideoRoomMutation } from '@queries/useVideoQuery';
 import { VideoRoomRequest } from '@apis/types/request';
 import {
     RoomParticipant,
@@ -12,6 +12,7 @@ import {
     useRoomAddParticipantStore,
     useRoomParticipantsStore,
     useRoomSetParticipantsStore,
+    useRoomStateStore,
     useSetHostIdStore,
     useSetOtherGenderParticipantsStore,
     useSetOtherIdxStore,
@@ -26,6 +27,7 @@ import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const useRoom = () => {
     const setRoom = useSetRoomStateStore();
+    const room = useRoomStateStore();
     const { member } = useMember();
     const navigate = useNavigate();
     const addParticipant = useRoomAddParticipantStore();
@@ -68,7 +70,7 @@ const useRoom = () => {
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
         }
-    }, [isMake, participants, member, setOtherGenderParticipants]);
+    }, [isMake]);
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
@@ -116,6 +118,7 @@ const useRoom = () => {
             });
             const room = new Room(ROOM_SETTING);
             await room.connect(LIVEKIT_URL, data?.data.token);
+            setRoom(room);
 
             addRoomEventHandler(room, data.data.videoRoomId);
 
@@ -146,6 +149,7 @@ const useRoom = () => {
             const room = new Room(ROOM_SETTING);
             const response = await postVideoJoin(videoRoomId);
             await room.connect(LIVEKIT_URL, response.data.token);
+            setRoom(room);
             const curParticipants: RoomParticipant[] = [];
             //remote사용자를 담는 과정
             try {

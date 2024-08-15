@@ -55,17 +55,20 @@ function GroupVideoPage() {
 
     console.log(participants);
     const otherIdx = useOtherIdxStore();
-
+    console.log(otherGenderParticipants);
     const handleConfirmModal = async () => {
+        console.log('모달확인 클릭');
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: member.memberId },
             });
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
+            console.log('여자로직 실행');
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[otherIdx].id },
             });
+            console.log('response');
             joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
