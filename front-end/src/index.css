@@ -18,6 +18,12 @@ body {
     height: 100%;
 }
 
+@media (max-height: 1024px) {
+    html {
+        font-size: 14px;
+    }
+}
+
 @layer components {
     .effect-none {
         box-shadow: none;

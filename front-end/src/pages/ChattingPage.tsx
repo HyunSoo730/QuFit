@@ -22,7 +22,7 @@ const ChattingPage = () => {
     const totalPage = friendListData?.page.totalPages;
 
     const [friendList, setFriendList] = useState<FriendInfoProps[]>([]);
-    
+
     const member = useMemberInfoStore();
     const ID = member?.memberId;
     const { data: chatListData, refetch } = useChatListQuery(ID!);
@@ -65,16 +65,16 @@ const ChattingPage = () => {
                 <div className="z-10 flex justify-around mb-10 lg:mb-8">
                     <button
                         onClick={() => setButtonFocus('friend')}
-                        className={`h-11 px-7 rounded-full text-smokeWhite text-opacity-80 text-2xl font-medium ${
-                            buttonFocus === 'friend' ? 'bg-white bg-opacity-20 text-opacity-100 text-smokeWhite' : ''
+                        className={`h-10 px-7 rounded-full text-smokeWhite text-opacity-80 text-xl font-medium ${
+                            buttonFocus === 'friend' ? 'bg-white bg-opacity-20 text-opacity-100 text-white' : ''
                         } lg:text-xl lg:w-20 lg:h-10`}
                     >
                         친구
                     </button>
                     <button
                         onClick={() => setButtonFocus('chat')}
-                        className={`h-11 px-7 rounded-full text-smokeWhite text-opacity-80 text-2xl font-medium ${
-                            buttonFocus === 'chat' ? 'bg-white bg-opacity-20 text-opacity-100 text-smokeWhite' : ''
+                        className={`h-10 px-7 rounded-full text-smokeWhite text-opacity-80 text-xl font-medium ${
+                            buttonFocus === 'chat' ? 'bg-white bg-opacity-20 text-opacity-100 text-white' : ''
                         } lg:text-xl lg:w-28 lg:h-10`}
                     >
                         채팅 목록
