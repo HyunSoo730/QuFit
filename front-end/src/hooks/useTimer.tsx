@@ -8,8 +8,8 @@ const useTimer = (endSec: number, afterFunc: () => void) => {
     const [restSec, setRestSec] = useState(endSec);
     useEffect(() => {
         const timer = setInterval(() => {
-            setRestSec((prev: number) => prev - 0.1);
-        }, 100);
+            setRestSec((prev: number) => prev - 1);
+        }, 1000);
 
         return () => {
             clearInterval(timer);
