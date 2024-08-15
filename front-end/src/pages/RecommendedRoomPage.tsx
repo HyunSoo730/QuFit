@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BackIcon, RecommendRoomIcon } from '@assets/svg/main';
 import { useRecommendedVideoRoomQuery } from '@queries/useVideoQuery';
 import RoomCard from '@components/main/RoomCard';
