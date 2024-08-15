@@ -11,9 +11,9 @@ const PersonalVideoTimer = ({ endSec, onEnd }: PersonalVideoTimerProps) => {
     const restsec = useTimer(endSec, onEnd);
 
     return (
-        <div className="w-full bg-gray-900 px-14">
+        <div className="flex items-center w-full gap-14 bg-gay-900 px-14">
             {/* 시간 표시 */}
-            <div className="flex items-center justify-center p-2 text-xl font-bold text-white rounded-bl">
+            <div className="flex items-center justify-center p-2 text-4xl font-bold text-white rounded-bl">
                 {restsec > 0 && Math.floor(restsec / 60)}:{String(restsec % 60).padStart(2, '0')}
             </div>
 

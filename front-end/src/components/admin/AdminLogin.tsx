@@ -3,8 +3,14 @@ import axios from 'axios';
 import { AdminLoginRequest } from '@apis/types/request';
 import { END_POINT } from '@apis/ApiConstants';
 import { instance } from '@apis/axios';
+import { useNavigate } from 'react-router-dom';
+import { PATH } from '@routers/PathConstants';
+import { useSetAccessTokenStore } from '@stores/auth/tokenStore';
 
 const onLogin = async (data : AdminLoginRequest) => {
+    const navigate = useNavigate();
+    const setAccessToken = useSetAccessTokenStore();
+
     try {
         const response = await instance.post(END_POINT.ADMIN+'/login', data, {
             headers: {
@@ -12,9 +18,16 @@ const onLogin = async (data : AdminLoginRequest) => {
             }
         });
         if (response) {
-            console.log(response.data)
-            if(response.data.isSuccess) console.log("admin login 성공");
-            else console.log("admin login 실패");
+            if(response.data.isSuccess) {
+                console.log("admin login 성공");
+                const bearerToken = response.headers.authorization;
+                setAccessToken(bearerToken);
+                navigate(PATH.ADMIN);
+            }
+            else {
+                console.log("admin login 실패");
+                navigate(PATH.INTRODUCTION);
+            }
         } 
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -28,7 +41,8 @@ const AdminLogin = () => {
         onSubmit: onLogin
         });
 
-    return(<div><form>
+    return(
+        <div className="flex flex-col items-center justify-center h-full gap-10 bg-lightPurple-7">
         <div>
             <label htmlFor="userId"> userId </label>
             <input
@@ -48,9 +62,9 @@ const AdminLogin = () => {
                         onChange={handleChange}
                     />
         </div>
-        <button onClick={handleSubmit}
+        <button className="flex p-2 border-2 rounded-md item-center border-lightPurple-1" onClick={handleSubmit}
         >Login</button>
-    </form></div>)
+</div>)
 }
 
 export default AdminLogin;
