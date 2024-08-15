@@ -3,7 +3,7 @@ import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
 import { useProblemsStore, useSetProblemsStore, useSetResultsStore } from '@stores/video/gameStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { instance } from '@apis/axios';
 import useTimer from '@hooks/useTimer';
 import useMember from '@hooks/useMember';
@@ -39,19 +39,21 @@ type beforeResult = {
     videoRoomId: number;
 };
 function GroupVideoPage() {
+    // const roomMax = useRoomMaxStore();
     const roomMax = 8;
-    // const { videoRoomId } = useParams();
-    const [roomStep, setRoomStep] = useState<RoomStep>('active');
-    const { joinRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
-    const [gameStage, setGameStage] = useState(0);
-    const roomId = 80;
+    const [roomStep, setRoomStep] = useState<RoomStep>('end');
+    const { createRoom, joinRoom, leaveRoom, setPrivateRoom, participants, otherGenderParticipants } = useRoom();
+    const [gameStage, setGameStage] = useState(-1);
     const setRoomId = useSetRoomIdStore();
     const setResults = useSetResultsStore();
     const problems = useProblemsStore();
     const setProblems = useSetProblemsStore();
     const client = useRef<StompJs.Client | null>(null);
     const { member } = useMember();
+    const { roomId } = useParams();
+    const [isMeeting, setIsMeeting] = useState(true);
 
+    console.log(participants);
     const otherIdx = useOtherIdxStore();
 
     const handleConfirmModal = async () => {
@@ -79,9 +81,7 @@ function GroupVideoPage() {
             });
             afterSubscribe(response, '선택지 선택을 시작했습니다.', () => {
                 setRoomStep('play');
-                {
-                    !isHost && setGameStage((prev) => prev + 1);
-                }
+                setGameStage((prev) => prev + 1);
             });
 
             afterSubscribe(response, '게임 결과를 조회했습니다.', () => {
@@ -92,7 +92,13 @@ function GroupVideoPage() {
                     acc[result.balanceGameId][result.memberId] = result.choiceNum;
                     return acc;
                 }, {});
+                console.log(processedResult);
                 setResults(processedResult);
+            });
+
+            afterSubscribe(response, '게임이 종료됐습니다.', () => {
+                console.log(response);
+                setRoomStep('end');
             });
         });
     };
@@ -105,7 +111,7 @@ function GroupVideoPage() {
                 isGameStart: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
         setRoomStep('loading');
     };
@@ -116,26 +122,44 @@ function GroupVideoPage() {
                 isChoiceStart: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
-        setGameStage((prev) => prev + 1);
-        setRoomStep('play');
     };
 
     const endChoice = (choice: any) => {
-        publishSocket(choice, client, roomId);
+        publishSocket(choice, client, Number(roomId));
+    };
+
+    const endGame = () => {
+        //웹소켓 발신
+        publishSocket(
+            {
+                isGameEnd: true,
+            },
+            client,
+            Number(roomId),
+        );
+        setRoomStep('end');
     };
 
     useEffect(() => {
-        setRoomId(roomId); //나중에 param에서 따와야함
+        setRoomId(Number(roomId));
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
+        leaveRoom(Number(roomId));
         if (member?.gender === 'm') {
-            // createRoom();
+            createRoom({
+                videoRoomName: '개인방',
+                maxParticipants: 2,
+                mainTag: '',
+                videoRoomHobbies: [],
+                videoRoomPersonalities: [],
+            });
         }
+        setIsMeeting(false);
         open();
     });
 
@@ -144,67 +168,68 @@ function GroupVideoPage() {
             <Modal>
                 <MoveRoomModal
                     onClose={close}
-                    onClick={() => {
-                        handleConfirmModal();
-                    }}
+                    onClick={handleConfirmModal}
+                    message={'단체 미팅이 종료되었습니다. 다음 방으로 이동해주세요.'}
                 />
             </Modal>
-            <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" status="meeting" participants={participants} />
-                <div className="flex flex-col items-center justify-center py-4">
-                    {roomStep === 'active' && <GameIntro onNext={startGame} />}
-                    {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
-                    {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
-                    {roomStep === 'play' && (
-                        <GamePlay
-                            id={problems[gameStage].balanceGameId}
-                            title={problems[gameStage].content}
-                            scenario1={problems[gameStage].scenario1}
-                            scenario2={problems[gameStage].scenario2}
-                            onNext={(choice: any) => {
-                                endChoice(choice);
-                                setRoomStep('resultLoading1');
-                            }}
-                        />
-                    )}
-                    {roomStep === 'resultLoading1' && (
-                        <Loading
-                            onNext={() => {
-                                isHost &&
-                                    publishSocket(
-                                        {
-                                            getResult: true,
-                                        },
-                                        client,
-                                        roomId,
-                                    );
-                                setRoomStep('resultLoading2');
-                            }}
-                        />
-                    )}
-                    {roomStep === 'resultLoading2' && (
-                        <Loading
-                            onNext={() => {
-                                setRoomStep('result');
-                            }}
-                        />
-                    )}
+            {isMeeting && (
+                <div className="flex flex-col justify-between w-full h-screen ">
+                    <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
+                    <div className="flex flex-col items-center justify-center py-4">
+                        {roomStep === 'active' && <GameIntro onNext={startGame} />}
+                        {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
+                        {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
+                        {roomStep === 'play' && (
+                            <GamePlay
+                                id={problems[gameStage].balanceGameId}
+                                title={problems[gameStage].content}
+                                scenario1={problems[gameStage].scenario1}
+                                scenario2={problems[gameStage].scenario2}
+                                onNext={(choice: any) => {
+                                    endChoice(choice);
+                                    setRoomStep('resultLoading1');
+                                }}
+                            />
+                        )}
+                        {roomStep === 'resultLoading1' && (
+                            <Loading
+                                onNext={() => {
+                                    isHost &&
+                                        publishSocket(
+                                            {
+                                                getResult: true,
+                                            },
+                                            client,
+                                            Number(roomId),
+                                        );
+                                    setRoomStep('resultLoading2');
+                                }}
+                            />
+                        )}
+                        {roomStep === 'resultLoading2' && (
+                            <Loading
+                                onNext={() => {
+                                    setRoomStep('result');
+                                }}
+                            />
+                        )}
 
-                    {roomStep === 'result' && (
-                        <GameResult
-                            id={problems[gameStage].balanceGameId}
-                            title={problems[gameStage].content}
-                            scenario1={problems[gameStage].scenario1}
-                            scenario2={problems[gameStage].scenario2}
-                            gameStage={gameStage}
-                            onStop={() => setRoomStep('end')}
-                            onNext={startPlay}
-                        />
-                    )}
-                    {roomStep === 'end' && <GameEnd restSec={restSec} />}
+                        {roomStep === 'result' && (
+                            <GameResult
+                                id={problems[gameStage].balanceGameId}
+                                title={problems[gameStage].content}
+                                scenario1={problems[gameStage].scenario1}
+                                scenario2={problems[gameStage].scenario2}
+                                gameStage={gameStage}
+                                onStop={endGame}
+                                onNext={startPlay}
+                            />
+                        )}
+                        {roomStep === 'end' && <GameEnd restSec={restSec} />}
+                    </div>
+                    <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
                 </div>
-                <ParticipantVideo roomMax={roomMax} gender="f" status="meeting" participants={participants} />
-            </div>
+            )}
         </>
     );
 }

@@ -8,8 +8,9 @@ export interface CheckboxProps {
     value: string;
     checked?: boolean;
     onChange?: (value: string) => void;
+    isUpdate: boolean;
 }
-const Checkbox = ({ children, className, disabled, value, checked, onChange }: CheckboxProps) => {
+const Checkbox = ({ children, className, disabled, value, checked, isUpdate, onChange }: CheckboxProps) => {
     const context = useContext(CheckboxContext);
 
     if (!context) {
@@ -30,7 +31,7 @@ const Checkbox = ({ children, className, disabled, value, checked, onChange }: C
         <label className={className}>
             <input
                 type="checkbox"
-                disabled={disabled}
+                disabled={!isUpdate}
                 checked={isChecked(value)}
                 onChange={(event) => toggleValue({ checked: event.target.checked, value })}
                 className="hidden peer"

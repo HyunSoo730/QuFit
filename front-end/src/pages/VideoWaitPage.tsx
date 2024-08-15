@@ -2,7 +2,7 @@ import { useRoomParticipantsStore, useSetRoomIdStore } from '@stores/video/roomS
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
 import * as StompJs from '@stomp/stompjs';
@@ -10,15 +10,16 @@ import MeetingStartButton from '@components/game/MeetingStartButton';
 import { PATH } from '@routers/PathConstants';
 
 const VideoWaitPage = () => {
+    // const roomMax = useRoomMaxStore();
     const roomMax = 8;
     const [isMeetingStart, setIsMettingStart] = useState(false);
-    // const { videoRoomId } = useParams();
     const participants = useRoomParticipantsStore();
     const { leaveRoom } = useRoom();
-    const roomId = 80;
+    const { roomId } = useParams();
     const setRoomId = useSetRoomIdStore();
-    const client = useRef<StompJs.Client | null>(null);
     const navigate = useNavigate();
+
+    const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
             const response = JSON.parse(message.body);
@@ -35,12 +36,12 @@ const VideoWaitPage = () => {
                 isRoomStart: true,
             },
             client,
-            roomId,
+            Number(roomId),
         );
     };
 
     useEffect(() => {
-        setRoomId(roomId); //나중에 param에서 따와야함
+        setRoomId(Number(roomId)); //나중에 param에서 따와야함
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
@@ -48,20 +49,20 @@ const VideoWaitPage = () => {
     return (
         <>
             <div className="flex flex-col justify-between w-full h-screen ">
-                <ParticipantVideo roomMax={roomMax} gender="m" status="wait" participants={participants} />
+                <ParticipantVideo roomMax={roomMax!} gender="m" status="wait" participants={participants} />
                 <div className="flex flex-col items-center justify-center py-4">
                     <div className="flex flex-col gap-4">
-                        <button onClick={() => leaveRoom(roomId)}>나가기</button>
+                        <button onClick={() => leaveRoom(Number(roomId))}>나가기</button>
                     </div>
                     <MeetingStartButton
                         onNext={() => {
-                            navigate(PATH.GROUP_VIDEO(roomId));
+                            navigate(PATH.GROUP_VIDEO(Number(roomId)));
                         }}
                         isStart={isMeetingStart}
                         onClick={startMeeting}
                     />
                 </div>
-                <ParticipantVideo participants={participants} roomMax={roomMax} gender="f" status="wait" />
+                <ParticipantVideo participants={participants} roomMax={roomMax!} gender="f" status="wait" />
             </div>
         </>
     );

@@ -5,9 +5,10 @@ interface RadioProps {
     children: React.ReactNode;
     value: string;
     className?: string;
+    disabled?:boolean;
 }
 
-const Radio = ({ children, value, className }: RadioProps) => {
+const Radio = ({ children, value, className, disabled }: RadioProps) => {
     const context = useContext(RadioContext);
 
     if (!context) {
@@ -23,8 +24,8 @@ const Radio = ({ children, value, className }: RadioProps) => {
                 type="radio"
                 value={value}
                 checked={value === selectedValue}
-    
-                onChange={onChange}
+                onChange={ onChange }
+                disabled={disabled}
             />
             {children}
         </label>

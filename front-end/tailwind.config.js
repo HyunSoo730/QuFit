@@ -38,9 +38,14 @@ export default {
                     from: { width: '100%' },
                     to: { width: '0' },
                 },
+                private: {
+                    from: { width: '100%' },
+                    to: { width: '0' },
+                },
             },
             animation: {
                 choice: 'choice 6s',
+                private: 'private 1800s',
             },
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",

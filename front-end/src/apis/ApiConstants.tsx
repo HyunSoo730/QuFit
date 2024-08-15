@@ -22,8 +22,10 @@ export const END_POINT = {
     VIDEO_LEAVE: (videoId: number) => `qufit/video/${videoId}/leave`,
     VIDEO_FILTER: `qufit/video/filter`,
     VIDEO_RECOMMENDATION: `qufit/video/recommendation`,
-    FRIEND : 'qufit/friend',
+    FRIEND: 'qufit/friend',
+    CHAT: 'qufit/chat/rooms',
     GAME: `qufit/game`,
+    ADMIN: `qufit/admin`,
 };
 
 export const HTTP_STATUS = {
