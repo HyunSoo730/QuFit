@@ -1,3 +1,4 @@
+// ParticipantVideo.tsx
 import EmptyVideo from '@components/video/EmptyVideo';
 import VideoComponent from '@components/video/VideoComponent';
 import useRoom from '@hooks/useRoom';
