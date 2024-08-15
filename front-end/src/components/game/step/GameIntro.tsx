@@ -1,6 +1,7 @@
 import { PlayIcon } from '@assets/svg/video';
 import useRoom from '@hooks/useRoom';
 import beforeGame from '@assets/gif/beforeGame.gif';
+import gameTitle from '@assets/png/BALANCEGAME.png';
 interface BalanceGameIntroProps {
     onNext: () => void;
 }
@@ -19,7 +20,7 @@ const GameIntro = ({ onNext }: BalanceGameIntroProps) => {
                     <img src={beforeGame} className="w-full h-full rounded-2xl" />
                 </div>
 
-                <img src="/src/assets/png/BALANCEGAME.png" className="absolute top-[8rem] left-1/2 -translate-x-1/2" />
+                <img src={gameTitle} className="absolute top-[8rem] left-1/2 -translate-x-1/2" />
 
                 <button onClick={gameStart} className="  absolute bottom-[8rem] left-1/2 -translate-x-1/2">
                     <div className="flex items-center animate-bounce">
