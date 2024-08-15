@@ -142,7 +142,7 @@ function VideoComponent({
                                 console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
-                    }, 16);
+                    }, 100); // 100ms 
 
                     return () => clearInterval(interval);
                 }
