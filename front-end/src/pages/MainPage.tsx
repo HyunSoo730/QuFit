@@ -6,7 +6,7 @@ import RoomCard from '@components/main/RoomCard';
 import SideBar from '@components/main/SideBar';
 import { RecommendRoomModal } from '@modals/main/RoomModal';
 import useModal from '@hooks/useModal';
-import { useVideoRoomQuery, useFilteredVideoRoomQuery } from '@queries/useVideoQuery';
+import { useFilteredVideoRoomQuery } from '@queries/useVideoQuery';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import useTagFilterStore from '@stores/video/tagFilterStore';
@@ -57,6 +57,8 @@ const MainPage = () => {
 
     useEffect(() => {
         setRoomsList([]);
+        setPage(0);
+        setHasMore(true);
     }, [tagIds]);
 
     useEffect(() => {
@@ -153,7 +155,7 @@ const MainPage = () => {
                 {roomsList.length > 0 ? (
                     roomsList.map((data: RoomsInfoProps) => (
                         <RoomCard
-                            key={`${data.videoRoomId}${data.videoRoomName}${data.videoRoomHobby}${data.videoRoomPersonality}`}
+                            key={`${data.videoRoomId}${data.videoRoomName}`}
                             id={data.videoRoomId}
                             title={data.videoRoomName.length === 0 ? '✨ 큐핏의 화살을 맞은 방' : data.videoRoomName}
                             hobbyTags={data.videoRoomHobby}
