@@ -7,7 +7,6 @@ import {
     useLeaveVideoRoomMutation,
 } from '@queries/useVideoQuery';
 import { VideoRoomRequest } from '@apis/types/request';
-
 import {
     RoomParticipant,
     useHostIdStore,
@@ -77,7 +76,7 @@ const useRoom = () => {
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
         }
-    }, [isMake]);
+    }, [isMake, participants, member, setOtherGenderParticipants]);
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
@@ -159,7 +158,7 @@ const useRoom = () => {
                 const curParticipants: RoomParticipant[] = [];
                 try {
                     const response = await getVideoDetail(videoRoomId);
-                    Array.from(room.remoteParticipants.values()).forEach(async (participant) => {
+                    await Promise.all(Array.from(room.remoteParticipants.values()).map(async (participant) => {
                         const newParticipant = response.data.members.find(
                             (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
                                 String(member.id) === participant.identity,
@@ -172,7 +171,7 @@ const useRoom = () => {
                             faceLandmarkerReady: !!faceLandmarker,
                             faceLandmarker: faceLandmarker,
                         });
-                    });
+                    }));
                     setHostId(response.data.hostId);
                 } catch (error) {
                     console.log('Error fetching video details:', error);
@@ -216,17 +215,16 @@ const useRoom = () => {
     };
 
     const setPrivateRoom = () => {
-        //나와 상대방만 세팅한다.
         const curPrivateParticipants = [];
         const localParticipant = participants.find((participant) => participant.id === member?.memberId);
-        const remmoveParticipants = participants.find(
+        const removeParticipants = participants.find(
             (participant) => participant.id === otherGenderParticipants[otherIdx].id,
         );
         if (localParticipant) {
             curPrivateParticipants.push(localParticipant);
         }
-        if (remmoveParticipants) {
-            curPrivateParticipants.push(remmoveParticipants);
+        if (removeParticipants) {
+            curPrivateParticipants.push(removeParticipants);
         }
 
         setPrivateParticipants(curPrivateParticipants);
@@ -250,7 +248,7 @@ const useRoom = () => {
 async function initializeFaceLandmarker(): Promise<FaceLandmarker | null> {
     try {
         const filesetResolver = await FilesetResolver.forVisionTasks(
-            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm', // 여기 URL을 수정
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm',
         );
 
         const faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
