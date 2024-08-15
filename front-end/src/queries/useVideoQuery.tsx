@@ -34,7 +34,7 @@ export const useCreateVideoRoomMutation = () =>
         },
     });
 
-// 비디오 방 상세 정보 조회
+// 비디오 방 상세 정보 조회 
 export const useVideoRoomDetailQuery = (videoRoomId: number | null) =>
     useQuery({
         queryKey: ['videoRoomDetail', videoRoomId],
