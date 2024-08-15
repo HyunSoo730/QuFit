@@ -10,7 +10,8 @@ const PersonalResult = ({ participants, results, problems }: PersonalResultProps
     // result [문제번호[stage]] [balanceGameId] = {회원아이디: 시나리오}
     const firstParticipant = participants[0];
     const secondParticipant = participants[1];
-
+    console.log('현재 참가자는');
+    console.log(participants.length);
     return (
         <>
             {participants.length === 2 && (
