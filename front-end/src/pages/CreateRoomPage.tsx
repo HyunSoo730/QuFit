@@ -118,19 +118,6 @@ const CreateRoomPage = () => {
         }
     }, [roomSize, tagState]);
 
-    useEffect(() => {
-        console.log(
-            '1순위:',
-            topPriorityTagState,
-            '취미:',
-            hobbyTagsId,
-            hobbyTags,
-            '이상형:',
-            idealTypeTagsId,
-            idealTypeTags,
-        );
-    }, [topPriorityTagState, hobbyTagsId, idealTypeTagsId]);
-
     return (
         <div className="absolute flex flex-col w-full h-full px-16 py-12 ">
             {/* 이전으로 */}
