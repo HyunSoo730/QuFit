@@ -32,7 +32,7 @@ const MyPage = () => {
         return location?.code;
     }; // 지역을 이름으로 받아서 지역코드로 바꿔놔요,,
 
-    const defaultProfileImage = '@assets/png/defaultProfile.png';
+    const defaultProfileImage = 'https://i.pinimg.com/236x/df/3c/4d/df3c4dcf15935d0111426bb28b12d9b1.jpg';
     const [profileImage, setProfileImage] = useState<string>('');
     const [email, setEmail] = useState<string | null>(null);
 
@@ -87,7 +87,7 @@ const MyPage = () => {
                             onClick={() => setIsUpdateInfo(!isUpdateInfo)}
                             className="h-8 px-4 py-1 text-white rounded bg-white/30"
                         >
-                            {!isUpdateInfo ? '프로필 수정 🪄' : '취소'}{' '}
+                            {!isUpdateInfo ? '프로필 수정 🪄' : '취소'}
                         </button>
                         {profileImage === defaultProfileImage ? (
                             <button

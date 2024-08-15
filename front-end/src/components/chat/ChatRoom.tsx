@@ -29,6 +29,8 @@ const ChatRoom = ({ id, nickname, profileImage, refetch }: ChatRoomProps) => {
     const isClosed = useCloseStateStore((state) => state.isClosed);
     const setIsClosed = useCloseStateStore((state) => state.setIsClosed);
 
+    const setIsThanks = useCloseStateStore((state) => state.setIsThanks);
+
     const chatState = useChatStateStore((state) => state.chatState);
     const setChatState = useChatStateStore((state) => state.setChatState);
 
@@ -350,6 +352,14 @@ const ChatRoom = ({ id, nickname, profileImage, refetch }: ChatRoomProps) => {
                 content: chat,
             }),
         });
+
+        if (chat === '감사합니다🩷') {
+            setIsThanks(true);
+
+            setTimeout(() => {
+                setIsThanks(false);
+            }, 3000);
+        }
         refetch();
         setChat('');
     };
