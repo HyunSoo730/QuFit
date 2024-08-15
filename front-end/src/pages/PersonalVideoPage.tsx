@@ -14,6 +14,7 @@ import { PATH } from '@routers/PathConstants';
 import * as StompJs from '@stomp/stompjs';
 import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
 import { useProblemsStore, useResultsStore } from '@stores/video/gameStore';
+import { AddFriendsIcon, AddedFriendIcon } from '@assets/svg';
 
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
@@ -135,14 +136,18 @@ const PersonalVideoPage = () => {
             </Modal>
 
             {isMeeting && (
-                <div className="flex flex-col justify-between h-full">
-                    <PersonalVideoTimer endSec={PERSONAL_VIDEO_END_SEC} onEnd={endTimer} />
+                <div className="flex flex-col h-full gap-8">
+                    <div className="flex items-center ">
+                        <PersonalVideoTimer endSec={PERSONAL_VIDEO_END_SEC} onEnd={endTimer} />
 
-                    {!isFriend ? (
-                        <button onClick={wantFriend}>친구추가버튼</button>
-                    ) : (
-                        <p className="text-lg font-bold text-white">상대방도 좋아요를 누르면 친구추가가 됩니다.</p>
-                    )}
+                        <div onClick={wantFriend} className="mt-3">
+                            {isFriend ? (
+                                <AddedFriendIcon width={'6rem'} height={'6rem'} />
+                            ) : (
+                                <AddFriendsIcon width={'6rem'} height={'6rem'} />
+                            )}
+                        </div>
+                    </div>
                     <div className="flex w-full gap-[2.5rem] p-12">
                         <ParticipantVideo roomMax={2} gender="m" participants={participants} status={'meeting'} />
                         <ParticipantVideo roomMax={2} gender="f" participants={participants} status={'meeting'} />

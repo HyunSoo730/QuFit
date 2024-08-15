@@ -1,3 +1,5 @@
+export { default as AddFriendsIcon } from './AddFriendsIcon';
+export { default as AddedFriendIcon } from './AddedFriendIcon';
 export { default as ChatButtonIcon } from './ChatButtonIcon';
 export { default as LogoM } from './LogoM';
 export { default as LogoSignup } from './LogoSignup';
