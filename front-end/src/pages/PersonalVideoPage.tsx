@@ -106,7 +106,7 @@ const PersonalVideoPage = () => {
                 joinRoom(response.data['videoRoomId: ']);
                 navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
             }
-
+            setIsMeeting(true);
             setOtherIdx(2);
         } else {
             //otherIdx가 0이면 1로 세팅하고 다음 사람과 연결
