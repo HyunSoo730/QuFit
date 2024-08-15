@@ -33,40 +33,6 @@ const PersonalVideoPage = () => {
     const problems = useProblemsStore();
     const results = useResultsStore();
 
-    const [render, setRender] = useState(10);
-    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [participants]);
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-    useEffect(() => {
-        if (render === 0) {
-            if (timerId) {
-                clearInterval(timerId);
-                setTimerId(null);
-            }
-        }
-    }, [render]);
-
     console.log(participants);
     console.log(participants.length);
     console.log(problems);
@@ -153,6 +119,7 @@ const PersonalVideoPage = () => {
             //otherIdx가 0이면 1로 세팅하고 다음 사람과 연결
             //otherIdx가 1이면 모든 미팅이 종료되었어요 페이지 뜨고 이동
             setOtherIdx(0);
+            navigate(PATH.CHATTING);
         }
     };
     return (
@@ -162,9 +129,13 @@ const PersonalVideoPage = () => {
                     onClose={close}
                     onClick={handleConfirmModal}
                     message={
-                        isFriendAccept && isFriend
-                            ? '상대방과 친구가 되었어요!. 다른 방으로 이동해주세요.'
-                            : '상대방과 친구가 되지 못했어요. 다른 방으로 이동해주세요.'
+                        otherIdx === 1
+                            ? isFriendAccept && isFriend
+                                ? '상대방과 친구가 되었어요!. 다른 방으로 이동해주세요.'
+                                : '상대방과 친구가 되지 못했어요. 다른 방으로 이동해주세요.'
+                            : isFriendAccept && isFriend
+                            ? '상대방과 친구가 되었어요!. 버튼을 누르면 채팅방으로 이동해요.'
+                            : '상대방과 친구가 되지 못했어요. 버튼을 누르면 채팅방으로 이동해요.'
                     }
                 />
             </Modal>

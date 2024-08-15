@@ -177,7 +177,7 @@ function VideoComponent({
 
     return (
         <div
-            className="relative z-50 flex flex-col justify-between w-full p-4 rounded-xl aspect-video max-[]"
+            className="relative z-50 flex flex-col justify-between w-full p-4 rounded-xl h-videoFixed min-h-videoMin" // 고정된 높이와 최소 높이 적용
             onClick={changeCameraEnabled}
         >
             <div>{isManager && <CrownIcon width={'2.5rem'} />}</div>
@@ -208,8 +208,8 @@ function VideoComponent({
                 {isCameraEnable || !local ? (
                     <>
                         {/* 비디오와 Canvas를 감싸는 div에 opacity transition 적용 */}
-                        <div className={`relative ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-                            <video ref={videoRef} className="w-full rounded-xl" />
+                        <div className={`relative ${isMaskReady ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 h-full`}>
+                            <video ref={videoRef} className="w-full rounded-xl h-full object-cover" /> {/* 비디오의 높이 고정 */}
                             <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
                                 <ambientLight intensity={0.5} />
                                 <pointLight position={[10, 10, 10]} />
@@ -224,7 +224,7 @@ function VideoComponent({
                         )}
                     </>
                 ) : (
-                    <div className="relative flex items-center justify-center w-full bg-white aspect-video opacity-40 rounded-xl">
+                    <div className="relative flex items-center justify-center w-full bg-white h-full opacity-40 rounded-xl"> {/* 고정된 높이 적용 */}
                         <CameraOffIcon
                             width={'10rem'}
                             className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
@@ -234,6 +234,7 @@ function VideoComponent({
             </div>
         </div>
     );
+    
 }
 
 

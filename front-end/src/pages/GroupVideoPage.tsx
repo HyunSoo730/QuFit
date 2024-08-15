@@ -39,7 +39,6 @@ type beforeResult = {
     videoRoomId: number;
 };
 function GroupVideoPage() {
-    // const roomMax = useRoomMaxStore();
     const roomMax = 8;
     const [roomStep, setRoomStep] = useState<RoomStep>('active');
     const { createRoom, joinRoom, leaveRoom, participants, otherGenderParticipants } = useRoom();
@@ -55,39 +54,7 @@ function GroupVideoPage() {
 
     const otherIdx = useOtherIdxStore();
     const setOtherIdx = useSetOtherIdxStore();
-    const [render, setRender] = useState(10);
-    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [participants]);
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-    useEffect(() => {
-        if (render === 0) {
-            if (timerId) {
-                clearInterval(timerId);
-                setTimerId(null);
-            }
-        }
-    }, [render]);
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
@@ -204,9 +171,15 @@ function GroupVideoPage() {
                 />
             </Modal>
             {isMeeting && (
-                <div className="flex flex-col justify-between w-full h-screen ">
-                    <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
-                    <div className="flex flex-col items-center justify-center py-4">
+                <div className="flex flex-col justify-between w-full h-screen"> {/* 전체 화면을 차지하는 flex 레이아웃 */}
+                    
+                    {/* 상단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
+                    </div>
+    
+                    {/* 중앙에 위치한 게임 관련 콘텐츠 */}
+                    <div className="flex flex-col items-center justify-center flex-grow py-4">
                         {roomStep === 'active' && <GameIntro onNext={startGame} />}
                         {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
                         {roomStep === 'game' && <BalanceGame onNext={startPlay} />}
@@ -244,7 +217,6 @@ function GroupVideoPage() {
                                 }}
                             />
                         )}
-
                         {roomStep === 'result' && (
                             <GameResult
                                 id={problems[gameStage].balanceGameId}
@@ -258,11 +230,17 @@ function GroupVideoPage() {
                         )}
                         {roomStep === 'end' && <GameEnd restSec={restSec} />}
                     </div>
-                    <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+    
+                    {/* 하단에 위치한 ParticipantVideo */}
+                    <div className="flex justify-center">
+                        <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+                    </div>
+    
                 </div>
             )}
         </>
     );
+    
 }
 
 export default GroupVideoPage;
