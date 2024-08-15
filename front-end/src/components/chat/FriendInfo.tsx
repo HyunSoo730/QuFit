@@ -1,44 +1,33 @@
 import { StartChatIcon, DeleteFriendIcon } from '@assets/svg/chat';
-import { instance } from '@apis/axios';
-// import useChatStateStore from '@stores/chat/chatStateStore';
 import useCloseStateStore from '@stores/chat/closeStateStore';
-import { useDeleteFriendMutation } from '@queries/useChatQuery';
+import { useDeleteFriendMutation, usePostChatMutation } from '@queries/useChatQuery';
+import useChatStateStore from '@stores/chat/chatStateStore';
 
 interface FriendInfoProps {
     nickname: string;
     profileImage: string;
     otherMemberId: number;
+    chatRoomId: number;
 }
 
-const FriendInfo = ({ otherMemberId, nickname, profileImage }: FriendInfoProps) => {
-    // const setChatState = useChatStateStore((state) => state.setChatState);
+const FriendInfo = ({ otherMemberId, chatRoomId, nickname, profileImage }: FriendInfoProps) => {
+    const setChatState = useChatStateStore((state) => state.setChatState);
+
     const setIsClosed = useCloseStateStore((state) => state.setIsClosed);
+
+    const postChatMutation = usePostChatMutation(otherMemberId, nickname, profileImage, chatRoomId);
     const deleteFriendMutation = useDeleteFriendMutation();
 
     const handleStartChatButton = () => {
-        console.log(`/qufit/chat/rooms/${otherMemberId}`);
-        instance
-            .post(`/qufit/chat/rooms/${otherMemberId}`)
-            .then((res) => {
-                // setChatState([
-                //     {
-                //         id: id,
-                //         nickname: nickname,
-                //         profileImage: profileImage,
-                //         otherMemberId: otherMemberId,
-                //     },
-                // ]);
-                console.log('채팅방 생성 성공:', res);
-            })
-            .catch((err) => {
-                console.log('채팅방 생성 실패:', err.request);
-
-                const errorCode = err.request.status;
-
-                if (errorCode === 409) {
-                    console.log('이미 존재하는 채팅방');
-                }
-            });
+        postChatMutation.mutate();
+        setChatState([
+            {
+                id: chatRoomId,
+                nickname: nickname,
+                profileImage: profileImage,
+                otherMemberId: otherMemberId,
+            },
+        ]);
 
         setIsClosed(false);
     };

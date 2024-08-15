@@ -6,7 +6,6 @@ import { GENDER, LOCATION } from '@components/mypage/SignupConstants';
 import useForm from '@hooks/useForm';
 import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
-import { useEffect } from 'react';
 import Select from 'react-select';
 const customSelectStyles = {
     control: (baseStyles: any, state: { isFocused: any; }) => ({
@@ -36,10 +35,6 @@ const GenderAndBirthAndLocation = ({ onNext, registData }: SignUpProps) => {
         onSubmit: onNext,
         validate: signupValidate,
     });
-
-    useEffect(() => {
-        console.log(values);
-    }, [values]);
 
     return (
         <div className="flex flex-col gap-5">

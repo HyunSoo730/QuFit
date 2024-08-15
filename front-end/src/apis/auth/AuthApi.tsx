@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN_URL, END_POINT, FRONT_URL, REDIRECT_URI, REST_API_KEY } from '@apis/ApiConstants';
-import { instance } from '@apis/axios';
+import { kakaoInstance } from '@apis/axios';
 import { MemberInfoDTO } from '@apis/types/request';
 import axios from 'axios';
 
@@ -20,9 +20,9 @@ export const getKakaoAccessToken = async (authCode: string) => {
 };
 
 export const login = async (accessToken: string) => {
-    return await instance.get(END_POINT.LOGIN, { headers: { accessToken: accessToken } });
+    return await kakaoInstance.get(END_POINT.LOGIN, { headers: { accessToken: accessToken } });
 };
 
 export const signup = async (data: MemberInfoDTO, token: string) => {
-    return await instance.post(END_POINT.SIGN_UP, data, { headers: { accessToken: token } });
+    return await kakaoInstance.post(END_POINT.SIGN_UP, data, { headers: { accessToken: token } });
 };

@@ -3,6 +3,8 @@ import LottieComponent from '@components/common/LottieComponent';
 import ShinningStar from '@assets/lottie/shiningStar.json';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
+import { KAKAO_LOGIN_URL } from '@apis/ApiConstants';
+import { Link } from 'react-router-dom';
 
 const IntroductionPage = () => {
     const navigate = useNavigate();
@@ -32,12 +34,13 @@ const IntroductionPage = () => {
                     Sign Up
                 </button>
                 <div className="w-1 h-8 mx-10 bg-smokeWhite" />
-                <button
-                    onClick={() => navigate('/auth/kakao')}
+                <Link to={KAKAO_LOGIN_URL}><button
+    
                     className="text-3xl font-medium font-barlow text-smokeWhite"
                 >
                     <span className="text-yellow">Kakao</span> Log In
                 </button>
+                </Link>
             </div>
             <LottieComponent
                 animationData={ShinningStar}

@@ -2,7 +2,6 @@ import { HOBBY, PERSONALITY } from '@components/mypage/SignupConstants';
 import useForm from '@hooks/useForm';
 import { SignUpProps } from '@pages/SignupPage';
 import signupValidate from '@utils/signupValidate';
-import { useEffect } from 'react';
 import Select from 'react-select';
 const customSelectStyles = {
     control: (baseStyles: any, state: { isFocused: any; }) => ({
@@ -25,7 +24,7 @@ const customSelectStyles = {
     }),
 };
 const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
-    const { values, handleSubmit, handleMultiValueChange } = useForm({
+    const { handleSubmit, handleMultiValueChange } = useForm({
         initialValues: registData,
         onSubmit: onNext,
         validate: signupValidate,
@@ -36,9 +35,7 @@ const MyHobbyAndPersonality = ({ onNext, registData }: SignUpProps) => {
         value: personality['tag_name'],
         label: personality['tag_name'],
     }));
-    useEffect(() => {
-        console.log(values);
-    }, [values]);
+
     return (
         <>
             <div className="flex justify-end w-full">

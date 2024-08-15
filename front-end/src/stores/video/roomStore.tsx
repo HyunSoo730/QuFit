@@ -1,3 +1,4 @@
+import { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { Room } from 'livekit-client';
 import { Participant } from 'livekit-client';
 import { create } from 'zustand';
@@ -7,6 +8,8 @@ export interface RoomParticipant {
     gender: 'f' | 'm' | undefined;
     nickname: string | undefined;
     info: Participant | undefined;
+    faceLandmarkerReady: boolean; // 추가
+    faceLandmarker: FaceLandmarker | null; // 방 참가자별로 FaceLandmarker 인스턴스 가지고 있도록 해야했음.
 }
 
 interface State {
@@ -16,6 +19,7 @@ interface State {
     roomId: number | undefined;
     otherGenderParticipants: RoomParticipant[];
     otherIdx: number;
+    roomMax: number | undefined;
 
     maleParticipants: RoomParticipant[];
     femaleParticipants: RoomParticipant[];
@@ -30,13 +34,16 @@ interface Action {
     setRoomId: (id: number) => void;
     setOtherGenderParticipants: (participants: RoomParticipant[]) => void;
     setOtherIdx: (idx: number) => void;
+    setRoomMax: (roomMax: number) => void;
 
     setMaleParticipants: (participants: RoomParticipant[] | undefined) => void;
     setFemaleParticipants: (participants: RoomParticipant[] | undefined) => void;
     setPrivateParticipants: (participants: RoomParticipant[] | undefined) => void;
+    updateParticipant: (id: number, update: Partial<RoomParticipant>) => void; // 업데이트 메서드 추가
 }
 
 const useRoomStore = create<State & Action>((set) => ({
+    roomMax: undefined,
     room: undefined,
     participants: [],
     myName: '',
@@ -49,6 +56,7 @@ const useRoomStore = create<State & Action>((set) => ({
     femaleParticipants: [],
     privateParticipants: [],
 
+    setRoomMax: (roomMax) => set({ roomMax: roomMax }),
     setRoom: (room) => set({ room: room }),
     addParticipant: (participant) =>
         set((state) => ({
@@ -65,6 +73,11 @@ const useRoomStore = create<State & Action>((set) => ({
     setMaleParticipants: (participants) => set({ maleParticipants: participants }),
     setFemaleParticipants: (participants) => set({ femaleParticipants: participants }),
     setPrivateParticipants: (participants) => set({ privateParticipants: participants }),
+
+    updateParticipant: (id, update) =>
+        set((state) => ({
+            participants: state.participants.map((p) => (p.id === id ? { ...p, ...update } : p)),
+        })),
 }));
 
 export const useRoomStateStore = () => useRoomStore((state) => state.room);
@@ -76,6 +89,7 @@ export const useOtherIdxStore = () => useRoomStore((state) => state.otherIdx);
 export const useMaleParticipantsStore = () => useRoomStore((state) => state.maleParticipants);
 export const useFemaleParticipantsStore = () => useRoomStore((state) => state.femaleParticipants);
 export const usePrivateParticipantsStore = () => useRoomStore((state) => state.privateParticipants);
+export const useRoomMaxStore = () => useRoomStore((state) => state.roomMax);
 
 export const useSetRoomStateStore = () => useRoomStore((state) => state.setRoom);
 export const useRoomAddParticipantStore = () => useRoomStore((state) => state.addParticipant);
@@ -87,3 +101,5 @@ export const useSetOtherIdxStore = () => useRoomStore((state) => state.setOtherI
 export const useSetMaleParticipantsStore = () => useRoomStore((state) => state.setMaleParticipants);
 export const useSetFemaleParticipantsStore = () => useRoomStore((state) => state.setFemaleParticipants);
 export const useSetPrivateParticipantsStore = () => useRoomStore((state) => state.setPrivateParticipants);
+export const useSetRoomMaxStore = () => useRoomStore((state) => state.setRoomMax);
+export const useUpdateParticipantStore = () => useRoomStore((state) => state.updateParticipant); // 새로운 업데이트 메서드
