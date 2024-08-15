@@ -57,18 +57,26 @@ const useRoom = () => {
             .filter((participant) => participant.gender === 'f')
             .sort((a, b) => a.id! - b.id!);
 
+        console.log('다른 성별의 세팅을 시작합니다.');
         if (member?.gender === 'm') {
             const currentUserIndex = maleParticipants.findIndex((participant) => participant.id === member?.memberId);
             const reorderedOtherParticipants = femaleParticipants
                 .slice(currentUserIndex)
                 .concat(femaleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
+            console.log(reorderedOtherParticipants);
         } else if (member?.gender === 'f') {
+            console.log('남성참가자');
+            console.log(maleParticipants);
+            console.log('여성참가자');
+            console.log(femaleParticipants);
+
             const currentUserIndex = femaleParticipants.findIndex((participant) => participant.id === member?.memberId);
             const reorderedOtherParticipants = maleParticipants
                 .slice(currentUserIndex)
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
+            console.log(reorderedOtherParticipants);
         }
     };
 
@@ -76,8 +84,7 @@ const useRoom = () => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
             try {
                 const response = await getVideoDetail(roomId);
-                console.log('방상세정보');
-                console.log(response);
+
                 const newParticipant = response.data.members.find(
                     (member: { id: number; gender: 'f' | 'm'; nickname: string }) =>
                         member.id === Number(participant.identity),
@@ -90,6 +97,9 @@ const useRoom = () => {
                     faceLandmarkerReady: !!faceLandmarker,
                     faceLandmarker: faceLandmarker,
                 });
+                // console.log(participants);
+                // console.log('원격참가자 참여');
+                // console.log(newParticipant);
             } catch (error) {
                 console.error('Error in addRoomEventHandler:', error);
             }

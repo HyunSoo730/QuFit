@@ -40,6 +40,7 @@ const VideoWaitPage = () => {
             client,
             Number(roomId),
         );
+        // otherGenderSetting();
     };
 
     useEffect(() => {

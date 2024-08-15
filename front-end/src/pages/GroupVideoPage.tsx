@@ -63,11 +63,9 @@ function GroupVideoPage() {
             });
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         } else if (member?.gender === 'f') {
-            console.log('여자로직 실행');
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[0].id },
             });
-            console.log('response');
             joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
@@ -95,12 +93,10 @@ function GroupVideoPage() {
                     acc[result.balanceGameId][result.memberId] = result.choiceNum;
                     return acc;
                 }, {});
-                console.log(processedResult);
                 setResults(processedResult);
             });
 
             afterSubscribe(response, '게임이 종료됐습니다.', () => {
-                console.log(response);
                 setRoomStep('end');
             });
         });
