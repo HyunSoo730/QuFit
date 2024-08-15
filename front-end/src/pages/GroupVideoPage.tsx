@@ -1,4 +1,4 @@
-import { useOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useSetOtherIdxStore, useSetRoomIdStore } from '@stores/video/roomStore';
 import useRoom from '@hooks/useRoom';
 import ParticipantVideo from '@components/video/ParticipantVideo';
 import { useEffect, useRef, useState } from 'react';
@@ -53,11 +53,10 @@ function GroupVideoPage() {
     const { roomId } = useParams();
     const [isMeeting, setIsMeeting] = useState(true);
 
-    console.log(participants);
     const otherIdx = useOtherIdxStore();
+    const setOtherIdx = useSetOtherIdxStore();
     console.log(otherGenderParticipants);
     const handleConfirmModal = async () => {
-        console.log('모달확인 클릭');
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: member.memberId },
@@ -66,13 +65,14 @@ function GroupVideoPage() {
         } else if (member?.gender === 'f') {
             console.log('여자로직 실행');
             const response = await instance.get(`qufit/video/recent`, {
-                params: { hostId: otherGenderParticipants[otherIdx].id },
+                params: { hostId: otherGenderParticipants[0].id },
             });
             console.log('response');
             joinRoom(Number(response.data['videoRoomId: ']));
             navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
         }
-        setPrivateRoom();
+
+        setOtherIdx(otherIdx + 1);
     };
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {

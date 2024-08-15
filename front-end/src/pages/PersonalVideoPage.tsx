@@ -2,7 +2,7 @@ import ParticipantVideo from '@components/video/ParticipantVideo';
 import PersonalResult from '@components/video/PersonalResult';
 import PersonalVideoTimer from '@components/video/PersonalVideoTimer';
 import useModal from '@hooks/useModal';
-import { useOtherIdxStore, useRoomParticipantsStore } from '@stores/video/roomStore';
+import { useOtherIdxStore, useRoomParticipantsStore, useSetOtherIdxStore } from '@stores/video/roomStore';
 import { useEffect, useRef, useState } from 'react';
 import { PERSONAL_VIDEO_END_SEC } from '@components/game/Constants';
 import useRoom from '@hooks/useRoom';
@@ -24,13 +24,14 @@ const PersonalVideoPage = () => {
     const { member } = useMember();
     const navigate = useNavigate();
     const otherIdx = useOtherIdxStore();
+    const setOtherIdx = useSetOtherIdxStore();
     const [isFriend, setIsFriend] = useState(false);
     const other = participants.find((participant) => participant.id !== member?.memberId);
     const [isFriendAccept, setIsFriendAccept] = useState(false);
     //participants가 안담기내
     console.log(participants);
-    console.log(other);
 
+    console.log(otherGenderParticipants);
     const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
         client.current?.subscribe(`/user/${member?.memberId}/sub/game`, (message) => {
@@ -93,19 +94,26 @@ const PersonalVideoPage = () => {
         open();
     };
     const handleConfirmModal = async () => {
-        if (member?.gender === 'm') {
-            const response = await instance.get(`qufit/video/recent`, {
-                params: { hostId: member.memberId },
-            });
-            navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
-        } else if (member?.gender === 'f') {
-            const response = await instance.get(`qufit/video/recent`, {
-                params: { hostId: otherGenderParticipants[otherIdx].id },
-            });
-            joinRoom(response.data['videoRoomId: ']);
-            navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
+        if (otherIdx === 1) {
+            if (member?.gender === 'm') {
+                const response = await instance.get(`qufit/video/recent`, {
+                    params: { hostId: member.memberId },
+                });
+                navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
+            } else if (member?.gender === 'f') {
+                const response = await instance.get(`qufit/video/recent`, {
+                    params: { hostId: otherGenderParticipants[1].id },
+                });
+                joinRoom(response.data['videoRoomId: ']);
+                navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
+            }
+
+            setOtherIdx(2);
+        } else {
+            //otherIdx가 0이면 1로 세팅하고 다음 사람과 연결
+            //otherIdx가 1이면 모든 미팅이 종료되었어요 페이지 뜨고 이동
+            setOtherIdx(0);
         }
-        setPrivateRoom();
     };
     return (
         <>

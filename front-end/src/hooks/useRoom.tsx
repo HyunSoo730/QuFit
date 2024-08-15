@@ -49,7 +49,7 @@ const useRoom = () => {
     const privateParticipants = usePrivateParticipantsStore();
     const setPrivateParticipants = useSetPrivateParticipantsStore();
 
-    useEffect(() => {
+    const otherGenderSetting = () => {
         const maleParticipants = participants
             .filter((participant) => participant.gender === 'm')
             .sort((a, b) => a.id! - b.id!);
@@ -70,7 +70,7 @@ const useRoom = () => {
                 .concat(maleParticipants.slice(0, currentUserIndex));
             setOtherGenderParticipants(reorderedOtherParticipants);
         }
-    }, [isMake]);
+    };
 
     const addRoomEventHandler = async (room: Room, roomId: number) => {
         room.on(RoomEvent.ParticipantConnected, async (participant) => {
@@ -238,6 +238,7 @@ const useRoom = () => {
         setPrivateRoom,
         privateParticipants,
         participants,
+        otherGenderSetting,
     };
 };
 
