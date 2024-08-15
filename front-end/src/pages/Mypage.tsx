@@ -7,7 +7,6 @@ import TypeInfo from '@components/mypage/TypeInfo';
 import { updateMemberInfoMutation, useMemberQuery, useProfileMutation } from '@queries/useMemberQuery';
 import { useState, useEffect } from 'react';
 import { LOCATION } from '@components/mypage/SignupConstants';
-import { div } from 'three/webgpu';
 
 const MyPage = () => {
     const { data } = useMemberQuery();
