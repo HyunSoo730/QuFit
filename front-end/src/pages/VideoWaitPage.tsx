@@ -15,7 +15,6 @@ const VideoWaitPage = () => {
     const { otherGenderSetting } = useRoom();
     const [isMeetingStart, setIsMettingStart] = useState(false);
     const participants = useRoomParticipantsStore();
-    const { leaveRoom } = useRoom();
     const { roomId } = useParams();
     const setRoomId = useSetRoomIdStore();
     const navigate = useNavigate();
