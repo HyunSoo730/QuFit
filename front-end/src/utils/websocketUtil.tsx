@@ -1,6 +1,6 @@
 import * as StompJs from '@stomp/stompjs';
 import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
-import { useAccessTokenStore } from '@stores/auth/tokenStore';
+import { useTokenStore } from '@stores/auth/tokenStore';
 
 // interface ConnectProps {
 //     client: { current: StompJs.Client | null };
@@ -32,7 +32,7 @@ export const publishSocket = (data: any, client: { current: StompJs.Client | nul
 };
 
 export const connect = (client: { current: StompJs.Client | null }, onConnect: () => void) => {
-    const accessToken = useAccessTokenStore();
+    const accessToken = useTokenStore.getState().accessToken;
 
     try {
         client.current = new StompJs.Client({
