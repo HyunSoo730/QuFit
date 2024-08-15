@@ -16,11 +16,8 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
     const [tagState, setTagState] = useState('hobby');
 
     // 스토어
-    const hobbyTagsId = useTagFilterStore((state) => state.hobbyTagsId);
-    const setHobbyTagsId = useTagFilterStore((state) => state.setHobbyTagsId);
-
-    const idealTypeTagsId = useTagFilterStore((state) => state.idealTypeTagsId);
-    const setIdealTypeTagsId = useTagFilterStore((state) => state.setIdealTypeTagsId);
+    const tagsId = useTagFilterStore((state) => state.tagsId);
+    const setTagsId = useTagFilterStore((state) => state.setTagsId);
 
     const tags = useTagFilterStore((state) => state.tags);
     const setTags = useTagFilterStore((state) => state.setTags);
@@ -33,37 +30,23 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
         }, 500);
     };
 
-    const handleOnClickButton = (type: string, tagId: number, tag: string) => {
-        if (type === 'hobby') {
-            if (hobbyTagsId.includes(tagId)) {
-                setHobbyTagsId(hobbyTagsId.filter((id) => id !== tagId));
-            } else if (hobbyTagsId.length < 5) {
-                setHobbyTagsId([...hobbyTagsId, tagId]);
-            }
+    const handleOnClickButton = (tagId: number, tag: string) => {
+        if (tagsId.includes(tagId)) {
+            setTagsId(tagsId.filter((id) => id !== tagId));
+        } else {
+            setTagsId([...tagsId, tagId]);
+        }
 
-            if (tags.includes(tag)) {
-                setTags(tags.filter((prop) => prop !== tag));
-            } else if (tags.length < 10 && hobbyTagsId.length < 5) {
-                setTags([...tags, tag]);
-            }
-        } else if (type === 'idealType') {
-            if (idealTypeTagsId.includes(tagId)) {
-                setIdealTypeTagsId(idealTypeTagsId.filter((id) => id !== tagId));
-            } else if (idealTypeTagsId.length < 5) {
-                setIdealTypeTagsId([...idealTypeTagsId, tagId]);
-            }
-
-            if (tags.includes(tag)) {
-                setTags(tags.filter((prop) => prop !== tag));
-            } else if (tags.length < 10 && idealTypeTagsId.length < 5) {
-                setTags([...tags, tag]);
-            }
+        if (tags.includes(tag)) {
+            setTags(tags.filter((prop) => prop !== tag));
+        } else if (tags.length < 10) {
+            setTags([...tags, tag]);
         }
     };
 
     useEffect(() => {
-        console.log(hobbyTagsId, idealTypeTagsId, tags);
-    }, [hobbyTagsId, idealTypeTagsId, tags]);
+        console.log(tagsId, tags);
+    }, [tagsId, tags]);
 
     return (
         <div
@@ -85,7 +68,7 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
                     선택한 태그가 포함된 방을 보여줘요.
                 </p>
                 <p className="mb-4 text-sm font-medium text-black whitespace-pre-wrap text-opacity-40">
-                    (최대 5개씩 선택 가능)
+                    (최대 10개 선택 가능)
                 </p>
             </div>
             <RadioGroup value={tagState} name="tagState" onChange={(e) => setTagState(e.target.value)}>
@@ -110,14 +93,15 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
                     <p className="pb-2 my-1 ml-2 text-xs text-black opacity-30">태그를 선택해 보세요.</p>
                 )}
                 {tags.map((tag, index) => (
-                    <div
+                    <button
                         key={index}
+                        onClick={() => handleOnClickButton(tagsId[index], tag)}
                         className="flex items-center justify-center mr-1.5 rounded-lg pl-2.5 pr-3.5 h-7 mb-2 bg-black bg-opacity-5"
                     >
                         <p className="text-sm font-medium text-left text-black truncate">
-                            <span className="text-black opacity-40">#</span> {tag}
+                            <span className="text-black opacity-40">×</span> {tag}
                         </p>
-                    </div>
+                    </button>
                 ))}
             </div>
 
@@ -131,9 +115,9 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
                                     {hobby.tags.map((tag, tagIndex) => (
                                         <button
                                             key={tagIndex}
-                                            onClick={() => handleOnClickButton('hobby', tag.tag_id, tag.tag_name)}
+                                            onClick={() => handleOnClickButton(tag.tag_id, tag.tag_name)}
                                             className={`px-3 py-1 rounded-full text-sm  text-black mr-2.5 mb-2 ${
-                                                hobbyTagsId.includes(tag.tag_id)
+                                                tagsId.includes(tag.tag_id)
                                                     ? 'bg-pink bg-opacity-70 text-white'
                                                     : 'bg-black bg-opacity-5 text-opacity-80'
                                             }`}
@@ -156,9 +140,9 @@ const SideBar = ({ isOpenSideBar, setIsOpenSideBar }: SideBarProps) => {
                                     {personality.tags.map((tag, tagIndex) => (
                                         <button
                                             key={tagIndex}
-                                            onClick={() => handleOnClickButton('idealType', tag.tag_id, tag.tag_name)}
+                                            onClick={() => handleOnClickButton(tag.tag_id, tag.tag_name)}
                                             className={`px-3 py-1 rounded-full text-sm text-black mr-2.5 mb-2 ${
-                                                idealTypeTagsId.includes(tag.tag_id)
+                                                tagsId.includes(tag.tag_id)
                                                     ? 'bg-pink bg-opacity-70 text-white'
                                                     : 'bg-black bg-opacity-5 text-opacity-80'
                                             }`}
