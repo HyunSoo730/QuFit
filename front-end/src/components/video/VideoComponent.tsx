@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { CameraOffIcon, CrownIcon, MicOffIcon, MicOnIcon } from '@assets/svg/video';
 import { useRoomStateStore } from '@stores/video/roomStore';
@@ -13,30 +14,31 @@ interface VideoComponentProps {
     local?: boolean;
     isManager: boolean;
     faceLandmarkerReady: boolean;
-    faceLandmarker: FaceLandmarker | null; // faceLandmarker를 prop으로 추가
+    faceLandmarker: FaceLandmarker | null;
     id: number | undefined;
     status: 'wait' | 'meeting';
     roomMax?: number;
 }
 
-function MaskModel({ position, rotation }: { position: THREE.Vector3; rotation: THREE.Euler }) {
-    const { scene } = useGLTF('/assets/raccoon_head.glb');
-    const currentPosition = useRef(new THREE.Vector3());
-    const currentRotation = useRef(new THREE.Euler());
+class Avatar {
+    scene: THREE.Scene;
+    loader: GLTFLoader = new GLTFLoader();
+    gltf: THREE.Group | null = null;
 
-    useFrame(() => {
-        if (scene) {
-            currentPosition.current.lerp(position, 0.3);
-            currentRotation.current.x += (rotation.x - currentRotation.current.x) * 0.3;
-            currentRotation.current.y += (rotation.y - currentRotation.current.y) * 0.3;
-            currentRotation.current.z += (rotation.z - currentRotation.current.z) * 0.3;
+    constructor(modelUrl: string, scene: THREE.Scene) {
+        this.scene = scene;
+        this.loader.load(modelUrl, (gltf) => {
+            this.gltf = gltf.scene;
+            this.scene.add(this.gltf);
+        });
+    }
 
-            scene.position.copy(currentPosition.current);
-            scene.rotation.copy(currentRotation.current);
+    updateTransform(position: THREE.Vector3, rotation: THREE.Euler) {
+        if (this.gltf) {
+            this.gltf.position.copy(position);
+            this.gltf.rotation.copy(rotation);
         }
-    });
-
-    return <primitive object={scene} scale={[6, 6, 6]} />;
+    }
 }
 
 function VideoComponent({
@@ -46,19 +48,15 @@ function VideoComponent({
     status,
     local = false,
     faceLandmarkerReady,
-    faceLandmarker, // faceLandmarker를 prop으로 받음
+    faceLandmarker,
 }: VideoComponentProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMicEnable, setIsMicEnable] = useState(true);
     const [maskPosition, setMaskPosition] = useState(new THREE.Vector3());
     const [maskRotation, setMaskRotation] = useState(new THREE.Euler());
+    const [avatar, setAvatar] = useState<Avatar | null>(null); // Avatar 상태 추가
     const room = useRoomStateStore();
-    const [isCameraEnable, setIsCameraEnable] = useState(
-        // room?.localParticipant.isCameraEnabled && status === 'meeting',
-        status === 'meeting',
-    );
-    // const participants = useRoomParticipantsStore();
-    // console.log(track);
+    const [isCameraEnable, setIsCameraEnable] = useState(status === 'meeting');
 
     useEffect(() => {
         if (videoRef.current) {
@@ -66,9 +64,14 @@ function VideoComponent({
                 console.log('VideoComponent: 비디오 메타데이터 로드됨 - 참가자 이름:', participateName);
                 videoRef.current!.play();
 
-                // 비디오가 로드된 후에 얼굴 인식을 시작하도록 설정
                 if (faceLandmarkerReady && faceLandmarker) {
                     console.log('VideoComponent: 얼굴 인식 시작 - 참가자 이름:', participateName);
+
+                    // Avatar 초기화
+                    const scene = new THREE.Scene();
+                    const newAvatar = new Avatar('/assets/raccoon_head.glb', scene);
+                    setAvatar(newAvatar);
+
                     const interval = setInterval(() => {
                         if (
                             videoRef.current &&
@@ -80,7 +83,6 @@ function VideoComponent({
                                 const result = faceLandmarker.detectForVideo(videoRef.current, Date.now());
 
                                 if (result.faceLandmarks && result.faceLandmarks.length > 0) {
-                                    console.log('VideoComponent: 얼굴 랜드마크 감지됨 - 참가자 이름:', participateName);
                                     const landmarks = result.faceLandmarks[0];
                                     const avgPosition = new THREE.Vector3();
                                     const indices = [0, 1, 4, 6, 9, 13, 14, 17, 33, 263, 61, 291, 199];
@@ -112,6 +114,9 @@ function VideoComponent({
                                         const rotation = new THREE.Euler().setFromRotationMatrix(matrix);
                                         rotation.y *= -1;
                                         setMaskRotation(rotation);
+
+                                        // Avatar 업데이트
+                                        newAvatar.updateTransform(new THREE.Vector3(x, y, z), rotation);
                                     }
                                 }
                             } catch (error) {
@@ -182,7 +187,8 @@ function VideoComponent({
                         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
                             <ambientLight intensity={0.5} />
                             <pointLight position={[10, 10, 10]} />
-                            {faceLandmarkerReady && <MaskModel position={maskPosition} rotation={maskRotation} />}
+                            {/* Avatar가 로드된 경우에만 MaskModel 적용 */}
+                            {avatar && avatar.gltf && <primitive object={avatar.gltf} scale={[6, 6, 6]} />}
                         </Canvas>
                     </>
                 ) : (
