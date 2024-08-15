@@ -42,11 +42,22 @@ export default {
                     from: { width: '100%' },
                     to: { width: '0' },
                 },
+                fadeInRight: {
+                    '0%': { opacity: '0', transform: 'translateX(100%)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                fadeOutRight: {
+                    '0%': { opacity: '1', transform: 'translateX(0)' },
+                    '100%': { opacity: '0', transform: 'translateX(100%)' },
+                },
             },
             animation: {
                 choice: 'choice 6s',
                 private: 'private 1800s',
+                fadeInRight: 'fadeInRight 0.5s ease-in-out forwards',
+                fadeOutRight: 'fadeOutRight 0.5s ease-in-out forwards',
             },
+
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",
                 bluePurple:
@@ -58,11 +69,15 @@ export default {
                 indyBlue:
                     'linear-gradient(to bottom left,rgba(167,162,229,1) 0%, rgba(255, 255, 255, 1) 50%, rgba(167,162,229,0) 100%)',
             },
-
+            
+            height: {
+                videoFixed: '480px',
+                videoMin: '360px', // 최소 높이 설정
+            },
             aspectRatio: {
                 layout: '1.6 / 1',
                 header: '13 / 1',
-                video: '355/260',
+                video: '4/3',
                 gameBg: '916/496',
             },
 
