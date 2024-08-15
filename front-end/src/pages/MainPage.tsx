@@ -165,13 +165,15 @@ const MainPage = () => {
                             isButton={true}
                         />
                     ))
-                ) : (
+                ) : !getRoomsData.isLoading ? (
                     <div className="absolute flex flex-col items-center justify-center w-full h-full">
                         <p className="text-2xl text-smokeWhite">
                             방이 <span className="text-4xl font-medium text-pink animate-pulse">텅</span> 비었어요!
                         </p>
                         <p className="mt-2 opacity-60 text-smokeWhite">방 만들기를 눌러 큐핏과 함께해 주세요.</p>
                     </div>
+                ) : (
+                    <></>
                 )}
                 {getRoomsData.isLoading && (
                     <div className="absolute flex items-center justify-center w-full h-full">
