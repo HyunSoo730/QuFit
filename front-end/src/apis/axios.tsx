@@ -10,7 +10,7 @@ import { useTokenStore } from '@stores/auth/tokenStore';
 
 //로그인을 하고 해야하는 API
 
-let accessToken = '';
+// let accessToken = '';
 if (window.location.hostname === 'localhost') {
     if (location.port === '3000') {
         // accessToken = qufitAcessTokenA;
@@ -37,7 +37,7 @@ if (window.location.hostname === 'localhost') {
     }
 } else {
     // accessToken = localStorage.getItem('accessToken') || '';
-    accessToken = useTokenStore.getState().accessToken || '';
+    useTokenStore.getState().accessToken || '';
 }
 export const instance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,

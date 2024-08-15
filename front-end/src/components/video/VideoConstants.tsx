@@ -7,8 +7,8 @@ export const ROOM_SETTING = {
         deviceId: '',
         facingMode: 'user' as 'user' | 'environment' | 'left' | 'right',
         resolution: {
-            width: 355,
-            height: 260,
+            width: 1280,  // HD 해상도로 설정
+            height: 720,
             frameRate: 30,
         },
     },

@@ -69,11 +69,15 @@ export default {
                 indyBlue:
                     'linear-gradient(to bottom left,rgba(167,162,229,1) 0%, rgba(255, 255, 255, 1) 50%, rgba(167,162,229,0) 100%)',
             },
-
+            
+            height: {
+                videoFixed: '480px',
+                videoMin: '360px', // 최소 높이 설정
+            },
             aspectRatio: {
                 layout: '1.6 / 1',
                 header: '13 / 1',
-                video: '355/260',
+                video: '4/3',
                 gameBg: '916/496',
             },
 
