@@ -133,7 +133,8 @@ function VideoComponent({
                                             result.facialTransformationMatrixes[0].data,
                                         );
                                         maskRotationRef.current.setFromRotationMatrix(matrix);
-                                        maskRotationRef.current.y *= -1;
+                                        // ! 좌우 반전 해결
+                                        // maskRotationRef.current.y *= -1;
 
                                         // Avatar 업데이트
                                         newAvatar.updateTransform(maskPositionRef.current, maskRotationRef.current);
@@ -143,7 +144,7 @@ function VideoComponent({
                                 console.error('VideoComponent: 얼굴 인식 에러 - 참가자 이름:', participateName, ':', error);
                             }
                         }
-                    }, 100); // 100ms 
+                    }, 50); // 50ms 로 수정
 
                     return () => clearInterval(interval);
                 }
