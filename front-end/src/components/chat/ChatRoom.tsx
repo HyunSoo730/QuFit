@@ -21,7 +21,7 @@ interface ChatListProps {
     timestamp: string;
 }
 
-const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
+const ChatRoom = ({ id, nickname, profileImage, refetch }: ChatRoomProps) => {
     const member = useMemberInfoStore();
     const senderId = member?.memberId;
 
@@ -174,7 +174,7 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                     )}
                     <div className={`flex justify-start ${isLastTime && 'mb-4'}`}>
                         <img
-                            src="https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg"
+                            src={profileImage}
                             alt="user profile image"
                             className={`rounded-full ${
                                 otherDifferTimeList.includes(idx) ? 'w-10 h-10 mr-3' : 'w-0 h-0 ml-[3.25rem]'

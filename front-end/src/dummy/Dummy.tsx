@@ -46,21 +46,3 @@ export const RoomsInfoDummy: RoomInfoProps[] = Array.from({ length: 10 }, () => 
 //     ][Math.floor(Math.random() * 12)],
 //     chatRoom: [{ lastMessage: fakerKO.lorem.sentence(), unreadCount: Math.floor(Math.random() * 20) }],
 // }));
-
-export const FriendsInfoDummy: FriendInfoProps[] = [
-    {
-        otherMemberId: 3,
-        nickname: 'member6088',
-        profileImage: 'https://i.pinimg.com/236x/df/3c/4d/df3c4dcf15935d0111426bb28b12d9b1.jpg',
-    },
-    {
-        otherMemberId: 4,
-        nickname: 'member7669',
-        profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
-    },
-    {
-        otherMemberId: 5,
-        nickname: 'member3737',
-        profileImage: 'https://i.pinimg.com/200x/36/20/6e/36206ec041c802876469d0959ccd97ae.jpg',
-    },
-];
