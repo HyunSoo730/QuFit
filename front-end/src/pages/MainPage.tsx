@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { PATH } from '@routers/PathConstants';
 import useTagFilterStore from '@stores/video/tagFilterStore';
 import useMember from '@hooks/useMember';
-import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC } from '@apis/axios';
 interface RoomsInfoProps {
     videoRoomId: number;
     videoRoomName: string;
@@ -88,28 +87,7 @@ const MainPage = () => {
     return (
         <div className="absolute z-10 flex flex-col w-full h-full px-16 pt-16 pb-10 lg:px-16 lg:py-10 md:px-14 sm:px-10 sm:py-8 xs:px-10 xs:py-8">
             <div className="flex flex-col">
-                {/* 나중에 삭제 여기부터  */}
-                <div className="flex gap-4">
-                    <button
-                        className="mb-3 text-3xl font-bold leading-none border-2 text-smokeWhite font-barlow"
-                        onClick={() => localStorage.setItem('accessToken', qufitAcessTokenA)}
-                    >
-                        1번으로 로그인
-                    </button>
-                    <button
-                        className="mb-3 text-3xl font-bold leading-none border-2 text-smokeWhite font-barlow"
-                        onClick={() => localStorage.setItem('accessToken', qufitAcessTokenB)}
-                    >
-                        2번으로 로그인
-                    </button>
-                    <button
-                        className="mb-3 text-3xl font-bold leading-none border-2 text-smokeWhite font-barlow"
-                        onClick={() => localStorage.setItem('accessToken', qufitAcessTokenC)}
-                    >
-                        3번으로 로그인
-                    </button>
-                </div>
-                {/* 여기까지 */}
+            
                 <h1 className="mb-3 text-6xl font-bold leading-none text-smokeWhite font-barlow opacity-90 lg:text-5xl lg:mb-0 sm:text-4xl xs:text-4xl">
                     Look who's here !
                 </h1>
