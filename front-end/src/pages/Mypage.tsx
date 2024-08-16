@@ -72,7 +72,7 @@ const MyPage = () => {
         <main className="h-full">
             {step === 'MemberInfo' && (
                 <div>
-                    <p className="py-5 text-4xl font-bold text-white mx-7">내 정보</p>
+                    <p className="py-5 mx-20 mt-4 text-4xl font-medium text-white">마이페이지</p>
                     <div className="flex flex-col items-center gap-4 mt-3 mb-10">
                         {/*프로필 사진 */}
                         {getProfileData.isPending ? (
