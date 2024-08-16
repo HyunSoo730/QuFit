@@ -56,8 +56,8 @@ export default {
                 },
             },
             animation: {
-                choice: 'choice 6s',
-                private: 'private 1800s',
+                choice: 'choice 10s',
+                private: 'private 60s',
                 fadeInRight: 'fadeInRight 0.5s ease-in-out forwards',
                 fadeOutRight: 'fadeOutRight 0.5s ease-in-out forwards',
                 fadeIn: 'fadeIn 0.5s ease-in-out forwards',

@@ -48,40 +48,6 @@ const VideoWaitPage = () => {
         connect(client, onConnect);
         return () => disConnect(client);
     }, []);
-    const [render, setRender] = useState(10);
-    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [participants]);
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setRender((prev: number) => prev - 1);
-        }, 100);
-
-        setTimerId(timer);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (render === 0) {
-            if (timerId) {
-                clearInterval(timerId);
-                setTimerId(null);
-            }
-        }
-    }, [render]);
 
     return (
         <div className="flex flex-col h-screen justify-between">
