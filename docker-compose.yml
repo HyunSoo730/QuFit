@@ -1,0 +1,40 @@
+services:
+  qufit-backend:
+    image: ${DOCKER_IMAGE:-whgustn730/qufit-backend}:${DOCKER_TAG:-latest}
+    container_name: qufit-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./back-end/.env
+    volumes:
+      - ./back-end/logs:/app/logs
+    depends_on:
+      - redis
+
+  qufit-frontend:
+    image: ${DOCKER_IMAGE:-whgustn730/qufit-frontend}:${DOCKER_TAG:-latest}
+    container_name: qufit-frontend
+    ports:
+      - "443:443"
+      - "80:80"
+    env_file:
+      - ./front-end/.env
+    volumes:
+      - /home/ubuntu/certificate.crt:/etc/nginx/ssl/certificate.crt:ro
+      - /home/ubuntu/private.key:/etc/nginx/ssl/private.key:ro
+      - /home/ubuntu/ca_bundle.crt:/etc/nginx/ssl/ca_bundle.crt:ro
+    depends_on:
+      - qufit-backend
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  logs:
+  redis_data:
