@@ -42,11 +42,22 @@ export default {
                     from: { width: '100%' },
                     to: { width: '0' },
                 },
+                fadeInRight: {
+                    '0%': { opacity: '0', transform: 'translateX(100%)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                fadeOutRight: {
+                    '0%': { opacity: '1', transform: 'translateX(0)' },
+                    '100%': { opacity: '0', transform: 'translateX(100%)' },
+                },
             },
             animation: {
                 choice: 'choice 6s',
                 private: 'private 1800s',
+                fadeInRight: 'fadeInRight 0.5s ease-in-out forwards',
+                fadeOutRight: 'fadeOutRight 0.5s ease-in-out forwards',
             },
+
             backgroundImage: {
                 mainPageBg: "url('@assets/png/mainPageBg.png')",
                 bluePurple:

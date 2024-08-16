@@ -56,3 +56,18 @@ export interface ChatListProps {
     lastMessageTime?: Date;
     lastReadMessageId?: string;
 }
+
+// 관리자용 회원리스트 조회
+export interface AdminMemberInfoProps {
+    status: string;
+    memberInfo: MemberInfoDTO
+}
+export interface AdminMemberListResponse {
+    memberList: AdminMemberInfoProps[];
+    page: {
+        totalElements: number;
+        totalPages: number;
+        currentPage: number;
+        pageSize: number;
+    };
+}

@@ -13,6 +13,8 @@ import { instance } from '@apis/axios';
 import { PATH } from '@routers/PathConstants';
 import * as StompJs from '@stomp/stompjs';
 import { afterSubscribe, connect, disConnect, publishSocket } from '@utils/websocketUtil';
+import { useProblemsStore, useResultsStore } from '@stores/video/gameStore';
+import { AddFriendsIcon, AddedFriendIcon } from '@assets/svg';
 
 const PersonalVideoPage = () => {
     const participants = useRoomParticipantsStore();
@@ -27,10 +29,49 @@ const PersonalVideoPage = () => {
     const [isFriend, setIsFriend] = useState(false);
     const other = participants.find((participant) => participant.id !== member?.memberId);
     const [isFriendAccept, setIsFriendAccept] = useState(false);
-    //participants가 안담기내
-    console.log(participants);
 
-    console.log(otherGenderParticipants);
+    const problems = useProblemsStore();
+    const results = useResultsStore();
+
+    const [render, setRender] = useState(10);
+    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setRender((prev: number) => prev - 1);
+        }, 100);
+
+        setTimerId(timer);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [participants]);
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setRender((prev: number) => prev - 1);
+        }, 100);
+
+        setTimerId(timer);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+    useEffect(() => {
+        if (render === 0) {
+            if (timerId) {
+                clearInterval(timerId);
+                setTimerId(null);
+            }
+        }
+    }, [render]);
+
+    console.log(participants);
+    console.log(participants.length);
+    console.log(problems);
+    console.log(results);
+    //participants가 안담기내
     const client = useRef<StompJs.Client | null>(null);
     const onConnect = () => {
         client.current?.subscribe(`/user/${member?.memberId}/sub/game`, (message) => {
@@ -106,7 +147,7 @@ const PersonalVideoPage = () => {
                 joinRoom(response.data['videoRoomId: ']);
                 navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
             }
-
+            setIsMeeting(true);
             setOtherIdx(2);
         } else {
             //otherIdx가 0이면 1로 세팅하고 다음 사람과 연결
@@ -129,19 +170,23 @@ const PersonalVideoPage = () => {
             </Modal>
 
             {isMeeting && (
-                <div className="flex flex-col justify-between h-full">
-                    <PersonalVideoTimer endSec={PERSONAL_VIDEO_END_SEC} onEnd={endTimer} />
+                <div className="flex flex-col h-full gap-8">
+                    <div className="flex items-center ">
+                        <PersonalVideoTimer endSec={PERSONAL_VIDEO_END_SEC} onEnd={endTimer} />
 
-                    {!isFriend ? (
-                        <button onClick={wantFriend}>친구추가버튼</button>
-                    ) : (
-                        <p className="text-lg font-bold text-white">상대방도 좋아요를 누르면 친구추가가 됩니다.</p>
-                    )}
+                        <div onClick={wantFriend} className="mt-3">
+                            {isFriend ? (
+                                <AddedFriendIcon width={'6rem'} height={'6rem'} />
+                            ) : (
+                                <AddFriendsIcon width={'6rem'} height={'6rem'} />
+                            )}
+                        </div>
+                    </div>
                     <div className="flex w-full gap-[2.5rem] p-12">
                         <ParticipantVideo roomMax={2} gender="m" participants={participants} status={'meeting'} />
                         <ParticipantVideo roomMax={2} gender="f" participants={participants} status={'meeting'} />
                     </div>
-                    <PersonalResult />
+                    <PersonalResult participants={participants} results={results} problems={problems} />
                 </div>
             )}
         </>

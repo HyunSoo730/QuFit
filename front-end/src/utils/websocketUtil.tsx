@@ -1,5 +1,6 @@
 import * as StompJs from '@stomp/stompjs';
 import { qufitAcessTokenA, qufitAcessTokenB, qufitAcessTokenC, qufitAcessTokenD } from '@apis/axios';
+import { useTokenStore } from '@stores/auth/tokenStore';
 
 // interface ConnectProps {
 //     client: { current: StompJs.Client | null };
@@ -31,11 +32,13 @@ export const publishSocket = (data: any, client: { current: StompJs.Client | nul
 };
 
 export const connect = (client: { current: StompJs.Client | null }, onConnect: () => void) => {
+    const accessToken = useTokenStore.getState().accessToken;
+
     try {
         client.current = new StompJs.Client({
             brokerURL: import.meta.env.VITE_WEBSOCKET_BASE_URL,
             connectHeaders: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                Authorization: `Bearer ${accessToken}`,
             },
             debug: function () {
                 // console.log('소켓 디버그:', str);

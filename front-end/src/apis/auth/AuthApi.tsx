@@ -19,8 +19,10 @@ export const getKakaoAccessToken = async (authCode: string) => {
     return response;
 };
 
-export const login = async (accessToken: string) => {
-    return await kakaoInstance.get(END_POINT.LOGIN, { headers: { accessToken: accessToken } });
+export const login = async (kakaoAccessToken: string) => {
+    console.log("로그인 시도")
+   
+    return await kakaoInstance.get(END_POINT.LOGIN, { headers: { accessToken: kakaoAccessToken } });
 };
 
 export const signup = async (data: MemberInfoDTO, token: string) => {
