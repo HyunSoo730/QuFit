@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "participant_id": {
+      "type": "keyword"
+    },
+    "video_room_id": {
+      "type": "keyword"
+    },
+    "mbti": {
+      "type": "keyword"
+    },
+    "personalities": {
+      "type": "keyword"
+    },
+    "hobbies": {
+      "type": "keyword"
+    },
+    "location": {
+      "type": "keyword"
+    },
+    "birth_year": {
+      "type": "integer"
+    },
+    "bio": {
+      "type": "text",
+      "analyzer": "my_custom_analyzer"
+    },
+    "gender": {
+      "type": "keyword"
+    }
+  }
+}
