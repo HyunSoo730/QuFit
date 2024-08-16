@@ -31,7 +31,7 @@ QUFIT은 기존 데이팅 앱의 한계를 극복하고, 온라인 환경에서 
 
 |    송현명      |          박세은         |                                                                                                               
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | 
-|   <img width="160px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |                      <img width="160px" src="[박세은 프로필 URL]" />    |
+|   <img width="160px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |                      <img width="160px" src="https://postimg.cc/dkPfpcHc" />    |
 |   [@GitHub ID](https://github.com/[송현명 GitHub ID])   |    [@GitHub ID](https://github.com/[박세은 GitHub ID])  |
 | SSAFY | SSAFY |
 
