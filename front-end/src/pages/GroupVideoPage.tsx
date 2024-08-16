@@ -38,6 +38,7 @@ type beforeResult = {
     memberId: number;
     videoRoomId: number;
 };
+
 function GroupVideoPage() {
     const roomMax = 8;
     const [roomStep, setRoomStep] = useState<RoomStep>('active');
@@ -55,22 +56,31 @@ function GroupVideoPage() {
     const otherIdx = useOtherIdxStore();
     const setOtherIdx = useSetOtherIdxStore();
 
+    const navigate = useNavigate();
+    const { isHost } = useRoom();
+
     const handleConfirmModal = async () => {
         if (member?.gender === 'm') {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: member.memberId },
             });
-            navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
+            const newRoomId = Number(response.data['videoRoomId: ']);
+            await joinRoom(newRoomId);
+            navigate(PATH.PERSONAL_VIDEO(newRoomId));
         } else if (member?.gender === 'f') {
             const response = await instance.get(`qufit/video/recent`, {
                 params: { hostId: otherGenderParticipants[0].id },
             });
-            joinRoom(Number(response.data['videoRoomId: ']));
-            navigate(PATH.PERSONAL_VIDEO(Number(response.data['videoRoomId: '])));
+            const newRoomId = Number(response.data['videoRoomId: ']);
+            await joinRoom(newRoomId);
+            navigate(PATH.PERSONAL_VIDEO(newRoomId));
         }
 
         setOtherIdx(otherIdx + 1);
+        setRoomStep('active');
+        setGameStage(-1);
     };
+
     const onConnect = () => {
         client.current?.subscribe(`/sub/game/${roomId}`, (message) => {
             const response = JSON.parse(message.body);
@@ -100,8 +110,6 @@ function GroupVideoPage() {
             });
         });
     };
-    const navigate = useNavigate();
-    const { isHost } = useRoom();
 
     const startGame = () => {
         publishSocket(
@@ -129,7 +137,6 @@ function GroupVideoPage() {
     };
 
     const endGame = () => {
-        //웹소켓 발신
         publishSocket(
             {
                 isGameEnd: true,
@@ -142,9 +149,11 @@ function GroupVideoPage() {
 
     useEffect(() => {
         setRoomId(Number(roomId));
+        disConnect(client);
         connect(client, onConnect);
         return () => disConnect(client);
-    }, []);
+    }, [roomId]);
+
     const { open, close, Modal } = useModal();
     const restSec = useTimer(GROUP_VIDEO_END_SEC, () => {
         leaveRoom(Number(roomId));
@@ -171,14 +180,17 @@ function GroupVideoPage() {
                 />
             </Modal>
             {isMeeting && (
-                <div className="flex flex-col justify-between w-full h-screen"> {/* 전체 화면을 차지하는 flex 레이아웃 */}
-                    
-                    {/* 상단에 위치한 ParticipantVideo */}
+                <div className="flex flex-col justify-between w-full h-screen">
                     <div className="flex justify-center">
-                        <ParticipantVideo roomMax={roomMax!} gender="m" status="meeting" participants={participants} />
+                        <ParticipantVideo 
+                            key={`m-${participants.length}`}
+                            roomMax={roomMax!} 
+                            gender="m" 
+                            status="meeting" 
+                            participants={participants} 
+                        />
                     </div>
     
-                    {/* 중앙에 위치한 게임 관련 콘텐츠 */}
                     <div className="flex flex-col items-center justify-center flex-grow py-4">
                         {roomStep === 'active' && <GameIntro onNext={startGame} />}
                         {roomStep === 'loading' && <Loading onNext={() => setRoomStep('game')} />}
@@ -231,29 +243,19 @@ function GroupVideoPage() {
                         {roomStep === 'end' && <GameEnd restSec={restSec} />}
                     </div>
     
-                    {/* 하단에 위치한 ParticipantVideo */}
                     <div className="flex justify-center">
-                        <ParticipantVideo roomMax={roomMax!} gender="f" status="meeting" participants={participants} />
+                        <ParticipantVideo 
+                            key={`f-${participants.length}`}
+                            roomMax={roomMax!} 
+                            gender="f" 
+                            status="meeting" 
+                            participants={participants} 
+                        />
                     </div>
-    
                 </div>
             )}
         </>
     );
-    
 }
 
 export default GroupVideoPage;
-
-{
-    /* <div className="hidden">
-                    {participants.map((participant) => (
-                        <AudioComponent
-                            key={participant.nickname}
-                            track={
-                                participant.info.audioTrackPublications.values().next().value?.audioTrack || undefined
-                            }
-                        />
-                    ))}
-                </div> */
-}

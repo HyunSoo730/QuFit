@@ -416,8 +416,8 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                     chatState[0].id === 0 ? 'opacity-100' : 'opacity-0 scale-95'
                 } md:invisible sm:invisible xs:invisible`}
             >
-                <EmptyChatIcon className="w-56 mb-4" />
-                <p className="text-2xl text-center text-white bottom-8 w-80 opacity-80">채팅할 상대를 선택해주세요.</p>
+                <EmptyChatIcon className="w-48 mb-4" />
+                <p className="text-xl text-center text-white bottom-8 w-80 opacity-80">채팅할 상대를 선택해주세요.</p>
             </div>
             <div
                 className={`flex flex-col w-full h-full transition-all duration-200 ease-out  ${

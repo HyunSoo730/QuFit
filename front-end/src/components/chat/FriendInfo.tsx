@@ -39,7 +39,7 @@ const FriendInfo = ({ otherMemberId, chatRoomId, nickname, profileImage }: Frien
 
     return (
         <div className="flex flex-col">
-            <div className="w-full h-px bg-smokeWhite opacity-80" />
+            <div className="w-full h-px bg-smokeWhite opacity-40" />
             <div className="flex items-center justify-between pl-1 pr-9 lg:pr-7 xs:pr-2">
                 <div className="flex items-center py-5 lg:py-3">
                     <img

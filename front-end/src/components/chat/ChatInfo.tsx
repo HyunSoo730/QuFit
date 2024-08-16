@@ -77,7 +77,7 @@ const ChatInfo = ({
 
     return (
         <div className="flex flex-col">
-            <div className="w-full h-px bg-smokeWhite opacity-80" />
+            <div className="w-full h-px bg-smokeWhite opacity-40" />
             <div className="flex items-center justify-between pl-1">
                 <button onClick={handleOnClickButton} className="flex items-center w-full py-5 lg:py-3">
                     <img
