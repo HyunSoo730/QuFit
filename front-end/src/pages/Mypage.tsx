@@ -32,7 +32,7 @@ const MyPage = () => {
         return location?.code;
     }; // 지역을 이름으로 받아서 지역코드로 바꿔놔요,,
 
-    const defaultProfileImage = 'https://i.pinimg.com/236x/df/3c/4d/df3c4dcf15935d0111426bb28b12d9b1.jpg';
+    const defaultProfileImage = 'https://i.ibb.co/Lg9VyRV/Group-109.png';
     const [profileImage, setProfileImage] = useState<string>('');
     const [email, setEmail] = useState<string | null>(null);
 
@@ -89,14 +89,12 @@ const MyPage = () => {
                         >
                             {!isUpdateInfo ? '프로필 수정 🪄' : '취소'}
                         </button>
-                        {profileImage === defaultProfileImage ? (
-                            <button
-                                onClick={() => getProfileData.mutate()}
-                                className="h-8 px-4 py-1 text-white rounded bg-pink/70"
-                            >
-                                AI에게 프로필 생성받기 🤖
-                            </button>
-                        ) : null}
+                        <button
+                            onClick={() => getProfileData.mutate()}
+                            className="h-8 px-4 py-1 text-white rounded bg-pink/70"
+                        >
+                            AI에게 프로필 생성받기 🤖
+                        </button>
                     </div>
                     <MemberInfo
                         registData={registerData}
