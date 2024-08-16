@@ -23,7 +23,7 @@ QUFIT은 기존 데이팅 앱의 한계를 극복하고, 온라인 환경에서 
 
 |    천세경      |          조현수         |          장혜원         |          김해엽         |                                                                                                               
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: |
-|   <img width="160px" src="[천세경 프로필 URL]" />    |                      <img width="160px" src="[조현수 프로필 URL]" />    |                      <img width="160px" src="[장혜원 프로필 URL]" />    |                      <img width="160px" src="[김해엽 프로필 URL]" />    |
+|   <img width="160px" src="[천세경 프로필 URL]" />    |                      <img width="160px" src="https://i.postimg.cc/d0G72ZM3/image.jpg" />    |                      <img width="160px" src="https://i.postimg.cc/6pxGgtfx/Kakao-Talk-20231225-151459104.jpg" />    |                      <img width="160px" src="https://i.postimg.cc/Y09LLwjS/file.jpg" />    |
 |   [@GitHub ID](https://github.com/[천세경 GitHub ID])   |    [@GitHub ID](https://github.com/[조현수 GitHub ID])  |    [@GitHub ID](https://github.com/[장혜원 GitHub ID])  |    [@GitHub ID](https://github.com/[김해엽 GitHub ID])  |
 | SSAFY | SSAFY | SSAFY | SSAFY |
 
@@ -31,11 +31,51 @@ QUFIT은 기존 데이팅 앱의 한계를 극복하고, 온라인 환경에서 
 
 |    송현명      |          박세은         |                                                                                                               
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | 
-|   <img width="160px" src="[송현명 프로필 URL]" />    |                      <img width="160px" src="[박세은 프로필 URL]" />    |
+|   <img width="160px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |                      <img width="160px" src="[박세은 프로필 URL]" />    |
 |   [@GitHub ID](https://github.com/[송현명 GitHub ID])   |    [@GitHub ID](https://github.com/[박세은 GitHub ID])  |
 | SSAFY | SSAFY |
 
-[이용 가이드 부분은 유지]
+## 🌈 이용 가이드
+
+### Requirements
+
+프로젝트를 빌드하고 실행하기 위해 다음 환경이 필요합니다:
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+### Installation
+
+1. 프로젝트 클론
+```
+$ git clone [프로젝트 레포지토리 URL]
+$ cd [프로젝트 디렉토리 이름]
+
+2. 환경 변수 설정
+# Back-end 환경 변수 설정
+$ cp back-end/.env.example back-end/.env
+# 필요한 환경 변수 값 설정
+
+# Front-end 환경 변수 설정
+$ cp front-end/.env.example front-end/.env
+# 필요한 환경 변수 값 설정
+
+3. Docker Compose를 사용하여 애플리케이션 실행
+$ docker compose up -d --build
+
+이 명령어는 백엔드, 프론트엔드, Redis 서비스를 빌드하고 실행합니다. 
+- 백엔드 서비스는 8080 포트에서 실행됩니다.
+- 프론트엔드 서비스는 80 포트(HTTP)와 443 포트(HTTPS)에서 실행됩니다.
+- Redis 서비스는 6379 포트에서 실행됩니다.
+
+4. 애플리케이션 접속
+- 웹 브라우저에서 https://localhost 또는 http://localhost로 접속하여 애플리케이션을 이용할 수 있습니다.
+
+5. 애플리케이션 중지
+$ docker compose down
+```
+
+이 명령어는 실행 중인 모든 서비스를 중지하고 컨테이너를 제거합니다.
 
 ## 🛠️ 기술 스택
 
