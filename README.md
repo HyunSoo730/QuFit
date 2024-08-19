@@ -1,7 +1,7 @@
 # QUFIT - AR 블라인드 소개팅 서비스 🎭
 
 <div align="center">
-<img width="450" alt="QUFIT 로고" src="[로고 이미지 URL]">
+<img width="450" alt="QUFIT 로고" src="QuFit_LOGO.png">
 </div>
 
 # QUFIT - AR 기술을 활용한 혁신적인 블라인드 소개팅 서비스 👥
