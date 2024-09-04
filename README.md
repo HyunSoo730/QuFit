@@ -72,7 +72,7 @@ QUFIT은 지속적인 기술 혁신과 사용자 피드백을 바탕으로 서�
 
 |    송현명      |          박세은         |                                                                                                               
 | :---: | :---: | 
-|   <img width="400px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |   <img width="400px" src="https://postimg.cc/dkPfpcHc" />    |
+|   <img width="300px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |   <img width="200px" src="https://avatars.githubusercontent.com/u/81418633?s=400&u=411899e2a54ba6a0eab024fedf702407b6044e64&v=4" />    |
 |   [@GitHub ID](https://github.com/[송현명 GitHub ID])   |    [@GitHub ID](https://github.com/[박세은 GitHub ID])  |
 | SSAFY | SSAFY |
 
