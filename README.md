@@ -65,7 +65,7 @@ QUFIT은 지속적인 기술 혁신과 사용자 피드백을 바탕으로 서�
 |    천세경      |          조현수         |          장혜원         |          김해엽         |                                                                                                               
 | :---: | :---: | :---: | :---: |
 |   <img width="500px" src="https://i.postimg.cc/mkSY4jrn/image.jpg" />    |   <img width="500px" src="https://i.postimg.cc/d0G72ZM3/image.jpg" />    |   <img width="500px" src="https://i.postimg.cc/6pxGgtfx/Kakao-Talk-20231225-151459104.jpg" />    |   <img width="500px" src="https://i.postimg.cc/Y09LLwjS/file.jpg" />    |
-|   [@GitHub ID](https://github.com/[ID])   |    [@HyunSoo](https://github.com/HyunSoo730)  |    [@GitHub ID](https://github.com/[ID])  |    [@GitHub ID](https://github.com/[ID])  |
+|   [@GyeongSe99](https://github.com/GyeongSe99)   |    [@HyunSoo](https://github.com/HyunSoo730)  |    [@Hyewonon](https://github.com/Hyewonon)  |    [@KimHaeyeop](https://github.com/KimHaeyeop)  |
 | SSAFY | SSAFY | SSAFY | SSAFY |
 
 ### 프론트엔드
@@ -73,7 +73,7 @@ QUFIT은 지속적인 기술 혁신과 사용자 피드백을 바탕으로 서�
 |    송현명      |          박세은         |                                                                                                               
 | :---: | :---: | 
 |   <img width="300px" src="https://i.postimg.cc/Cx2HtY2G/image-2.png" />    |   <img width="200px" src="https://avatars.githubusercontent.com/u/81418633?s=400&u=411899e2a54ba6a0eab024fedf702407b6044e64&v=4" />    |
-|   [@GitHub ID](https://github.com/[송현명 GitHub ID])   |    [@GitHub ID](https://github.com/[박세은 GitHub ID])  |
+|   [@mung96](https://github.com/mung96)   |    [@se-eun-park](https://github.com/se-eun-park)  |
 | SSAFY | SSAFY |
 
 
