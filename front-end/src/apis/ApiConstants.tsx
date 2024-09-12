@@ -15,6 +15,7 @@ export const END_POINT = {
     CHECK_NICKNAME: 'qufit/check-nickname',
 
     MEMBER: `qufit/member`,
+    PROFILE: 'qufit/member/generate-image',
 
     VIDEO: 'qufit/video',
     VIDEO_DETAIL: (videoId: number) => `qufit/video/${videoId}`,

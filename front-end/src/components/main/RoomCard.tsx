@@ -30,7 +30,7 @@ const RoomCard = ({
 }: RoomCardProps) => {
     const { open, Modal, close } = useModal();
 
-    const { joinRoom, leaveRoom } = useRoom();
+    const { joinRoom } = useRoom();
 
     const [tags, setTags] = useState([...hobbyTags, ...personalityTags]);
 
@@ -110,7 +110,7 @@ const RoomCard = ({
                 <div className="z-0 w-full h-52 rounded-3xl bg-whitePink opacity-30 hover:opacity-10 lg:h-52 lg:rounded-2xl" />
             </button>
             <Modal>
-                <RoomEntryModal onClose={close} joinRoom={joinRoom} leaveRoom={leaveRoom} roomId={id} />
+                <RoomEntryModal onClose={close} joinRoom={joinRoom} roomId={id} />
             </Modal>
         </div>
     );

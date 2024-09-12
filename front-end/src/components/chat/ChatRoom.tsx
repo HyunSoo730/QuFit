@@ -21,13 +21,15 @@ interface ChatListProps {
     timestamp: string;
 }
 
-const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
+const ChatRoom = ({ id, nickname, profileImage, refetch }: ChatRoomProps) => {
     const member = useMemberInfoStore();
     const senderId = member?.memberId;
 
     // Store
     const isClosed = useCloseStateStore((state) => state.isClosed);
     const setIsClosed = useCloseStateStore((state) => state.setIsClosed);
+
+    const setIsThanks = useCloseStateStore((state) => state.setIsThanks);
 
     const chatState = useChatStateStore((state) => state.chatState);
     const setChatState = useChatStateStore((state) => state.setChatState);
@@ -174,7 +176,7 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                     )}
                     <div className={`flex justify-start ${isLastTime && 'mb-4'}`}>
                         <img
-                            src="https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg"
+                            src={profileImage}
                             alt="user profile image"
                             className={`rounded-full ${
                                 otherDifferTimeList.includes(idx) ? 'w-10 h-10 mr-3' : 'w-0 h-0 ml-[3.25rem]'
@@ -350,6 +352,14 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                 content: chat,
             }),
         });
+
+        if (chat === '감사합니다🩷') {
+            setIsThanks(true);
+
+            setTimeout(() => {
+                setIsThanks(false);
+            }, 3000);
+        }
         refetch();
         setChat('');
     };
@@ -416,8 +426,8 @@ const ChatRoom = ({ id, nickname, refetch }: ChatRoomProps) => {
                     chatState[0].id === 0 ? 'opacity-100' : 'opacity-0 scale-95'
                 } md:invisible sm:invisible xs:invisible`}
             >
-                <EmptyChatIcon className="w-56 mb-4" />
-                <p className="text-2xl text-center text-white bottom-8 w-80 opacity-80">채팅할 상대를 선택해주세요.</p>
+                <EmptyChatIcon className="w-48 mb-4" />
+                <p className="text-xl text-center text-white bottom-8 w-80 opacity-80">채팅할 상대를 선택해주세요.</p>
             </div>
             <div
                 className={`flex flex-col w-full h-full transition-all duration-200 ease-out  ${

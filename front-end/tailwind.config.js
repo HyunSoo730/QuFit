@@ -50,12 +50,17 @@ export default {
                     '0%': { opacity: '1', transform: 'translateX(0)' },
                     '100%': { opacity: '0', transform: 'translateX(100%)' },
                 },
+                fadeIn: {
+                    from: { opacity: '0' },
+                    to: { opacity: '1' },
+                },
             },
             animation: {
                 choice: 'choice 6s',
                 private: 'private 1800s',
                 fadeInRight: 'fadeInRight 0.5s ease-in-out forwards',
                 fadeOutRight: 'fadeOutRight 0.5s ease-in-out forwards',
+                fadeIn: 'fadeIn 0.5s ease-in-out forwards',
             },
 
             backgroundImage: {
@@ -69,7 +74,7 @@ export default {
                 indyBlue:
                     'linear-gradient(to bottom left,rgba(167,162,229,1) 0%, rgba(255, 255, 255, 1) 50%, rgba(167,162,229,0) 100%)',
             },
-            
+
             height: {
                 videoFixed: '480px',
                 videoMin: '360px', // 최소 높이 설정

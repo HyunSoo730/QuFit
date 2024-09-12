@@ -147,7 +147,7 @@ const CreateRoomPage = () => {
                 </div>
 
                 {/* 인원수, 태그 선택 유무 */}
-                <div className="flex flex-col w-full mt-10 bg-white py-11 px-9 h-80 rounded-3xl bg-opacity-15">
+                <div className="flex flex-col w-full mt-10 bg-white py-11 px-9 rounded-3xl bg-opacity-15">
                     <div>
                         <div className="flex items-center mb-7">
                             <p className="text-2xl font-medium text-smokeWhite mr-3.5">
@@ -265,7 +265,7 @@ const CreateRoomPage = () => {
                                 <p className="font-medium text-smokeWhite text-opacity-60 mt-1.5 mb-10">
                                     원하는 태그를 골라주세요. (최대 5개)
                                 </p>
-                                <div className="flex flex-wrap">
+                                <div className="flex flex-col flex-wrap">
                                     {Personalities.map((personality, index) => (
                                         <div key={index}>
                                             <p className="font-medium text-smokeWhite mb-2.5">{personality.category}</p>

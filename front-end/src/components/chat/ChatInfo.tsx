@@ -63,7 +63,7 @@ const ChatInfo = ({
     }, [unreadCount, lastMessageTime]);
 
     const handleOnClickButton = () => {
-        console.log('채팅리스트:', )
+        console.log('채팅리스트:');
         setChatState([
             {
                 id: id,
@@ -77,11 +77,11 @@ const ChatInfo = ({
 
     return (
         <div className="flex flex-col">
-            <div className="w-full h-px bg-smokeWhite opacity-80" />
+            <div className="w-full h-px bg-smokeWhite opacity-40" />
             <div className="flex items-center justify-between pl-1">
                 <button onClick={handleOnClickButton} className="flex items-center w-full py-5 lg:py-3">
                     <img
-                        src="https://i.pinimg.com/236x/6f/16/f1/6f16f17340ba194e07dab3aa5fa9c50a.jpg"
+                        src={profileImage}
                         alt="user profile image"
                         className="w-12 h-12 rounded-full lg:w-12 lg:h-12 xs:w-12 xs:h-12"
                     />
